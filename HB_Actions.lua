@@ -34,6 +34,7 @@ end
 --]]
 function actions.get_defensive_action()
 	local action = {}
+	local player = player or windower.ffxi.get_player()
 	--local targets = hb.getMonitoredPlayers()
 	
 	if (not settings.disable.cure) then
@@ -67,7 +68,7 @@ function actions.get_defensive_action()
 				else
 					dbact_target = windower.ffxi.get_mob_by_name(dbact.name)
 					local_queue_insert(dbact.action.en, dbact.name)
-					if (action.debuff == nil) and healer:in_casting_range(dbact.name) and healer:ready_to_use(dbact.action) and not(dbact_target.hpp == 0) and dbact.debuff.id ~= 20 then
+					if (action.debuff == nil) and healer:in_casting_range(dbact.name) and healer:ready_to_use(dbact.action) and not(dbact_target.hpp == 0) and dbact.debuff.id ~= 20 and (player.vitals.mp >= dbact.action.mp_cost) then
 						action.debuff = dbact
 					end
 				end
@@ -88,7 +89,7 @@ function actions.get_defensive_action()
 				local_queue_insert(bact.action.en, bact.name)
 			end
             
-			if (action.buff == nil) and healer:in_casting_range(bact.name) and healer:ready_to_use(bact.action) and not(bact_target.hpp == 0) then
+			if (action.buff == nil) and healer:in_casting_range(bact.name) and healer:ready_to_use(bact.action) and not(bact_target.hpp == 0) and (player.vitals.mp >= bact.action.mp_cost) then
 				action.buff = bact
 			end
 		end
@@ -176,7 +177,7 @@ function actions.get_offensive_action(player)
     while not dbuffq:empty() do
         local dbact = dbuffq:pop()
         local_queue_insert(dbact.action.en, target.name)
-        if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) then
+        if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) and (player.vitals.mp >= dbact.action.mp_cost) then
             action.db = dbact
         end
     end
