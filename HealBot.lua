@@ -164,6 +164,7 @@ hb._events['zone'] = windower.register_event('zone change', function(new_id, old
     buffs.resetDebuffTimers('ALL')
 	hb.active = false	-- Deactivate when zoned.
     zone_info = windower.ffxi.get_info()
+	offense.cleanup()
 	
     if zone_info ~= nil then
         if zone_info.zone == 131 then
