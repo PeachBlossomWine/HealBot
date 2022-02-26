@@ -171,7 +171,7 @@ function buffs.registerNewBuffName(targetName, bname, use)
 		return
     end
 	-- Song override, no check targets.
-    if not ffxi.target_is_valid(action, target) and targetName:lower() ~= 'everyone' and bname:lower() ~= 'all' then
+    if target and action and not ffxi.target_is_valid(action, target) and targetName:lower() ~= 'everyone' and bname:lower() ~= 'all' then
 		if not(song_map:contains(spellName)) then
 			atc(target.name..' is an invalid target for '..action.en)
 			return
@@ -185,7 +185,7 @@ function buffs.registerNewBuffName(targetName, bname, use)
         monitorCommand('watch', target.name)
     end
    
-	if target then
+	if target and action then
 		buffs.buffList[target.name] = buffs.buffList[target.name] or {}
 		buff = buffs.buff_for_action(action)
 	end
