@@ -175,7 +175,11 @@ end
     :param set monitored_ids: the IDs of PCs that are being monitored
 --]]
 function registerEffect(ai, tact, actor, target, monitored_ids)
-    local targ_is_enemy = (target.spawn_type == 16)
+
+	if target then
+		targ_is_enemy = (target.spawn_type == 16)
+	end
+	
     if messages_magicDamage:contains(tact.message_id) then      --ai.param: spell; tact.param: damage
         local spell = res.spells[ai.param]
         if S{230,231,232,233,234}:contains(ai.param) then

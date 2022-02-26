@@ -151,25 +151,27 @@ end
 function buffs.registerNewBuffName(targetName, bname, use)
 
 	local song_map = S{"Army's Paeon","Army's Paeon II","Army's Paeon III","Army's Paeon IV","Army's Paeon V","Army's Paeon VI","Army's Paeon VII","Army's Paeon VIII","Mage's Ballad","Mage's Ballad II","Mage's Ballad III","Knight's Minne","Knight's Minne II","Knight's Minne III","Knight's Minne IV","Knight's Minne V","Valor Minuet","Valor Minuet II","Valor Minuet III","Valor Minuet IV","Valor Minuet V","Sword Madrigal","Blade Madrigal","Hunter's Prelude","Archer's Prelude","Sheepfoe Mambo","Dragonfoe Mambo","Fowl Aubade","Herb Pastoral","Shining Fantasia","Scop's Operetta","Puppet's Operetta","Jester's Operetta","Gold Capriccio","Devotee Serenade","Warding Round","Goblin Gavotte","Cactuar Fugue","Protected Aria","Advancing March","Victory March","Honor March","Sinewy Etude","Dextrous Etude","Vivacious Etude","Quick Etude","Learned Etude","Spirited Etude","Enchanting Etude","Herculean Etude","Uncanny Etude","Vital Etude","Swift Etude","Sage Etude","Logical Etude","Bewitching Etude","Fire Carol","Ice Carol","Wind Carol","Earth Carol","Lightning Carol","Water Carol","Light Carol","Dark Carol","Fire Carol II","Ice Carol II","Wind Carol II","Earth Carol II","Lightning Carol II","Water Carol II","Light Carol II","Dark Carol II","Goddess's Hymnus","Chocobo Mazurka","Raptor Mazurka","Foe Sirvente","Adventurer's Dirge","Sentinel's Scherzo",}
-    local spellName = utils.formatActionName(bname)
-    if (spellName == nil) then
+    if bname:lower() ~= 'all' then
+		spellName = utils.formatActionName(bname)
+	end
+    if (spellName == nil and targetName:lower() ~= 'everyone' and bname:lower() ~= 'all') then
         atc('Error: Unable to parse spell name')
         return
     end
     
     local me = windower.ffxi.get_player()
     local target = ffxi.get_target(targetName)
-    if target == nil then
+    if target == nil and targetName:lower() ~= 'everyone' then
         atc('Unable to find buff target: '..targetName)
         return
     end
     local action = buffs.getAction(spellName, target)
-    if (action == nil) then
+    if (action == nil and targetName:lower() ~= 'everyone' and bname:lower() ~= 'all') then
 		atc('Unable to cast or invalid: '..spellName)
 		return
     end
 	-- Song override, no check targets.
-    if not ffxi.target_is_valid(action, target) then
+    if not ffxi.target_is_valid(action, target) and targetName:lower() ~= 'everyone' and bname:lower() ~= 'all' then
 		if not(song_map:contains(spellName)) then
 			atc(target.name..' is an invalid target for '..action.en)
 			return
@@ -179,13 +181,16 @@ function buffs.registerNewBuffName(targetName, bname, use)
     end
     
     local monitoring = hb.getMonitoredPlayers()
-    if (not (monitoring[target.name])) then
+    if (target and not (monitoring[target.name])) then
         monitorCommand('watch', target.name)
     end
+   
+	if target then
+		buffs.buffList[target.name] = buffs.buffList[target.name] or {}
+		buff = buffs.buff_for_action(action)
+	end
     
-    buffs.buffList[target.name] = buffs.buffList[target.name] or {}
-    local buff = buffs.buff_for_action(action)
-    if (buff == nil) then
+    if (buff == nil and targetName:lower() ~= 'everyone' and bname:lower() ~= 'all') then
         atc('Unable to match the buff name to an actual buff: '..bname)
         return
     end
@@ -201,8 +206,22 @@ function buffs.registerNewBuffName(targetName, bname, use)
         end
         atc('Will maintain buff: '..action.en..' '..rarr..' '..target.name)
     else
-        buffs.buffList[target.name][action.en] = nil
-        atc('Will no longer maintain buff: '..action.en..' '..rarr..' '..target.name)
+		if targetName:lower() == 'everyone' then
+			atc('Will no longer maintain any buffs on all players except self.')
+			for k, v in pairs(buffs.buffList) do
+				if k ~= me.name then
+					buffs.buffList[k]= nil
+				end
+			end
+		else
+			if bname:lower() == 'all' then
+				buffs.buffList[target.name] = nil
+				atc('Will no longer maintain ALL buffs on: '..target.name)
+			else
+				buffs.buffList[target.name][action.en] = nil
+				atc('Will no longer maintain buff: '..action.en..' '..rarr..' '..target.name)
+			end
+		end
     end
 end
 
