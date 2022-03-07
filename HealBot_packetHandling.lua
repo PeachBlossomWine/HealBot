@@ -186,6 +186,12 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
             buffs.register_debuff(target, 'Bio', true, spell)
         elseif S{23,24,25,26,27,33,34,35,36,37}:contains(ai.param) then
             buffs.register_debuff(target, 'Dia', true, spell)
+		elseif ai.param == 503 then -- Impact
+			buffs.register_debuff(target, 'STR Down', true, spell)
+		elseif ai.param == 727 then -- Silent Storm
+			buffs.register_debuff(target, 'Silence', true, spell)
+		elseif ai.param == 728 then -- Tenebral Crush
+		    buffs.register_debuff(target, 'Defense Down', true, spell)
         end
     elseif messages_gainEffect:contains(tact.message_id) then   --ai.param: spell; tact.param: buff/debuff
         --{target} gains the effect of {buff} / {target} is {debuff}ed
