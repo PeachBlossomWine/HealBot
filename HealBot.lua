@@ -287,9 +287,15 @@ hb._events['render'] = windower.register_event('prerender', function()
 						end
 					end
 				end
-                if (not should_move) and follow.active and (healer:dist_from(follow.target) > follow.distance) then
+                if (not should_move) and follow.active and (healer:dist_from(follow.target) > follow.distance) and not (player.status == 1) then	-- Only follow if not engaged.
                     should_move = true
                     healer:move_towards(follow.target)
+				elseif player.status == 1 and player.target_index then		-- For when autotarget to engage correct distance
+					local current_targ = windower.ffxi.get_mob_by_index(player.target_index)
+					if healer:dist_from(current_targ.id) > 3 then
+						should_move = true
+						healer:move_towards(current_targ.id)
+					end
                 end
                 if (not should_move) then
                     if follow.active then
