@@ -279,14 +279,14 @@ hb._events['render'] = windower.register_event('prerender', function()
         if hb.auto_movement_active() then
             if ((now - healer.last_move_check) > follow.delay) then
                 local should_move = false
-                if (targ ~= nil) and (player.target_index == partner.target_index) then
-                    if offense.assist.engage and (partner.status == 1) then
-                        if healer:dist_from(targ.id) > 3 then
-                            should_move = true
-                            healer:move_towards(targ.id)
-                        end
-                    end
-                end
+				if (targ ~= nil) and (player.target_index == partner.target_index) then
+					if offense.assist.engage and (partner.status == 1) then
+						if healer:dist_from(targ.id) > 3 then
+							should_move = true
+							healer:move_towards(targ.id)
+						end
+					end
+				end
                 if (not should_move) and follow.active and (healer:dist_from(follow.target) > follow.distance) then
                     should_move = true
                     healer:move_towards(follow.target)
