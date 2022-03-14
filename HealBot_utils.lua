@@ -308,7 +308,7 @@ function processCommand(command,...)
         toggleMode('showPacketInfo', args[1], 'Packet info display', 'PacketInfo')
     elseif command == 'debug' then
         toggleMode('debug', args[1], 'Debug mode', 'debug mode')
-    elseif command == 'independent' then
+    elseif S{'ind', 'independent'}:contains(command) then
         toggleMode('independent', args[1], 'Independent mode', 'independent mode')
     elseif S{'deactivateindoors','deactivate_indoors'}:contains(command) then
         utils.toggleX(settings, 'deactivateIndoors', args[1], 'Deactivation in indoor zones', 'DeactivateIndoors')
@@ -575,6 +575,15 @@ function utils.getPlayerName(name)
         return target.name
     end
     return nil
+end
+
+function utils.isMonster(mob_index)
+	local mob_in_question = windower.ffxi.get_mob_by_index(mob_index)
+	if mob_in_question and mob_in_question.id%4096>2047 and mob_in_question.valid_target then
+		return 'npc'
+	else
+		return 'monster'
+	end
 end
 
 --==============================================================================
