@@ -118,8 +118,13 @@ function processCommand(command,...)
                 offense.assist.nolock = false
                 atc('Will now use target/lock on when assisting.')
             else
-                offense.assist.nolock = true
-                atc('Will now use mob id to cast spells when assisting.')
+				if not (offense.assist.engage) then
+					offense.assist.nolock = true
+					atc('Will now use mob id to cast spells when assisting.')
+				else
+					offense.assist.nolock = false
+					atc('ERROR: Cannot use nolock/mob id to assist if engaging to attack.')
+				end
             end
         else    --args[1] is guaranteed to have a value if this is reached
             offense.register_assistee(args[1])
