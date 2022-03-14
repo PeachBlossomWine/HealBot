@@ -579,10 +579,8 @@ end
 
 function utils.isMonster(mob_index)
 	local mob_in_question = windower.ffxi.get_mob_by_index(mob_index)
-	if mob_in_question and mob_in_question.id%4096>2047 and mob_in_question.valid_target then
-		return 'npc'
-	else
-		return 'monster'
+	if mob_in_question and mob_in_question.is_npc and mob_in_question.id%4096<=2046 and mob_in_question.valid_target then
+		return true
 	end
 end
 

@@ -154,13 +154,13 @@ function actions.take_action(player, partner, targ)
 						healer:take_action(actions.get_offensive_action(player, partner), windower.ffxi.get_mob_by_index(partner.target_index).id)
 					end
 					-- Debuffs without assist during assiting so can debuff 2 targets or more.
-					if hb.modes.independent and (self_engaged or (player.target_locked and utils.isMonster(player.target_index) == 'monster')) then
+					if hb.modes.independent and (self_engaged or (player.target_locked and utils.isMonster(player.target_index))) then
 						healer:take_action(actions.get_offensive_action(player, nil), '<t>')
 					end
 					return true
                 end
 			-- Debuff without having assist, either engaged or target locked.
-			elseif hb.modes.independent and (self_engaged or (player.target_locked and utils.isMonster(player.target_index) == 'monster')) then
+			elseif hb.modes.independent and (self_engaged or (player.target_locked and utils.isMonster(player.target_index))) then
 				healer:take_action(actions.get_offensive_action(player, nil), '<t>')
 				return true
             end
