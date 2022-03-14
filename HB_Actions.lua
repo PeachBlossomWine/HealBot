@@ -142,17 +142,19 @@ function actions.take_action(player, partner, targ)
                         healer:send_cmd('input /attack on')
 						return true
                     else
-                        healer:take_action(actions.get_offensive_action(player), '<t>')
+                        healer:take_action(actions.get_offensive_action(player, partner), '<t>')
 						return true
                     end
-                else                            --Different targets
-                    if partner_engaged and (not self_engaged) then
+                else   --Different targets
+                    if partner_engaged and (not self_engaged) and not (offense.assist.nolock) then
                         healer:send_cmd('input /as '..offense.assist.name)
 						return true
+					elseif partner_engaged and partner.target_index and offense.assist.nolock then	-- No target assist, requires gearswap
+						healer:take_action(actions.get_offensive_action(player, partner), windower.ffxi.get_mob_by_index(partner.target_index).id)
                     end
                 end
             elseif self_engaged and hb.modes.independent then
-                healer:take_action(actions.get_offensive_action(player), '<t>')
+                healer:take_action(actions.get_offensive_action(player, partner), '<t>')
 				return true
             end
             offense.cleanup()
@@ -161,14 +163,13 @@ function actions.take_action(player, partner, targ)
 	return false
 end
 
-
 --[[
 	Builds an action queue for offensive actions.
     Returns the action deemed most important at the time.
 --]]
-function actions.get_offensive_action(player)
+function actions.get_offensive_action(player, partner)
 	player = player or windower.ffxi.get_player()
-	local target = windower.ffxi.get_mob_by_target()
+	local target = partner.target_index and windower.ffxi.get_mob_by_index(partner.target_index)
     if target == nil then return nil end
     local action = {}
     

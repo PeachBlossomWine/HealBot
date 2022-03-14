@@ -112,6 +112,15 @@ function processCommand(command,...)
                 offense.assist.engage = true
                 atc('Will now enagage when assisting.')
             end
+		elseif S{'nolock'}:contains(cmd) then
+            local cmd2 = args[2] and args[2]:lower() or (offense.assist.nolock and 'off' or 'resume')
+            if S{'off','end','false','pause'}:contains(cmd2) then
+                offense.assist.nolock = false
+                atc('Will now use target/lock on when assisting.')
+            else
+                offense.assist.nolock = true
+                atc('Will now use mob id to cast spells when assisting.')
+            end
         else    --args[1] is guaranteed to have a value if this is reached
             offense.register_assistee(args[1])
         end
