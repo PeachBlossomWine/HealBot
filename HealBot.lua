@@ -354,6 +354,9 @@ function hb.activate()
             if settings.healing.max.waltz > 0 then
                 settings.healing.mode = 'waltz'
                 settings.healing.modega = 'waltzga'
+			elseif settings.healing.max.blue > 0 then
+				settings.healing.mode = 'blue'
+                settings.healing.modega = 'bluega'
             else
                 disableCommand('cure', true)
             end

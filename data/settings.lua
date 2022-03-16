@@ -5,10 +5,12 @@ return {
     ['healing'] = {
         ['curaga_min_targets'] = 3,
         ['min'] = {
-            ['curaga'] = 1,
+            ['curaga'] = 2,
             ['cure'] = 3,
             ['waltz'] = 3,
-            ['waltzga'] = 2
+            ['waltzga'] = 2,
+			['blue'] = 2,
+			['bluega'] = 2,
         }
     },
     ['ignoreTrusts'] = false,

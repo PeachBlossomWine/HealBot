@@ -207,13 +207,49 @@ function processCommand(command,...)
             atc('Error: Invalid argument specified for minCure')
         end
     elseif command == 'mincuraga' then
-        if not validate(args, 1, 'Error: No argument specified for minCure') then return end
+        if not validate(args, 1, 'Error: No argument specified for minCuraga') then return end
         local val = tonumber(args[1])
         if (val ~= nil) and (1 <= val) and (val <= 6) then
             settings.healing.min.curaga = val
             atc('Minimum curaga tier set to '..val)
         else
-            atc('Error: Invalid argument specified for minCure')
+            atc('Error: Invalid argument specified for minCuraga')
+        end
+    elseif command == 'minwaltz' then
+        if not validate(args, 1, 'Error: No argument specified for minWaltz') then return end
+        local val = tonumber(args[1])
+        if (val ~= nil) and (1 <= val) and (val <= 5) then
+            settings.healing.min.waltz = val
+            atc('Minimum waltz tier set to '..val)
+        else
+            atc('Error: Invalid argument specified for minWaltz')
+        end
+    elseif command == 'minwaltzga' then
+        if not validate(args, 1, 'Error: No argument specified for minWaltzga') then return end
+        local val = tonumber(args[1])
+        if (val ~= nil) and (1 <= val) and (val <= 2) then
+            settings.healing.min.waltzga = val
+            atc('Minimum waltzga tier set to '..val)
+        else
+            atc('Error: Invalid argument specified for minWaltzga')
+        end
+    elseif command == 'minblue' then
+        if not validate(args, 1, 'Error: No argument specified for minBlue') then return end
+        local val = tonumber(args[1])
+        if (val ~= nil) and (1 <= val) and (val <= 3) then
+            settings.healing.min.blue = val
+            atc('Minimum blue tier set to '..val)
+        else
+            atc('Error: Invalid argument specified for minBlue')
+        end
+    elseif command == 'minbluega' then
+        if not validate(args, 1, 'Error: No argument specified for minBluega') then return end
+        local val = tonumber(args[1])
+        if (val ~= nil) and (1 <= val) and (val <= 2) then
+            settings.healing.min.bluega = val
+            atc('Minimum bluega tier set to '..val)
+        else
+            atc('Error: Invalid argument specified for minBluega')
         end
     elseif command == 'reset' then
         if not validate(args, 1, 'Error: No argument specified for reset') then return end
@@ -665,7 +701,7 @@ function utils.load_configs()
             montoredBox={x=-150,y=600,font='Arial',size=10,visible=true}
         },
         spam = {name='Stone'},
-        healing = {min={cure=3,curaga=1,waltz=2,waltzga=1},curaga_min_targets=2},
+        healing = {min={cure=3,curaga=1,waltz=2,waltzga=1,blue=1,bluega=1},curaga_min_targets=2},
         disable = {curaga=false},
         ignoreTrusts=true, deactivateIndoors=true, activateOutdoors=false
     }
@@ -675,7 +711,8 @@ function utils.load_configs()
     
     local cure_potency_defaults = {
         cure = {94,207,469,880,1110,1395},  curaga = {150,313,636,1125,1510},
-        waltz = {157,325,581,887,1156},     waltzga = {160,521}
+        waltz = {157,325,581,887,1156},     waltzga = {160,521},
+		blue = {288,762,1072},				bluega = {300,885},
     }
     local buff_lists_defaults = {       self = {'Haste II','Refresh II'},
         whm = {self={'Haste','Refresh'}}, rdm = {self={'Haste II','Refresh II'}}
@@ -732,7 +769,7 @@ function utils.update_settings(loaded)
     table.update_if_not_set(settings, {
         disable = {},
         follow = {delay = 0.08, distance = 3},
-        healing = {minCure = 3, minCuraga = 1, minWaltz = 2, minWaltzga = 1},
+        healing = {minCure = 3, minCuraga = 2, minWaltz = 2, minWaltzga = 2, minBlue = 2, minBluega = 2},
         spam = {}
     })
 end

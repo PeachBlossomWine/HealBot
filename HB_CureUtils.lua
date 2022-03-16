@@ -5,7 +5,7 @@
 --]]
 --==============================================================================
 
-local cu = {cure_types={'cure','waltz','curaga','waltzga'} }
+local cu = {cure_types={'cure','waltz','curaga','waltzga','blue','bluega'} }
 local Pos = _libs.lor.position
 local ffxi = _libs.lor.ffxi
 
@@ -38,9 +38,18 @@ cu.waltzga = {
     [1] = {id=195,  en='Divine Waltz',      res=res.job_abilities[195]},
     [2] = {id=262,  en='Divine Waltz II',   res=res.job_abilities[262]}
 }
+cu.blue = {
+	[1] = {id=578, 	en='Wild Carrot',		res=res.spells[578]},
+    [2] = {id=593, 	en='Magic Fruit',		res=res.spells[593]},
+	[3] = {id=658, 	en='Plenilune Embrace',	res=res.spells[658]},
+}
+cu.bluega = {
+	[1] = {id=581, 	en='Healing Breeze',	res=res.spells[581]},
+    [2] = {id=690, 	en='White Wind',		res=res.spells[690]},
+}
 
 function cu.init_cure_potencies()
-    local potency_table = hb.config.cure_potency[healer.name] and hb.config.cure_potency[healer.name][healer.main_job] or hb.config.cure_potency.default
+	local potency_table = (hb.config.cure_potency[healer.name] and hb.config.cure_potency[healer.name][healer.main_job]) or hb.config.cure_potency[healer.main_job] or hb.config.cure_potency.default
     for spell_group,_ in pairs(potency_table) do
         for spell_tier,_ in pairs(cu[spell_group]) do
             cu[spell_group][spell_tier].hp = potency_table[spell_group][spell_tier]
@@ -277,7 +286,7 @@ function cu.get_usable_cure(orig_tier, cure_type)
     end
     
     local tier = orig_tier
-    while tier > 1 do
+    while tier >= 1 do
         local action = cu[cure_type][tier].res
         local rctime = recasts[action.recast_id] or 0               --Cooldown remaining for current tier
         local mod_cost = action[_p..'_cost'] * mult                 --Modified cost of current tier in MP/TP
