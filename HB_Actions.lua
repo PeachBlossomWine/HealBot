@@ -132,7 +132,8 @@ function actions.take_action(player, partner, targ)
         end
         healer:take_action(action)
 		return true
-    else                        --Otherwise, there may be an offensive action
+    --Otherwise, there may be an offensive action
+    else                        
         if (targ ~= nil) or hb.modes.independent then
             local self_engaged = (player.status == 1)
             if (targ ~= nil) then
@@ -148,23 +149,17 @@ function actions.take_action(player, partner, targ)
                 else   --Different targets
                     if partner_engaged and (not self_engaged) and not (offense.assist.nolock) then
                         healer:send_cmd('input /as '..offense.assist.name)
-						return true
-					-- Debuffs with mob id, requires gearswap
-					elseif partner_engaged and partner.target_index and offense.assist.nolock then	
-						healer:take_action(actions.get_offensive_action(player, partner), windower.ffxi.get_mob_by_index(partner.target_index).id)
                         return true
-					end
-					-- Debuffs without assist during assiting so can debuff 2 targets or more.
-					-- if hb.modes.independent and (self_engaged or (player.target_locked and utils.isMonster(player.target_index))) then
-						-- healer:take_action(actions.get_offensive_action(player, nil), '<t>')
-                        -- return true
-					-- end
-					
+					-- Debuffs with mob id, requires gearswap
+                    elseif partner_engaged and partner.target_index and offense.assist.nolock then	
+                        healer:take_action(actions.get_offensive_action(player, partner), windower.ffxi.get_mob_by_index(partner.target_index).id)
+                        return true
+                    end
                 end
 			-- Debuff without having assist, either engaged or target locked.
-			elseif hb.modes.independent and (self_engaged or (player.target_locked and utils.isMonster(player.target_index))) then
-				healer:take_action(actions.get_offensive_action(player, nil), '<t>')
-				return true
+            elseif hb.modes.independent and (self_engaged or (player.target_locked and utils.isMonster(player.target_index))) then
+                healer:take_action(actions.get_offensive_action(player, nil), '<t>')
+                return true
             end
             offense.cleanup()
         end
