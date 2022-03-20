@@ -285,13 +285,21 @@ function cu.get_usable_cure(orig_tier, cure_type)
         recasts = windower.ffxi.get_spell_recasts()
     end
     
-    local tier = orig_tier
-    while tier >= 1 do
+	local tier = orig_tier
+	local check_action = cu[cure_type][tier].res
+    while (check_action.type == "BlueMagic" and tier >= 1) or tier > 1 do
         local action = cu[cure_type][tier].res
         local rctime = recasts[action.recast_id] or 0               --Cooldown remaining for current tier
         local mod_cost = action[_p..'_cost'] * mult                 --Modified cost of current tier in MP/TP
         if (mod_cost <= player.vitals[_p]) and (rctime == 0) then   --Sufficient MP/TP and cooldown is ready
-            return action
+			if action.type == "BlueMagic" then
+				if (player.main_job_id == 16 and table.contains(windower.ffxi.get_mjob_data().spells,action.id))
+				or (player.sub_job_id == 16 and table.contains(windower.ffxi.get_sjob_data().spells,action.id)) then
+					return action
+				end
+			else
+				return action
+			end
         end
         tier = tier - 1
     end
