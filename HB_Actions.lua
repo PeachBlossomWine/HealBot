@@ -142,6 +142,9 @@ function actions.take_action(player, partner, targ)
                     if offense.assist.engage and partner_engaged and (not self_engaged) then
                         healer:send_cmd('input /attack on')
 						return true
+                    elseif offense.assist.engage and partner_engaged and self_engaged and (not player.target_locked) then
+                        healer:send_cmd('input /lockon')
+                        return true
                     else
                         healer:take_action(actions.get_offensive_action(player, partner), '<t>')
 						return true

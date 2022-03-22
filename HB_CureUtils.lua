@@ -25,7 +25,7 @@ cu.curaga = {
     [2] = {id=8,    en='Curaga II',         res=res.spells[8]},
     [3] = {id=9,    en='Curaga III',        res=res.spells[9]},
     [4] = {id=10,   en='Curaga IV',         res=res.spells[10]},
---    [5] = {id=11,   en='Curaga V',          res=res.spells[11]}
+    [5] = {id=11,   en='Curaga V',          res=res.spells[11]}
 }
 cu.waltz = {
     [1] = {id=190,  en='Curing Waltz',      res=res.job_abilities[190]},
@@ -140,27 +140,13 @@ function cu.pick_best_curaga_possibility()
             distances[memberA] = LT()
             for memberB, b in pairs(members) do
                 if b then
-					-- Original
 					if memberA ~= memberB then
-                        local dist = a.pos:getDistance(b.pos)
+                        local dist = a.pos and a.pos:getDistance(b.pos)
                         distances[memberA]:insert(dist)
                         if dist < 10 then
                             coverage[memberA]:insert(memberB)
                         end
                     end
-					-- Changed
-                    -- if memberA ~= memberB then
-
-						-- if pos == nil then dist = 1
-						-- else
-							-- local dist = a.pos:getDistance(b.pos)
-							-- if dist == nil then dist = 1 end
-						-- end
-                        -- distances[memberA]:insert(dist)
-                        -- if dist < 10 then
-                            -- coverage[memberA]:insert(memberB)
-                        -- end
-                    -- end
                 end
             end
             local furthest = distances[memberA]:max()
