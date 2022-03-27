@@ -150,12 +150,17 @@ function actions.take_action(player, partner, targ)
 						return true
                     end
                 else   --Different targets
+                    --Assist but not engage
                     if partner_engaged and (not self_engaged) and not (offense.assist.nolock) then
                         healer:send_cmd('input /as '..offense.assist.name)
                         return true
-					-- Debuffs with mob id, requires gearswap
-                    elseif partner_engaged and partner.target_index and offense.assist.nolock then	
+					--Assist + Debuffs with mob id, requires gearswap
+                    elseif partner_engaged and partner.target_index and offense.assist.nolock then
                         healer:take_action(actions.get_offensive_action(player, partner), windower.ffxi.get_mob_by_index(partner.target_index).id)
+                        return true
+                    --Switches target to same as partner
+                    elseif partner_engaged and partner.target_index and self_engaged and not (offense.assist.nolock) and offense.assist.sametarget then
+                        healer:switch_target(windower.ffxi.get_mob_by_index(partner.target_index).id)
                         return true
                     end
                 end

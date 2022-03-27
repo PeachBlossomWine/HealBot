@@ -109,8 +109,13 @@ function processCommand(command,...)
                 offense.assist.engage = false
                 atc('Will no longer enagage when assisting.')
             else
-                offense.assist.engage = true
-                atc('Will now enagage when assisting.')
+                if not (offense.assist.nolock) then
+                    offense.assist.engage = true
+                    atc('Will now enagage when assisting.')
+                else
+                    offense.assist.engage = false
+					atc('ERROR: Cannot engage/attack to assist if using nolock.')
+                end
             end
 		elseif S{'nolock'}:contains(cmd) then
             local cmd2 = args[2] and args[2]:lower() or (offense.assist.nolock and 'off' or 'resume')
@@ -124,6 +129,20 @@ function processCommand(command,...)
 				else
 					offense.assist.nolock = false
 					atc('ERROR: Cannot use nolock/mob id to assist if engaging to attack.')
+				end
+            end
+        elseif S{'sametarget'}:contains(cmd) then
+            local cmd2 = args[2] and args[2]:lower() or (offense.assist.sametarget and 'off' or 'resume')
+            if S{'off','end','false','pause'}:contains(cmd2) then
+                offense.assist.sametarget = false
+                atc('Will now NOT switch to the SAME mob when engaged.')
+            else
+				if not (offense.assist.nolock) and offense.assist.engage then
+					offense.assist.sametarget = true
+					atc('Will now switch to the same mob when attack/engage to assist.')
+				else
+					offense.assist.sametarget = false
+					atc('ERROR: Cannot use sametarget to attack/engage if using [nolock] or not [attack/engage].')
 				end
             end
         else    --args[1] is guaranteed to have a value if this is reached
