@@ -87,7 +87,7 @@ end
 function offense.register_immunity(mob, debuff)
     offense.immunities[mob.name] = S(offense.immunities[mob.name]) or S{}
     offense.immunities[mob.name]:add(debuff.id)
-    --offense.immunities:save()
+    offense.immunities:save()
 end
 
 
