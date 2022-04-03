@@ -21,7 +21,7 @@ return {
         ['blind'] = 6,
         ['poison'] = 6,
         ['bind'] = 1,
-        ['stun'] = -1
+        ['stun'] = -1,
         ['break'] = 0,
         ['geohelix'] = 6,
         ['hydrohelix'] = 6,
