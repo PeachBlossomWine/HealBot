@@ -104,6 +104,9 @@ return {
         2,
         194
     },
+    ["Chest O'Plenty"] = S{
+        6
+    },
     ["Chirurgeon"] = S{
         2
     },
