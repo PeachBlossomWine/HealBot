@@ -1,4 +1,7 @@
 return {
+    ["Agon Halo"] = S{
+        194
+    },
     ["Air Circle"] = S{
         4,
         194

@@ -413,16 +413,29 @@ utils.get_player_id = _libs.lor.advutils.scached(_get_player_id)
 
 function utils.register_offensive_debuff(args, cancel)
     local argstr = table.concat(args,' ')
-    local spell_name = utils.formatActionName(argstr)
-    local spell = lor_res.action_for(spell_name)
-    if (spell ~= nil) then
-        if healer:can_use(spell) then
-            offense.maintain_debuff(spell, cancel)
-        else
-            atcfs(123,'Error: Unable to cast %s', spell.en)
+    local snames = argstr:split(',')
+    for index,sname in pairs(snames) do
+        if (tostring(index) ~= 'n') then
+            if sname:lower() == 'all' and cancel then
+                atcf(123,'Removing all debuffs on mobs.')
+                for k,v in pairs(offense.debuffs) do
+                    atcf('Removing debuff: ' ..offense.debuffs[k].spell.enn)
+                    offense.debuffs[k] = nil
+                end
+            else
+                local spell_name = utils.formatActionName(sname:trim())
+                local spell = lor_res.action_for(spell_name)
+                if (spell ~= nil) then
+                    if healer:can_use(spell) then
+                        offense.maintain_debuff(spell, cancel)
+                    else
+                        atcfs(123,'Error: Unable to cast %s', spell.en)
+                    end
+                else
+                    atcfs(123,'Error: Invalid spell name: %s', spell_name)
+                end
+            end
         end
-    else
-        atcfs(123,'Error: Invalid spell name: %s', spell_name)
     end
 end
 
