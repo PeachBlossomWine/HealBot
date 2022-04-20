@@ -1,9 +1,12 @@
 return {
     ["Agon Halo"] = S{
+        2,
         194
     },
     ["Air Circle"] = S{
         4,
+        6,
+        13,
         194
     },
     ["Amaranth Barrier"] = S{
@@ -17,6 +20,9 @@ return {
     },
     ["August"] = S{
         2
+    },
+    ["Aurix"] = S{
+        6
     },
     ["Azure-toothed Clawberry"] = S{
         2
@@ -117,7 +123,10 @@ return {
         7
     },
     ["Dark Circle"] = S{
-        2
+        2,
+        4,
+        6,
+        13
     },
     ["Despot"] = S{
         194
@@ -134,11 +143,18 @@ return {
         28
     },
     ["Earth Circle"] = S{
+        4,
+        6,
+        13,
         194
+    },
+    ["Evincing Idol"] = S{
+        6
     },
     ["Fire Circle"] = S{
         3,
         4,
+        6,
         13
     },
     ["Fu"] = S{
@@ -177,11 +193,18 @@ return {
     ["Hyoscya"] = S{
         28
     },
+    ["Ice Circle"] = S{
+        4,
+        6,
+        13
+    },
     ["Impish Golem"] = S{
+        6,
         28
     },
     ["Impish Statue"] = S{
         2,
+        6,
         28
     },
     ["Incarnation Icon"] = S{
@@ -217,6 +240,9 @@ return {
     },
     ["Light Circle"] = S{
         2,
+        4,
+        6,
+        13,
         194
     },
     ["Lithicthrower Image"] = S{
@@ -270,6 +296,9 @@ return {
         194
     },
     ["Thunder Circle"] = S{
+        4,
+        6,
+        13,
         194
     },
     ["Tinnin"] = S{
@@ -277,6 +306,11 @@ return {
     },
     ["Wasp Nest"] = S{
         194
+    },
+    ["Water Circle"] = S{
+        4,
+        6,
+        13
     },
     ["Wintry Cave"] = S{
         5,
