@@ -113,6 +113,9 @@ return {
         2,
         194
     },
+    ["Bugaboo"] = S{
+        2
+    },
     ["Chest O'Plenty"] = S{
         6
     },
@@ -121,6 +124,9 @@ return {
     },
     ["Cloud of Darkness"] = S{
         7
+    },
+    ["Corporal Tombstone"] = S{
+        2
     },
     ["Dark Circle"] = S{
         2,
@@ -303,6 +309,9 @@ return {
     },
     ["Tinnin"] = S{
         2
+    },
+    ["Volte's Luopan"] = S{
+        194
     },
     ["Wasp Nest"] = S{
         194
