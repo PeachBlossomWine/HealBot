@@ -24,6 +24,9 @@ return {
     ["Aurix"] = S{
         6
     },
+    ["Awoken Hrungnir"] = S{
+        2
+    },
     ["Azure-toothed Clawberry"] = S{
         2
     },
@@ -116,6 +119,9 @@ return {
     ["Bugaboo"] = S{
         2
     },
+    ["Cep-Kamuy"] = S{
+        2
+    },
     ["Chest O'Plenty"] = S{
         6
     },
@@ -192,6 +198,9 @@ return {
     },
     ["Gnarled Rampart"] = S{
         194
+    },
+    ["Heqet"] = S{
+        2
     },
     ["Hydra Bard"] = S{
         2
@@ -309,6 +318,75 @@ return {
     },
     ["Tinnin"] = S{
         2
+    },
+    ["Volte Beastmaster"] = S{
+        6
+    },
+    ["Volte Cleaver"] = S{
+        6
+    },
+    ["Volte Controller"] = S{
+        6
+    },
+    ["Volte Corsair"] = S{
+        6
+    },
+    ["Volte Dancer"] = S{
+        6
+    },
+    ["Volte Dragoon"] = S{
+        6
+    },
+    ["Volte Fistfighter"] = S{
+        6
+    },
+    ["Volte Highwind"] = S{
+        6
+    },
+    ["Volte Manipulator"] = S{
+        6
+    },
+    ["Volte Monk"] = S{
+        6
+    },
+    ["Volte Mononofu"] = S{
+        6
+    },
+    ["Volte Ninja"] = S{
+        6
+    },
+    ["Volte Puppetmaster"] = S{
+        6
+    },
+    ["Volte Ranger"] = S{
+        6
+    },
+    ["Volte Sailor"] = S{
+        6
+    },
+    ["Volte Samurai"] = S{
+        6
+    },
+    ["Volte Shinobi"] = S{
+        6
+    },
+    ["Volte Sniper"] = S{
+        6
+    },
+    ["Volte Summoner"] = S{
+        6
+    },
+    ["Volte Thief"] = S{
+        6
+    },
+    ["Volte Twirler"] = S{
+        6
+    },
+    ["Volte Vagabond"] = S{
+        6
+    },
+    ["Volte Warrior"] = S{
+        6
     },
     ["Volte's Luopan"] = S{
         194

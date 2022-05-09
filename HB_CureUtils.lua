@@ -18,7 +18,7 @@ cu.cure = {
     [3] = {id=3,    en='Cure III',          res=res.spells[3]},
     [4] = {id=4,    en='Cure IV',           res=res.spells[4]},
     [5] = {id=5,    en='Cure V',            res=res.spells[5]},
---    [6] = {id=6,    en='Cure VI',           res=res.spells[6]}
+    [6] = {id=6,    en='Cure VI',           res=res.spells[6]}
 }
 cu.curaga = {
     [1] = {id=7,    en='Curaga',            res=res.spells[7]},
