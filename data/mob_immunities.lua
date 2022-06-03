@@ -138,7 +138,8 @@ return {
         2,
         4,
         6,
-        13
+        13,
+        194
     },
     ["Despot"] = S{
         194
@@ -167,7 +168,8 @@ return {
         3,
         4,
         6,
-        13
+        13,
+        194
     },
     ["Fu"] = S{
         2,
@@ -176,6 +178,7 @@ return {
     },
     ["Gin"] = S{
         2,
+        6,
         10,
         28
     },
@@ -186,6 +189,7 @@ return {
     },
     ["Glassy Gorger"] = S{
         2,
+        6,
         10,
         28
     },
@@ -211,9 +215,11 @@ return {
     ["Ice Circle"] = S{
         4,
         6,
-        13
+        13,
+        194
     },
     ["Impish Golem"] = S{
+        2,
         6,
         28
     },
@@ -246,6 +252,9 @@ return {
     ["Knotted Root"] = S{
         194
     },
+    ["Kur"] = S{
+        2
+    },
     ["Kyou"] = S{
         10,
         28
@@ -261,6 +270,7 @@ return {
         194
     },
     ["Lithicthrower Image"] = S{
+        2,
         12
     },
     ["Monolithic Boulder"] = S{
@@ -288,6 +298,9 @@ return {
         7,
         10,
         28
+    },
+    ["Overseer's Tombstone"] = S{
+        6
     },
     ["Palloritus"] = S{
         28
@@ -397,7 +410,8 @@ return {
     ["Water Circle"] = S{
         4,
         6,
-        13
+        13,
+        194
     },
     ["Wintry Cave"] = S{
         5,
