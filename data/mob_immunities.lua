@@ -40,6 +40,13 @@ return {
     ["Blightslither"] = S{
         28
     },
+    ["Bozzetto Astrologer"] = S{
+        2
+    },
+    ["Bozzetto Bigwig"] = S{
+        2,
+        12
+    },
     ["Bozzetto Breadwinner"] = S{
         2,
         10
@@ -106,6 +113,9 @@ return {
     ["Bozzetto Swiftshooter"] = S{
         28
     },
+    ["Bozzetto Tormenter"] = S{
+        2
+    },
     ["Brimboil"] = S{
         28
     },
@@ -153,6 +163,9 @@ return {
     },
     ["Disjoined Galka"] = S{
         7,
+        28
+    },
+    ["Disjoined Mithra"] = S{
         28
     },
     ["Earth Circle"] = S{
@@ -316,6 +329,9 @@ return {
     },
     ["Rancibus"] = S{
         28
+    },
+    ["Sarama"] = S{
+        2
     },
     ["Sarameya"] = S{
         194

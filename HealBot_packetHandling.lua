@@ -192,6 +192,8 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
 			buffs.register_debuff(target, 'Silence', true, spell)
 		elseif ai.param == 728 then -- Tenebral Crush
 		    buffs.register_debuff(target, 'Defense Down', true, spell)
+        elseif ai.param == 692 then -- Sudden Lunge
+		    buffs.register_debuff(target, 'Stun', true, spell)
         end
     elseif messages_magicHealed:contains(tact.message_id) then
         local spell = res.spells[ai.param]
