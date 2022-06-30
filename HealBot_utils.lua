@@ -85,6 +85,15 @@ function processCommand(command,...)
     elseif S{'stop','end','off'}:contains(command) then
         hb.active = false
         printStatus()
+    elseif S{'aoe'}:contains(command) then
+        local cmd = args[1] and args[1]:lower() or (settings.aoe_na and 'off' or 'resume')
+        if S{'off','end','false','pause'}:contains(cmd) then
+            settings.aoe_na = false
+            atc('AOE is now OFF.')
+        else
+            settings.aoe_na = true
+			atc('AOE is ENABLED.')
+        end
     elseif S{'disable'}:contains(command) then
         if not validate(args, 1, 'Error: No argument specified for Disable') then return end
         disableCommand(args[1]:lower(), true)
@@ -645,11 +654,61 @@ function utils.getPlayerName(name)
     return nil
 end
 
+function num_strats()
+    local p = windower.ffxi.get_player()
+    local sch_level = 0
+    if p.main_job == "SCH" then
+        sch_level = p.main_job_level
+    elseif healer.sub_job == "SCH" then
+        sch_level = p.sub_job_level
+    end
+    if sch_level == 0 then return 0 end
+
+    if sch_level < 30 then return 1
+    elseif sch_level < 50 then return 2
+    elseif sch_level < 70 then return 3
+    elseif sch_level < 90 then return 4
+    elseif p.job_points.sch.jp_spent < 550 then return 5
+    else return 6 end
+end
+
+function healer_has_buffs(buffs)
+    local buff_list = windower.ffxi.get_player().buffs
+    for _,bid in pairs(buff_list) do
+        if buffs:contains(bid) then
+            return true
+        end
+    end
+    return false
+end
+
 function utils.isMonster(mob_index)
 	local mob_in_question = windower.ffxi.get_mob_by_index(mob_index)
 	if mob_in_question and mob_in_question.is_npc and mob_in_question.id%4096<=2046 and mob_in_question.valid_target then
 		return true
 	end
+end
+
+function utils.ready_to_use(action)
+    if light_strategems:contains(action.en) then
+        if not healer_has_buffs(light_arts) then return false end
+
+        local strats = num_strats()
+        if strats < 1 then return false end 
+
+        local rc = windower.ffxi.get_ability_recasts()[action.recast_id]
+        return rc <= (4 * 60) / strats * (strats - 1)
+    elseif dark_strategems:contains(action.en) then
+        if not healer_has_buffs(dark_arts) then return false end
+
+        local strats = num_strats()
+        if strats < 1 then return false end 
+
+        local rc = windower.ffxi.get_ability_recasts()[action.recast_id]
+        return rc <= (4 * 60) / strats * (strats - 1)
+    else
+        return healer:ready_to_use(action)
+    end
 end
 
 --==============================================================================

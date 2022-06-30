@@ -119,6 +119,10 @@ end
 
 
 function actions.take_action(player, partner, targ)
+    if hb.aoe_action then
+        healer:take_action(hb.aoe_action)
+        return
+    end
     buffs.checkOwnBuffs()
     local_queue_reset()
     local action = actions.get_defensive_action()
@@ -129,6 +133,14 @@ function actions.take_action(player, partner, targ)
             buffs.buffList[action.name][action.buff].attempted = os.clock()
         elseif (action.type == 'debuff') then
             buffs.debuffList[action.name][action.debuff.id].attempted = os.clock()
+        end
+        if action.action.accession then
+            local accession = lor_res.action_for("Accession")
+            if healer:can_use(accession) and utils.ready_to_use(accession) then
+                healer:take_action({action=accession}, healer.name)
+                hb.aoe_action = action
+                return true
+            end
         end
         healer:take_action(action)
 		return true

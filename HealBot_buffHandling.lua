@@ -115,10 +115,18 @@ function buffs.getDebuffQueue()
 				if (info.attempted == nil) or ((now - info.attempted) >= 3) then
 					local spell = res.spells:with('en', removalSpellName)
 					if healer:can_use(spell) and ffxi.target_is_valid(spell, targ) and id ~= 20 then
-						local ign = buffs.ignored_debuffs[debuff.en]
-						if not ((ign ~= nil) and ((ign.all == true) or ((ign[targ] ~= nil) and (ign[targ] == true)))) then
-							dbq:enqueue('debuff', spell, targ, debuff, ' ('..debuff.en..')')
-						end
+						 -- handle AoE
+                        if settings.aoe_na then
+                            local numAccessionRange = buffs.getRemovableDebuffCountAroundTarget(targ, 10, id)
+                            if numAccessionRange >= 3 and accessionable:contains(spell.en) then
+                                spell.accession = true
+                            end
+                        end
+                        -- handle ignores
+                        local ign = buffs.ignored_debuffs[debuff.en]
+                        if not ((ign ~= nil) and ((ign.all == true) or ((ign[targ] ~= nil) and (ign[targ] == true)))) then
+                            dbq:enqueue('debuff', spell, targ, debuff, ' ('..debuff.en..')')
+                        end
 					end
 				end
 			else
@@ -509,6 +517,31 @@ function buffs.resetBuffTimers(player, exclude)
             buffs.buffList[player][buffName]['landed'] = nil
         end
     end
+end
+
+function buffs.getRemovableDebuffCountAroundTarget(target, dist, debuff)
+    local c = 0
+    local party = ffxi.party_member_names()
+    local targetMob = windower.ffxi.get_mob_by_name(target)
+    for watchPerson,_ in pairs(hb.getMonitoredPlayers()) do
+        local mob = windower.ffxi.get_mob_by_name(watchPerson)
+        local dx = targetMob.x - mob.x
+        local dy = targetMob.y - mob.y
+        if buffs.debuffList[watchPerson] and buffs.debuffList[watchPerson][debuff] and dx^2+dy^2 < dist^2 then
+            -- watched person has debuff and is within distance.
+            c = c + 1
+        end
+    end
+    return c
+end
+
+function buffs.has_buffs(target, buff_list)
+    for id, info in pairs(buffs.debuffList[target]) do
+        if buff_list:contains(id) then
+            return true
+        end
+    end
+    return false
 end
 
 return buffs

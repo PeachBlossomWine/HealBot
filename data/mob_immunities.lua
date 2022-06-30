@@ -45,6 +45,7 @@ return {
     },
     ["Bozzetto Bigwig"] = S{
         2,
+        11,
         12
     },
     ["Bozzetto Breadwinner"] = S{

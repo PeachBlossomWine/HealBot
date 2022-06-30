@@ -55,5 +55,6 @@ return {
         },
     },
     ['deactivateIndoors'] = true,
-    ['activateOutdoors'] = false
+    ['activateOutdoors'] = false,
+    ['aoe_na'] = false,
 }
