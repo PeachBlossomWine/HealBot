@@ -349,7 +349,8 @@ return {
     },
     ["Overseer's Tombstone"] = S{
         2,
-        6
+        6,
+        28
     },
     ["Palloritus"] = S{
         28
