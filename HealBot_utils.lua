@@ -330,6 +330,7 @@ function processCommand(command,...)
     elseif S{'follow','f'}:contains(command) then
         local cmd = args[1] and args[1]:lower() or (settings.follow.active and 'off' or 'resume')
         if S{'off','end','false','pause','stop','exit'}:contains(cmd) then
+			atc('Follow is now off.')
             settings.follow.active = false
         elseif S{'distance', 'dist', 'd'}:contains(cmd) then
             local dist = tonumber(args[2])
