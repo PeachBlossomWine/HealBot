@@ -362,6 +362,9 @@ return {
     ["Hydra Bard"] = S{
         2
     },
+    ["Hydra Beastmaster"] = S{
+        2
+    },
     ["Hydra Dragoon"] = S{
         2
     },
@@ -489,6 +492,7 @@ return {
     },
     ["Ou"] = S{
         2,
+        6,
         7,
         10,
         28
