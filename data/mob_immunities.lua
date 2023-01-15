@@ -44,6 +44,9 @@ return {
     ["Awoken Freke"] = S{
         6
     },
+    ["Awoken Hakenmann"] = S{
+        2
+    },
     ["Awoken Hrungnir"] = S{
         2
     },
