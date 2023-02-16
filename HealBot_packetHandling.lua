@@ -69,38 +69,32 @@ function handle_incoming_chunk(id, data)
             end
             buffs.process_buff_packet(id, new_buffs_list)
         end
+	elseif id == 0x00E then
+		local packet = packets.parse('incoming', data)
+		local hp_status_flag = bit.band(packet['Mask'], 4) > 0
+		local name_flag = bit.band(packet['Mask'], 8) > 0
+		local depop_flag = bit.band(packet['Mask'], 32) > 0
+		local hidden_model = bit.band(packet['_unknown2'],2) > 0
+		local untargetable = bit.band(packet['_unknown2'],0x80000) > 0
+		
+		if (depop_flag or (hp_status_flag and (packet['HP %'] == 0 or packet['Status'] == 2 or packet['Status'] == 3))) and not hidden_model and not untargetable then
+			processDebuffMobs(packet['NPC'])
+		end
     end
 end
 
+function processDebuffMobs(mob_id)
+    local mob_ids = table.keys(offense.mobs)
+    if mob_ids and offense.mobs[mob_id] then
+		offense.mobs[mob_id] = nil
+    end
+end
 
 --[[
     Process the information that was parsed from an action message packet
     :param ai: parsed action info
     :param set monitored_ids: the IDs of PCs that are being monitored
 --]]
--- function processMessage(ai, monitored_ids)
-    -- if monitored_ids[ai.actor_id] or monitored_ids[ai.target_id] then
-        -- if not (messages_blacklist:contains(ai.message_id)) then
-            -- local target = windower.ffxi.get_mob_by_id(ai.target_id)
-            
-            -- if hb.modes.showPacketInfo then
-                -- local actor = windower.ffxi.get_mob_by_id(ai.actor_id)
-                -- local msg = res.action_messages[ai.message_id] or {en='???'}
-                -- local params = (', '):join(tostring(ai.param_1), tostring(ai.param_2), tostring(ai.param_3))
-                -- atcfs('[0x29]Message(%s): %s { %s } %s %s | %s', ai.message_id, actor.name, params, rarr, target.name, msg.en)
-            -- end
-            
-            -- if messages_wearOff:contains(ai.message_id) then
-                -- if enfeebling:contains(ai.param_1) then
-                    -- buffs.register_debuff(target, res.buffs[ai.param_1], false)
-                -- else
-                    -- buffs.register_buff(target, res.buffs[ai.param_1], false)
-                -- end
-            -- end
-        -- end--/message ID not on blacklist
-    -- end--/monitoring actor or target
--- end
-
 function processMessage(ai, monitored_ids)
     if monitored_ids[ai.actor_id] or monitored_ids[ai.target_id] then
         if not (messages_blacklist:contains(ai.message_id)) then

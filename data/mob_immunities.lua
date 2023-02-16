@@ -51,6 +51,7 @@ return {
         2
     },
     ["Awoken Mokkuralfi"] = S{
+        2,
         6
     },
     ["Awoken Vampyr Jarl"] = S{
@@ -67,6 +68,10 @@ return {
         194
     },
     ["Blightslither"] = S{
+        28
+    },
+    ["Bozzeto Warder"] = S{
+        2,
         28
     },
     ["Bozzetto Alexander"] = S{
@@ -165,6 +170,10 @@ return {
     ["Bozzetto Pilferer"] = S{
         2,
         10
+    },
+    ["Bozzetto Pishogue"] = S{
+        2,
+        28
     },
     ["Bozzetto Rascal"] = S{
         2,
@@ -416,6 +425,9 @@ return {
     },
     ["Ircinraq"] = S{
         28
+    },
+    ["Ironclad Harbinger"] = S{
+        2
     },
     ["Keeper of Heiligtum"] = S{
         2

@@ -157,9 +157,16 @@ function actions.take_action(player, partner, targ)
                     elseif offense.assist.engage and partner_engaged and self_engaged and (not player.target_locked) then
                         healer:send_cmd('input /lockon')
                         return true
+					--Debuff actions
                     else
-                        healer:take_action(actions.get_offensive_action(player, partner), '<t>')
-						return true
+						if offense.moblist.active and offense.moblist.mobs then 
+							healer:take_action(actions.get_offensive_action(player, partner), '<t>')
+							build_mob_debuff_list(player, offense.moblist.mobs)
+							return true
+						else
+							healer:take_action(actions.get_offensive_action(player, partner), '<t>')
+							return true
+						end
                     end
                 else   --Different targets
                     --Assist but not engage
@@ -167,9 +174,14 @@ function actions.take_action(player, partner, targ)
                         healer:send_cmd('input /as '..offense.assist.name)
                         return true
 					--Assist + Debuffs with mob id, requires gearswap
-                    elseif partner_engaged and partner.target_index and offense.assist.nolock then
-                        healer:take_action(actions.get_offensive_action(player, partner), windower.ffxi.get_mob_by_index(partner.target_index).id)
-                        return true
+                    elseif (partner_engaged and partner.target_index and offense.assist.nolock) or (offense.moblist.active and offense.moblist.mobs) then 
+						if offense.moblist.active and offense.moblist.mobs then 
+							healer:take_action(actions.get_offensive_action(player, partner), windower.ffxi.get_mob_by_index(partner.target_index).id)
+							build_mob_debuff_list(player, offense.moblist.mobs)
+						else
+							healer:take_action(actions.get_offensive_action(player, partner), windower.ffxi.get_mob_by_index(partner.target_index).id)
+							return true
+						end
                     --Switches target to same as partner
                     elseif partner_engaged and partner.target_index and self_engaged and not (offense.assist.nolock) and offense.assist.sametarget then
                         healer:switch_target(windower.ffxi.get_mob_by_index(partner.target_index).id)
@@ -177,14 +189,34 @@ function actions.take_action(player, partner, targ)
                     end
                 end
 			-- Debuff without having assist, either engaged or target locked.
-            elseif hb.modes.independent and (self_engaged or (player.target_locked and utils.isMonster(player.target_index))) then
-                healer:take_action(actions.get_offensive_action(player, nil), '<t>')
-                return true
+            elseif (hb.modes.independent and (self_engaged or (player.target_locked and utils.isMonster(player.target_index)))) or (offense.moblist.active and offense.moblist.mobs) then
+				if offense.moblist.active and offense.moblist.mobs then 
+					healer:take_action(actions.get_offensive_action(player, nil), '<t>')
+					build_mob_debuff_list(player, offense.moblist.mobs)
+					return true
+				else
+					healer:take_action(actions.get_offensive_action(player, nil), '<t>')
+					return true
+				end
+			
             end
-            offense.cleanup()
+		--Debuff mobs on list specified
+		elseif offense.moblist.active and offense.moblist.mobs then
+			build_mob_debuff_list(player, offense.moblist.mobs)
+			return true
         end
     end
 	return false
+end
+
+--Builder for list of mobs to debuff, accounting for same name mobs.
+function build_mob_debuff_list(player, moblist)
+	mob_names = T(windower.ffxi.get_mob_list()):filter(set.contains+{moblist})
+	for mob_index,mob_name in pairs(mob_names) do
+		if utils.isMonster(mob_index) then
+			healer:take_action(actions.get_offensive_action_list(player, mob_index), windower.ffxi.get_mob_by_index(mob_index).id)
+		end
+	end
 end
 
 --[[
@@ -194,7 +226,7 @@ end
 function actions.get_offensive_action(player, partner)
 	player = player or windower.ffxi.get_player()
 	local target = (partner and partner.target_index and windower.ffxi.get_mob_by_index(partner.target_index)) or windower.ffxi.get_mob_by_target()
-    if target == nil then return nil end
+    if target == nil or target.hpp == 0 then return nil end
     local action = {}
     
     --Prioritize debuffs over nukes/ws
@@ -248,6 +280,33 @@ function actions.get_offensive_action(player, partner)
         end
     end
     
+    atcd('get_offensive_action: no offensive actions to perform')
+	return nil
+end
+
+--exp, moblist singular other target
+function actions.get_offensive_action_list(player, mob_index)
+	player = player or windower.ffxi.get_player()
+	local target = (windower.ffxi.get_mob_by_index(mob_index))
+    if target == nil or target.hpp == 0 then return nil end
+
+    local action = {}
+    
+    --Prioritize debuffs over nukes/ws
+    local dbuffq = offense.getDebuffQueue(player, target)
+    while not dbuffq:empty() do
+        local dbact = dbuffq:pop()
+        local_queue_insert(dbact.action.en, target.name)
+        if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) and (player.vitals.mp >= dbact.action.mp_cost) then
+            action.db = dbact
+        end
+    end
+    
+    local_queue_disp()
+    if action.db ~= nil then
+        return action.db
+    end
+   
     atcd('get_offensive_action: no offensive actions to perform')
 	return nil
 end

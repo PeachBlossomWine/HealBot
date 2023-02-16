@@ -100,6 +100,45 @@ function processCommand(command,...)
     elseif S{'enable'}:contains(command) then
         if not validate(args, 1, 'Error: No argument specified for Enable') then return end 
         disableCommand(args[1]:lower(), false)
+	 elseif S{'moblist'}:contains(command) then
+		local cmd = args[1] and args[1]:lower() or (offense.moblist.active and 'off' or 'resume')
+		if S{'off','end','false','pause'}:contains(cmd) then
+			offense.moblist.active = false
+			atc('Moblist debuffing is now off.')
+		elseif S{'resume','on'}:contains(cmd) then
+			offense.moblist.active = true
+			atc('Moblist debuffing is now active.')
+		elseif cmd == 'add' and args[2] then
+			local mob_string = string.gsub(" "..(args[2]:lower()), "%W%l", string.upper):sub(2)
+			offense.moblist.mobs:add(mob_string)
+			atc('Added mob to debuff list: '..mob_string)
+		elseif cmd == 'remove' and args[2] then--and args[2]:contains(offense.moblist.mobs) then
+			local mob_string = string.gsub(" "..(args[2]:lower()), "%W%l", string.upper):sub(2)
+			if offense.moblist.mobs:contains(mob_string) then
+				offense.moblist.mobs:remove(mob_string)
+				atc('Removed mob to debuff list: '..mob_string)
+				local show_moblist_names = ''
+				for k,v in pairs(offense.moblist.mobs) do
+					show_moblist_names = show_moblist_names..'['..k..']'
+				end
+				atc('Debuff Mob List: '..show_moblist_names)
+			else
+				atc('Error: Mob not in current list')
+			end
+		elseif (cmd == 'show' or cmd == 'list') and offense.moblist.mobs then
+			local show_moblist_names = ''
+			for k,v in pairs(offense.moblist.mobs) do
+				show_moblist_names = show_moblist_names..'['..k..']'
+			end
+			atc('Debuff Mob List: '..show_moblist_names)
+		elseif cmd == 'clear' or cmd == 'reset' then
+			for k,_ in pairs(offense.moblist.mobs) do
+				offense.moblist.mobs:remove(k) 
+			end
+			atc('Debuff Mob List cleared')
+		else
+			atc(123,'Error: No parameter - [add / remove / on / off / clear] specified.')
+		end
     elseif S{'assist','as'}:contains(command) then
         local cmd = args[1] and args[1]:lower() or (offense.assist.active and 'off' or 'resume')
         if S{'off','end','false','pause'}:contains(cmd) then
