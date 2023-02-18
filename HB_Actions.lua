@@ -188,7 +188,7 @@ function actions.take_action(player, partner, targ)
                     end
                 end
 			-- Debuff without having assist, either engaged or target locked.
-            elseif (hb.modes.independent and (self_engaged or (player.target_locked and utils.isMonster(player.target_index)))) or (offense.moblist.active and offense.moblist.mobs) then
+            elseif (hb.modes.independent and (self_engaged or (player.target_locked and utils.isMonster(player.target_index)))) then
 				if not check_moblist_mob(player.target_index) then
 					healer:take_action(actions.get_offensive_action(player, nil), '<t>')
 				end
@@ -197,8 +197,9 @@ function actions.take_action(player, partner, targ)
 				end
 				return true
             end
+		end
 		--Debuff mobs on list specified
-		elseif offense.moblist.active and offense.moblist.mobs then
+		if offense.moblist.active and offense.moblist.mobs then
 			build_mob_debuff_list(player, offense.moblist.mobs)
 			return true
         end
