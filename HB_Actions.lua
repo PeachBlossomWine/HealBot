@@ -145,50 +145,51 @@ function actions.take_action(player, partner, targ)
         healer:take_action(action)
 		return true
     --Otherwise, there may be an offensive action
-    else                        
+    else             
+		--Targetting or Independant mode.
         if (targ ~= nil) or hb.modes.independent then
             local self_engaged = (player.status == 1)
-            if (targ ~= nil) then
-                local partner_engaged = (partner.status == 1)
-                if (player.target_index == partner.target_index) then
-                    if offense.assist.engage and partner_engaged and (not self_engaged) then
-                        healer:send_cmd('input /attack on')
-						return true
-                    elseif offense.assist.engage and partner_engaged and self_engaged and (not player.target_locked) then
-                        healer:send_cmd('input /lockon')
-                        return true
-					--Debuff actions with lock on target
-                    else
-						if not check_moblist_mob(player.target_index) then
-							healer:take_action(actions.get_offensive_action(player, partner), '<t>')
-						end
-						if offense.moblist.active and offense.moblist.mobs then 
-							build_mob_debuff_list(player, offense.moblist.mobs)
-						end
-						return true
-                    end
-                else   --Different targets
-                    --Assist but not engage
-                    if partner_engaged and (not self_engaged) and not (offense.assist.nolock) then
-                        healer:send_cmd('input /as '..offense.assist.name)
-                        return true
-					--Assist + Debuffs with mob id, requires gearswap
-                    elseif (partner_engaged and partner.target_index and offense.assist.nolock) or (offense.moblist.active and offense.moblist.mobs) then 
-						if (partner_engaged and partner.target_index and offense.assist.nolock) and not check_moblist_mob(partner.target_index) then
-							healer:take_action(actions.get_offensive_action(player, partner), windower.ffxi.get_mob_by_index(partner.target_index).id)
-						end
-						if offense.moblist.active and offense.moblist.mobs then 
-							build_mob_debuff_list(player, offense.moblist.mobs)
-						end
-						return true
-                    --Switches target to same as partner
-                    elseif partner_engaged and partner.target_index and self_engaged and not (offense.assist.nolock) and offense.assist.sametarget then
-                        healer:switch_target(windower.ffxi.get_mob_by_index(partner.target_index).id)
-                        return true
-                    end
-                end
+            --if (targ ~= nil) then
+			local partner_engaged = (partner.status == 1)
+			if (player.target_index == partner.target_index) then
+				if offense.assist.engage and partner_engaged and (not self_engaged) then
+					healer:send_cmd('input /attack on')
+					return true
+				elseif offense.assist.engage and partner_engaged and self_engaged and (not player.target_locked) then
+					healer:send_cmd('input /lockon')
+					return true
+				--Debuff actions with lock on target
+				else
+					if not check_moblist_mob(player.target_index) then
+						healer:take_action(actions.get_offensive_action(player, partner), '<t>')
+					end
+					if offense.moblist.active and offense.moblist.mobs then 
+						build_mob_debuff_list(player, offense.moblist.mobs)
+					end
+					return true
+				end
+			else   --Different targets
+				--Assist but not engage
+				if partner_engaged and (not self_engaged) and not (offense.assist.nolock) then
+					healer:send_cmd('input /as '..offense.assist.name)
+					return true
+				--Assist + Debuffs with mob id, requires gearswap
+				elseif (partner_engaged and partner.target_index and offense.assist.nolock) then -- or (offense.moblist.active and offense.moblist.mobs) then 
+					if not check_moblist_mob(partner.target_index) then -- (partner_engaged and partner.target_index and offense.assist.nolock) and
+						healer:take_action(actions.get_offensive_action(player, partner), windower.ffxi.get_mob_by_index(partner.target_index).id)
+					end
+					if offense.moblist.active and offense.moblist.mobs then 
+						build_mob_debuff_list(player, offense.moblist.mobs)
+					end
+					return true
+				--Switches target to same as partner
+				elseif partner_engaged and partner.target_index and self_engaged and not (offense.assist.nolock) and offense.assist.sametarget then
+					healer:switch_target(windower.ffxi.get_mob_by_index(partner.target_index).id)
+					return true
+				end
+			end
 			-- Debuff without having assist, either engaged or target locked.
-            elseif (hb.modes.independent and (self_engaged or (player.target_locked and utils.isMonster(player.target_index)))) then
+            if (hb.modes.independent and (self_engaged or (player.target_locked and utils.isMonster(player.target_index)))) then
 				if not check_moblist_mob(player.target_index) then
 					healer:take_action(actions.get_offensive_action(player, nil), '<t>')
 				end
