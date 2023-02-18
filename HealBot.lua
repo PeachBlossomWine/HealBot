@@ -1,7 +1,7 @@
 _addon.name = 'HB'
-_addon.author = 'Lorand'
+_addon.author = 'Lorand - Enhanced by PBW'
 _addon.command = 'hb'
-_addon.lastUpdate = '2018.05.22.0'
+_addon.lastUpdate = '2023.02.18.1'
 _addon.version = _addon.lastUpdate
 
 --[[
