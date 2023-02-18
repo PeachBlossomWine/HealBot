@@ -8,7 +8,7 @@
 local offense = {
     immunities=lor_settings.load('data/mob_immunities.lua'),
     assist={active = false, engage = false, nolock = false, sametarget = false,},
-	moblist={active = false, mobs=S{}},
+	moblist={active = false, mobs=S{}, debuffs={},},
     debuffs={}, ignored={}, mobs={}, dispel={},
     debuffing_active = true
 }
@@ -53,7 +53,7 @@ function offense.cleanup()
 end
 
 
-function offense.maintain_debuff(spell, cancel)
+function offense.maintain_debuff(spell, cancel, mob_debuff_list_flag)
     local nspell = utils.normalize_action(spell, 'spells')
     if not nspell then
         atcfs(123, '[offense.maintain_debuff] Invalid spell: %s', spell)
@@ -66,12 +66,24 @@ function offense.maintain_debuff(spell, cancel)
     end
     local debuff = res.buffs[debuff_id]
     if cancel then
-        offense.debuffs[debuff.id] = nil
+		if mob_debuff_list_flag then
+			offense.moblist.debuffs[debuff.id] = nil
+		else
+			offense.debuffs[debuff.id] = nil
+		end
     else
-        offense.debuffs[debuff.id] = {spell = nspell, res = debuff}
+		if mob_debuff_list_flag then
+			offense.moblist.debuffs[debuff.id] = {spell = nspell, res = debuff}
+		else
+			offense.debuffs[debuff.id] = {spell = nspell, res = debuff}
+		end
     end
     local msg = cancel and 'no longer ' or ''
-    atcf('Will %smaintain debuff on mobs: %s', msg, nspell.en)
+	if mob_debuff_list_flag then
+		atcf('Will %smaintain debuff on moblist: %s', msg, nspell.en)
+	else
+		atcf('Will %smaintain debuff on mobs: %s', msg, nspell.en)
+	end
 end
 
 
@@ -110,17 +122,27 @@ function offense.registerMob(mob, forget)
 end
 
 
-function offense.getDebuffQueue(player, target)
+function offense.getDebuffQueue(player, target, mob_debuff_list_flag)
     local dbq = ActionQueue.new()
     if offense.debuffing_active then
-        offense.mobs[target.id] = offense.mobs[target.id] or {}
-        for id,debuff in pairs(offense.debuffs) do
-            if offense.mobs[target.id][id] == nil then
-                if not (offense.immunities[target.name] and offense.immunities[target.name][id]) then
-                    dbq:enqueue('debuff_mob', debuff.spell, target.name, debuff.res, (' (%s)'):format(debuff.spell.en))
-                end
-            end
-        end
+		offense.mobs[target.id] = offense.mobs[target.id] or {}
+		if mob_debuff_list_flag and next(offense.moblist.debuffs) then -- Use alternative debuff list for moblist
+			for id,debuff in pairs(offense.moblist.debuffs) do
+				if offense.mobs[target.id][id] == nil then
+					if not (offense.immunities[target.name] and offense.immunities[target.name][id]) then
+						dbq:enqueue('debuff_mob', debuff.spell, target.name, debuff.res, (' (%s)'):format(debuff.spell.en))
+					end
+				end
+			end
+		else
+			for id,debuff in pairs(offense.debuffs) do
+				if offense.mobs[target.id][id] == nil then
+					if not (offense.immunities[target.name] and offense.immunities[target.name][id]) then
+						dbq:enqueue('debuff_mob', debuff.spell, target.name, debuff.res, (' (%s)'):format(debuff.spell.en))
+					end
+				end
+			end
+		end
     end
     return dbq:getQueue()
 end

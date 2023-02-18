@@ -12,7 +12,6 @@ local lor_res = _libs.lor.resources
 local lc_res = lor_res.lc_res
 local ffxi = _libs.lor.ffxi
 
-
 function utils.normalize_str(str)
     return str:lower():gsub(' ', '_'):gsub('%.', '')
 end
@@ -112,7 +111,7 @@ function processCommand(command,...)
 			local mob_string = string.gsub(" "..(args[2]:lower()), "%W%l", string.upper):sub(2)
 			offense.moblist.mobs:add(mob_string)
 			atc('Added mob to debuff list: '..mob_string)
-		elseif cmd == 'remove' and args[2] then--and args[2]:contains(offense.moblist.mobs) then
+		elseif cmd == 'remove' and args[2] then
 			local mob_string = string.gsub(" "..(args[2]:lower()), "%W%l", string.upper):sub(2)
 			if offense.moblist.mobs:contains(mob_string) then
 				offense.moblist.mobs:remove(mob_string)
@@ -132,9 +131,10 @@ function processCommand(command,...)
 			end
 			atc('Debuff Mob List: '..show_moblist_names)
 		elseif cmd == 'clear' or cmd == 'reset' then
-			for k,_ in pairs(offense.moblist.mobs) do
-				offense.moblist.mobs:remove(k) 
-			end
+			--for k,_ in pairs(offense.moblist.mobs) do
+				--offense.moblist.mobs:remove(k) 
+			--end
+			offense.moblist.mobs:clear()
 			atc('Debuff Mob List cleared')
 		else
 			atc(123,'Error: No parameter - [add / remove / on / off / clear] specified.')
@@ -257,12 +257,32 @@ function processCommand(command,...)
         elseif S{'rm','remove'}:contains(cmd) then
             utils.register_offensive_debuff(table.slice(args, 2), true)
         elseif S{'ls','list'}:contains(cmd) then
-            pprint_tiered(offense.debuffs)
+			local debuff_print = ''
+			for k,v in pairs(offense.debuffs) do
+				debuff_print = debuff_print..offense.debuffs[k].spell.en..','
+			end
+			atc('Debuffs: '..debuff_print)
         else
             if S{'use','set'}:contains(cmd) then
                 table.remove(args, 1)
             end
             utils.register_offensive_debuff(args, false)
+        end
+	elseif S{'mldebuff', 'mldb'}:contains(command) then
+		local cmd = args[1] and args[1]:lower() 
+        if S{'rm','remove'}:contains(cmd) then
+            utils.register_offensive_debuff(table.slice(args, 2), true, true)
+        elseif S{'ls','list'}:contains(cmd) then
+            local debuff_print = ''
+			for k,v in pairs(offense.moblist.debuffs) do
+				debuff_print = debuff_print..offense.moblist.debuffs[k].spell.en..','
+			end
+			atc('Debuffs for Moblist: '..debuff_print)
+        else
+            if S{'use','set'}:contains(cmd) then
+                table.remove(args, 1)
+            end
+            utils.register_offensive_debuff(args, false, true)
         end
     elseif command == 'mincure' then
         if not validate(args, 1, 'Error: No argument specified for minCure') then return end
@@ -460,23 +480,35 @@ end
 utils.get_player_id = _libs.lor.advutils.scached(_get_player_id)
 
 
-function utils.register_offensive_debuff(args, cancel)
+function utils.register_offensive_debuff(args, cancel, mob_debuff_list_flag)
     local argstr = table.concat(args,' ')
     local snames = argstr:split(',')
     for index,sname in pairs(snames) do
         if (tostring(index) ~= 'n') then
             if sname:lower() == 'all' and cancel then
-                atcf(123,'Removing all debuffs on mobs.')
-                for k,v in pairs(offense.debuffs) do
-                    atcf('Removing debuff: ' ..offense.debuffs[k].spell.enn)
-                    offense.debuffs[k] = nil
-                end
+				if mob_debuff_list_flag then
+				atcf(123,'Removing all debuffs from moblist debuff list.')
+					for k,v in pairs(offense.moblist.debuffs) do
+						atcf('Removing debuff: ' ..offense.moblist.debuffs[k].spell.enn)
+						offense.moblist.debuffs[k] = nil
+					end
+				else
+					atcf(123,'Removing all debuffs on mobs.')
+					for k,v in pairs(offense.debuffs) do
+						atcf('Removing debuff: ' ..offense.debuffs[k].spell.enn)
+						offense.debuffs[k] = nil
+					end
+				end
             else
                 local spell_name = utils.formatActionName(sname:trim())
                 local spell = lor_res.action_for(spell_name)
                 if (spell ~= nil) then
                     if healer:can_use(spell) then
-                        offense.maintain_debuff(spell, cancel)
+						if mob_debuff_list_flag then
+							offense.maintain_debuff(spell, cancel, true)
+						else
+							offense.maintain_debuff(spell, cancel)
+						end
                     else
                         atcfs(123,'Error: Unable to cast %s', spell.en)
                     end
