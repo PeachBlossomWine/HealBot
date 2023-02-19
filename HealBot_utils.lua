@@ -108,11 +108,11 @@ function processCommand(command,...)
 			offense.moblist.active = true
 			atc('Moblist debuffing is now active.')
 		elseif cmd == 'add' and args[2] then
-			local mob_string = string.gsub(" "..(args[2]:lower()), "%W%l", string.upper):sub(2)
+			local mob_string = args[2]:lower():capitalize()
 			offense.moblist.mobs:add(mob_string)
 			atc('Added mob to debuff list: '..mob_string)
 		elseif cmd == 'remove' and args[2] then
-			local mob_string = string.gsub(" "..(args[2]:lower()), "%W%l", string.upper):sub(2)
+			local mob_string = args[2]:lower():capitalize()
 			if offense.moblist.mobs:contains(mob_string) then
 				offense.moblist.mobs:remove(mob_string)
 				atc('Removed mob to debuff list: '..mob_string)
@@ -131,9 +131,6 @@ function processCommand(command,...)
 			end
 			atc('Debuff Mob List: '..show_moblist_names)
 		elseif cmd == 'clear' or cmd == 'reset' then
-			--for k,_ in pairs(offense.moblist.mobs) do
-				--offense.moblist.mobs:remove(k) 
-			--end
 			offense.moblist.mobs:clear()
 			atc('Debuff Mob List cleared')
 		else
