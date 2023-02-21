@@ -12,6 +12,26 @@ local messages_completing = _libs.lor.packets.messages_completing
 local get_action_info = _libs.lor.packets.get_action_info
 local parse_char_update = _libs.lor.packets.parse_char_update
 
+-- Credit to partyhints
+function set_registry(id, job_id)
+    if not id then return false end
+    hb.job_registry[id] = hb.job_registry[id] or 'NON'
+    job_id = job_id or 0
+    if res.jobs[job_id].ens == 'NON' and hb.job_registry[id] and not S{'NON', 'UNK'}:contains(hb.job_registry[id]) then 
+        return false
+    end
+    hb.job_registry[id] = res.jobs[job_id].ens
+    return true
+end
+
+-- Credit to partyhints
+function get_registry(id)
+    if hb.job_registry[id] then
+        return hb.job_registry[id]
+    else
+        return 'UNK'
+    end
+end
 
 --[[
     Analyze the data contained in incoming packets for useful info.
@@ -36,22 +56,17 @@ function handle_incoming_chunk(id, data)
         end
     elseif (id == 0x037) then
         healer.indi.info = parse_char_update(data)
-    elseif (id == 0x0DD) then           --Party member update
+    elseif (id == 0x0DD or id == 0x0DF or id == 0x0C8) then           --Party member update
         local parsed = packets.parse('incoming', data)
-        local pmName = parsed.Name
-        local pmJobId = parsed['Main job']
-        local pmSubJobId = parsed['Sub job']
-        hb.partyMemberInfo[pmName] = hb.partyMemberInfo[pmName] or {}
-        hb.partyMemberInfo[pmName].job = res.jobs[pmJobId].ens
-        hb.partyMemberInfo[pmName].subjob = res.jobs[pmSubJobId].ens
-        --atc('Caught party member update packet for '..parsed.Name..' | '..parsed.ID)
-    elseif (id == 0x0DF) then
-        local player = windower.ffxi.get_player()
-        local parsed = packets.parse('incoming', data)
-        if (player ~= nil) and (player.id ~= parsed.ID) then
-            local person = windower.ffxi.get_mob_by_id(parsed.ID)
-            --atc('Caught char update packet for '..person.name)
-        end
+		if parsed then
+			local playerId = parsed['ID']
+			local indexx = parsed['Index']
+			local job = parsed['Main job']
+			
+			if playerId and playerId > 0 then
+				set_registry(parsed['ID'], parsed['Main job'])
+			end
+		end
 	elseif id == 0x076 then
         for  k = 0, 4 do
             local id = data:unpack('I', k*48+5)
@@ -89,6 +104,8 @@ function processDebuffMobs(mob_id)
 		offense.mobs[mob_id] = nil
     end
 end
+
+
 
 --[[
     Process the information that was parsed from an action message packet

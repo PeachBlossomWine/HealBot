@@ -1,7 +1,7 @@
 _addon.name = 'HB'
 _addon.author = 'Lorand - Enhanced by PBW'
 _addon.command = 'hb'
-_addon.lastUpdate = '2023.02.18.1'
+_addon.lastUpdate = '2023.02.20.2'
 _addon.version = _addon.lastUpdate
 
 --[[
@@ -27,7 +27,7 @@ lor_settings = _libs.lor.settings
 serialua = _libs.lor.serialization
 
 hb = {
-    active = false, configs_loaded = false, partyMemberInfo = {}, ignoreList = S{}, extraWatchList = S{},
+    active = false, configs_loaded = false, partyMemberInfo = {}, ignoreList = S{}, extraWatchList = S{}, job_registry= T{},
     modes = {['showPacketInfo'] = false, ['debug'] = false, ['mob_debug'] = false, ['independent'] = false},
     _events = {}, txts = {}, config = {}
 }

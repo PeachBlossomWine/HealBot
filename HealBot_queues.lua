@@ -144,10 +144,17 @@ local function _getPlayerPriority(tname)
     if player_mob.spawn_type == 14 then     --Trust
         return prios.default + 1
     end
-    local pmInfo = hb.partyMemberInfo[tname]
+    
+	local pmInfo
+	for k, v in pairs(windower.ffxi.get_party()) do
+		if type(v) == 'table' and v.mob ~= nil and v.name:lower() == tname:lower() then
+			pmInfo = get_registry(v.mob.id):lower()
+		end
+	end
+	
     local jobprio = prios.default
     if pmInfo ~= nil then
-        jobprio = prios.jobs[pmInfo.job] or prios.jobs[pmInfo.job:lower()] or jobprio
+        jobprio = prios.jobs[pmInfo] or prios.jobs[pmInfo:lower()] or jobprio
     end
     local playerprio = prios.players[tname] or prios.players[tname:lower()] or prios.default
     return math.min(jobprio, playerprio)

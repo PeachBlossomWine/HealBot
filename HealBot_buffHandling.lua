@@ -143,11 +143,30 @@ end -- function
 --==============================================================================
 
 
-function buffs.registerNewBuff(args, use)
+function buffs.registerNewBuff(args, use, job_name)
     local targetName = args[1] and args[1] or ''
     table.remove(args, 1)
     local arg_string = table.concat(args,' ')
     local snames = arg_string:split(',')
+	
+	local found_job = false
+	
+	if job_name then
+		for k, v in pairs(windower.ffxi.get_party()) do
+			if type(v) == 'table' and v.mob ~= nil and v.mob.in_party then --and v.name ~= windower.ffxi.get_player().name
+				if get_registry(v.mob.id):lower() == targetName:lower() then
+					found_job = true
+					table.insert(args,1,v.name)
+					buffs.registerNewBuff(args, use)
+				end
+			end
+		end
+		if not found_job then
+			atc('Unable to find buff job target: '..targetName:upper())
+		end
+		return
+	end
+	
     for index,sname in pairs(snames) do
         if (tostring(index) ~= 'n') then
             buffs.registerNewBuffName(targetName, sname:trim(), use)
@@ -166,7 +185,7 @@ function buffs.registerNewBuffName(targetName, bname, use)
         atc('Error: Unable to parse spell name')
         return
     end
-    
+	
     local me = windower.ffxi.get_player()
     local target = ffxi.get_target(targetName)
     if target == nil and targetName:lower() ~= 'everyone' then
@@ -178,6 +197,7 @@ function buffs.registerNewBuffName(targetName, bname, use)
 		atc('Unable to cast or invalid: '..spellName)
 		return
     end
+	
 	-- Song override, no check targets.
     if target and action and not ffxi.target_is_valid(action, target) and targetName:lower() ~= 'everyone' and bname:lower() ~= 'all' then
 		if not(song_map:contains(spellName)) then

@@ -374,6 +374,10 @@ function processCommand(command,...)
         buffs.registerNewBuff(args, true)
     elseif S{'cancelbuff','nobuff'}:contains(command) then
         buffs.registerNewBuff(args, false)
+	elseif command == 'buffjob' then
+	    buffs.registerNewBuff(args, true, true)
+	elseif S{'cancelbuffjob','nobuffjob'}:contains(command) then
+        buffs.registerNewBuff(args, false, true)
     elseif S{'bufflist','bl'}:contains(command) then
         if not validate(args, 1, 'Error: No argument specified for BuffList') then return end
         utils.apply_bufflist(args)
