@@ -14,7 +14,16 @@ local offense = {
 }
 
 
-function offense.register_assistee(assistee_name)
+function offense.register_assistee(assistee_name, job_name_flag)
+	if job_name_flag then
+		if utils.getPlayerNameFromJob(assistee_name) then
+			offense.register_assistee(utils.getPlayerNameFromJob(assistee_name), false)
+		else
+			atc('Unable to find JOB target: '..assistee_name:upper())
+		end
+		return
+	end
+
     local pname = utils.getPlayerName(assistee_name)
     if (pname ~= nil) then
         offense.assist.name = pname

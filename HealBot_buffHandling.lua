@@ -143,26 +143,18 @@ end -- function
 --==============================================================================
 
 
-function buffs.registerNewBuff(args, use, job_name)
+function buffs.registerNewBuff(args, use, job_name_flag)
     local targetName = args[1] and args[1] or ''
     table.remove(args, 1)
     local arg_string = table.concat(args,' ')
     local snames = arg_string:split(',')
 	
-	local found_job = false
-	
-	if job_name then
-		for k, v in pairs(windower.ffxi.get_party()) do
-			if type(v) == 'table' and v.mob ~= nil and v.mob.in_party then --and v.name ~= windower.ffxi.get_player().name
-				if get_registry(v.mob.id):lower() == targetName:lower() then
-					found_job = true
-					table.insert(args,1,v.name)
-					buffs.registerNewBuff(args, use)
-				end
-			end
-		end
-		if not found_job then
-			atc('Unable to find buff job target: '..targetName:upper())
+	if job_name_flag then
+		if utils.getPlayerNameFromJob(targetName) then
+			table.insert(args,1,utils.getPlayerNameFromJob(targetName))
+			buffs.registerNewBuff(args, use)
+		else
+			atc('Unable to find buff JOB target: '..targetName:upper())
 		end
 		return
 	end

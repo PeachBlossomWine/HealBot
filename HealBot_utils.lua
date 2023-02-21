@@ -190,6 +190,12 @@ function processCommand(command,...)
 					atc('ERROR: Cannot use sametarget to attack/engage if using [nolock] or not [attack/engage].')
 				end
             end
+		elseif S{'job','j'}:contains(cmd) then
+			if args[2] then
+				offense.register_assistee(args[2],true)
+			else
+				atc('ERROR: No JOB specified.')
+			end
         else    --args[1] is guaranteed to have a value if this is reached
             offense.register_assistee(args[1])
         end
@@ -372,10 +378,10 @@ function processCommand(command,...)
         end
     elseif command == 'buff' then
         buffs.registerNewBuff(args, true)
-    elseif S{'cancelbuff','nobuff'}:contains(command) then
-        buffs.registerNewBuff(args, false)
 	elseif command == 'buffjob' then
 	    buffs.registerNewBuff(args, true, true)
+    elseif S{'cancelbuff','nobuff'}:contains(command) then
+        buffs.registerNewBuff(args, false)
 	elseif S{'cancelbuffjob','nobuffjob'}:contains(command) then
         buffs.registerNewBuff(args, false, true)
     elseif S{'bufflist','bl'}:contains(command) then
@@ -406,6 +412,15 @@ function processCommand(command,...)
                 atc('Now following '..settings.follow.target..'.')
             else
                 atc(123,'Error: Unable to resume follow - no target set')
+            end
+		elseif S{'job', 'j'}:contains(cmd) then
+		    local pname = utils.getPlayerNameFromJob(args[2])
+			if (pname ~= nil) then
+                settings.follow.target = pname
+                settings.follow.active = true
+                atc('Now following '..settings.follow.target..'.')
+            else
+                atc(123,'Error: Invalid JOB provided as a follow target: '..tostring(args[2]))
             end
         else    --args[1] is guaranteed to have a value if this is reached
             local pname = utils.getPlayerName(args[1])
@@ -723,6 +738,21 @@ function utils.getPlayerName(name)
     local target = ffxi.get_target(name)
     if target ~= nil then
         return target.name
+    end
+    return nil
+end
+
+function utils.getPlayerNameFromJob(job)
+	local target
+	for k, v in pairs(windower.ffxi.get_party()) do
+		if type(v) == 'table' and v.mob ~= nil and v.mob.in_party then
+			if ((job:lower() == 'tank' and S{'PLD','RUN'}:contains(get_registry(v.mob.id))) or (job:lower() ~= 'tank' and get_registry(v.mob.id):lower() == job:lower())) then
+				target = v.name
+			end
+		end
+	end
+    if target ~= nil then
+        return target
     end
     return nil
 end

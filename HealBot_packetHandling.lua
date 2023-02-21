@@ -27,7 +27,7 @@ end
 -- Credit to partyhints
 function get_registry(id)
     if hb.job_registry[id] then
-        return hb.job_registry[id]
+		return hb.job_registry[id]
     else
         return 'UNK'
     end
