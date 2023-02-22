@@ -1,7 +1,7 @@
 _addon.name = 'HB'
 _addon.author = 'Lorand - Enhanced by PBW'
 _addon.command = 'hb'
-_addon.lastUpdate = '2023.02.21.1'
+_addon.lastUpdate = '2023.02.21.2'
 _addon.version = _addon.lastUpdate
 
 --[[
@@ -404,7 +404,13 @@ local function _getMonitoredPlayers()
     for extraName,_ in pairs(hb.extraWatchList) do
         hb.addPlayer(targets, windower.ffxi.get_mob_by_name(extraName))
     end
-    hb.txts.montoredBox:text(getPrintable(targets, true))
+
+	local display_targets = S{}
+	for k,v in pairs(targets) do
+		display_targets:add(string.format("%-10s - %3s", v.name, get_registry(v.mob.id)))
+	end
+	
+    hb.txts.montoredBox:text(getPrintable(display_targets, true))
     hb.txts.montoredBox:visible(settings.textBoxes.montoredBox.visible)
     return targets
 end
