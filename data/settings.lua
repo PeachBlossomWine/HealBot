@@ -36,7 +36,7 @@ return {
             ['font'] = 'consolas',
             ['size'] = 10,
             ['visible'] = true,
-            ['x'] = -200,
+            ['x'] = -180,
             ['y'] = 425
         },
         ['moveInfo'] = {

@@ -407,7 +407,9 @@ local function _getMonitoredPlayers()
 
 	local display_targets = S{}
 	for k,v in pairs(targets) do
-		display_targets:add(string.format("%-10s - %3s", v.name, get_registry(v.mob.id)))
+		if v.mob ~= nil then
+			display_targets:add(string.format("%-10s - %3s", v.name, get_registry(v.mob.id)))
+		end
 	end
 	
     hb.txts.montoredBox:text(getPrintable(display_targets, true))
