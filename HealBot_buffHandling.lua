@@ -245,15 +245,25 @@ function buffs.registerNewBuffName(targetName, bname, use)
     end
 end
 
-
 function buffs.registerIgnoreDebuff(args, ignore)
-    local targetName = args[1] and args[1] or ''
+	local targetName = args[1] and args[1] or ''
     table.remove(args, 1)
     local arg_string = table.concat(args,' ')
-    
+	local snames = arg_string:split(',')
+	
+	for index,sname in pairs(snames) do
+        if (tostring(index) ~= 'n') then
+            buffs.registerIgnoreDebuffName(targetName, sname:trim(), ignore)
+        end
+    end
+
+end
+
+function buffs.registerIgnoreDebuffName(targetName, bname, ignore)
+     
     local msg = ignore and 'ignore' or 'stop ignoring'
     
-    local dbname = debuff_casemap[arg_string:lower()]
+    local dbname = debuff_casemap[bname:lower()]
     if (dbname ~= nil) then
         if S{'always','everyone','all'}:contains(targetName) then
             buffs.ignored_debuffs[dbname] = {['all']=ignore}
@@ -274,7 +284,7 @@ function buffs.registerIgnoreDebuff(args, ignore)
             end
         end
     else
-        atc(123,'Error: Invalid debuff name to '..msg..': '..arg_string)
+        atc(123,'Error: Invalid debuff name to '..msg..': '..bname)
     end
 end
 

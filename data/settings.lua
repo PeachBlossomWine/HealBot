@@ -29,15 +29,15 @@ return {
             ['font'] = 'consolas',
             ['size'] = 10,
             ['visible'] = true,
-            ['x'] = -565,
+            ['x'] = 1200,
             ['y'] = 125,
         },
         ['montoredBox'] = {
             ['font'] = 'consolas',
             ['size'] = 10,
             ['visible'] = true,
-            ['x'] = -180,
-            ['y'] = 425
+            ['x'] = 1400,
+            ['y'] = 420
         },
         ['moveInfo'] = {
 			['font'] = 'consolas',

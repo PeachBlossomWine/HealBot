@@ -969,9 +969,11 @@ function utils.update_settings(loaded)
 end
 
 
---bard_status = texts.new(display_box(),settings.box,settings)
 function utils.refresh_textBoxes()
 	local OurReso = windower.get_windower_settings()
+	local X_action_queue = OurReso.x_res - 725
+	local X_mon_box = OurReso.x_res - 305
+
     local boxes = {'actionQueue','moveInfo','actionInfo','montoredBox'}
     for _,box in pairs(boxes) do
         local bs = settings.textBoxes[box]
@@ -979,36 +981,12 @@ function utils.refresh_textBoxes()
 		if (box == 'actionInfo' or box == 'moveInfo') then
 			bst = {pos={x=bs.x, y=bs.y}, bg={alpha=125, blue=0, green=0,red=0,visible=true}, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
 		elseif box == 'montoredBox' then
-			if (OurReso.x_res == 1600) then
-				bst = {pos={x=bs.x, y=bs.y}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
-			elseif (OurReso.x_res == 1400) then
-				bst = {pos={x=-190, y=420}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
-			elseif OurReso.x_res == 1275 then
-				bst = {pos={x=-235, y=420}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
-			elseif OurReso.x_res == 1000 then
-				bst = {pos={x=bs.x, y=bs.y}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
-			elseif OurReso.x_res == 900 then
-				bst = {pos={x=bs.x, y=bs.y}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
-			else
-				bst = {pos={x=bs.x, y=bs.y}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
-			end
+			bst = {pos={x=X_mon_box, y=bs.y}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
 		elseif box == 'actionQueue' then
-			if (OurReso.x_res == 1600) then
-				bst = {pos={x=bs.x, y=bs.y}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
-			elseif (OurReso.x_res == 1400) then
-				bst = {pos={x=-155, y=120}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
-			elseif OurReso.x_res == 1275 then
-				bst = {pos={x=-140, y=125}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
-			elseif OurReso.x_res == 1000 then
-				bst = {pos={x=bs.x, y=bs.y}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
-			elseif OurReso.x_res == 900 then
-				bst = {pos={x=bs.x, y=bs.y}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
-			else
-				bst = {pos={x=bs.x, y=bs.y}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
-			end
+			bst = {pos={x=X_action_queue, y=bs.y}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
 		end
 	
-        bst.flags = {right=(bs.x < 0), bottom=(bs.y < 0)}
+        --bst.flags = {right=(bs.x < 0), bottom=(bs.y < 0)}
         if (bs.font ~= nil) then
             bst.text = {font=bs.font}
         end
