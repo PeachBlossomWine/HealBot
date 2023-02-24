@@ -4,20 +4,6 @@ _addon.command = 'hb'
 _addon.lastUpdate = '2023.02.23.1'
 _addon.version = _addon.lastUpdate
 
---[[
-TODO:
-- !!Fix: Make follow cancellable when in other zones
-- Global action queue instead of rebuilding every cycle
-- Action sets that must be performed together (e.g., Snake Eye, then Double Up)
-- GEO
-    - debuff support
-    - clean up logic/code
-- COR
-    - Rolled # detection
-- If not in same pt as other instance, send pt list via IPC
-- If in alliance, automatically watch other healers?
---]]
-
 require('luau')
 require('lor/lor_utils')
 _libs.lor.include_addon_name = true

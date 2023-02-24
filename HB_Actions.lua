@@ -143,8 +143,13 @@ function actions.take_action(player, partner, targ)
             end
         end
         healer:take_action(action)
+		--Debuffs with moblist specified, has same priority as healing or buffing - will alternate.
+		if offense.moblist.active and offense.moblist.mobs then
+			build_mob_debuff_list(player, offense.moblist.mobs)
+			return true
+		end
 		return true
-    --Otherwise, there may be an offensive action
+    --Otherwise, there may be an offensive action(Debuffing or engage to attack)
     else             
 		--Targetting or Independant mode.
         if (targ ~= nil) or hb.modes.independent then
@@ -204,7 +209,7 @@ function actions.take_action(player, partner, targ)
 				return true
             end
 		end
-		--Debuff mobs on list specified
+		--Debuffs with mobslist specified within debuffing block
 		if offense.moblist.active and offense.moblist.mobs then
 			build_mob_debuff_list(player, offense.moblist.mobs)
 			return true
