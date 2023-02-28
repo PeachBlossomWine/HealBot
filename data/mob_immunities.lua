@@ -362,6 +362,9 @@ return {
     ["Gnarled Rampart"] = S{
         194
     },
+    ["Gogmagog"] = S{
+        7
+    },
     ["Gorgimera"] = S{
         2
     },
@@ -428,6 +431,9 @@ return {
         28
     },
     ["Ironclad Harbinger"] = S{
+        2
+    },
+    ["Isgebind"] = S{
         2
     },
     ["Keeper of Heiligtum"] = S{
