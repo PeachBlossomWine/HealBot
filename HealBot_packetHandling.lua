@@ -68,7 +68,7 @@ function handle_incoming_chunk(id, data)
 				set_registry(parsed['ID'], parsed['Main job'])
 			end
 		end
-	elseif id == 0x063 then -- Player buffs for Aura detection
+	elseif id == 0x063 then -- Player buffs for Aura detection : Credit: elii, bp4
 		local parsed = packets.parse('incoming', data)
 		for i=1, 32 do
 			local buff = tonumber(parsed[string.format('Buffs %s', i)]) or 0
@@ -77,10 +77,6 @@ function handle_incoming_chunk(id, data)
 			if buff > 0 and buff ~= 255 and enfeebling:contains(buff) then
 				if math.ceil(1009810800 + (time / 60) + 0x100000000 / 60 * 9) - os.time() == 5 then
 					buffs.register_debuff_aura_status(packet_player.name, buff, true)
-				else
-					-- log('not aura but will register as aura')
-					-- log(buff)
-					-- buffs.register_debuff_aura_status(packet_player.name, buff, true)
 				end
 			end
 		end

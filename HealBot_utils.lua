@@ -77,7 +77,9 @@ function processCommand(command,...)
     elseif command == 'refresh' then
 	    utils.load_configs()
 	elseif command == 'show' then
+		atc('Debufflist:')
 		table.vprint(buffs.debuffList)
+		atc('Aura Table:')
 		table.vprint(buffs.auras)
     elseif S{'start','on'}:contains(command) then
         hb.activate()

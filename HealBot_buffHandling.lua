@@ -434,7 +434,6 @@ function buffs.register_debuff(target, debuff, gain, action)
         atcd(('Detected %sdebuff: %s %s %s [%s]'):format(msg, debuff.en, rarr, tname, tid))
     else
         debuff_tbl[debuff.id] = nil
-		--buffs.auras[tname][debuff.id] = nil
         if is_enemy and hb.modes.mob_debug then
             atc(('Detected %sdebuff: %s wore off %s [%s]'):format(msg, debuff.en, tname, tid))
         end
