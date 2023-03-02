@@ -114,8 +114,8 @@ function buffs.getDebuffQueue()
     local dbq = ActionQueue.new()
     local now = os.clock()
     for targ, debuffs in pairs(buffs.debuffList) do
-		if not debuffs.aura then
-			for id, info in pairs(debuffs) do
+		for id, info in pairs(debuffs) do
+			if not info.aura then
 				local debuff = res.buffs[id]
 				local removalSpellName = debuff_map[debuff.en]
 				atcd(123,'Removal debuff enqueue -  ID: ' .. id .. ' Target: ' .. targ)
@@ -140,8 +140,8 @@ function buffs.getDebuffQueue()
 				else
 					buffs.debuffList[targ][id] = nil
 				end
-			end -- for
-		end
+			end -- if aura
+		end -- for
     end -- for
     return dbq:getQueue()
 end -- function
