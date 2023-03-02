@@ -11,6 +11,7 @@ local messages_completing = _libs.lor.packets.messages_completing
 
 local get_action_info = _libs.lor.packets.get_action_info
 local parse_char_update = _libs.lor.packets.parse_char_update
+local packet_player = windower.ffxi.get_player()
 
 -- Credit to partyhints
 function set_registry(id, job_id)
@@ -56,7 +57,7 @@ function handle_incoming_chunk(id, data)
         end
     elseif (id == 0x037) then
         healer.indi.info = parse_char_update(data)
-    elseif (id == 0x0DD or id == 0x0DF or id == 0x0C8) then           --Party member update
+    elseif (id == 0x0DD or id == 0x0DF or id == 0x0C8) then	--Party member update
         local parsed = packets.parse('incoming', data)
 		if parsed then
 			local playerId = parsed['ID']
@@ -65,6 +66,22 @@ function handle_incoming_chunk(id, data)
 			
 			if playerId and playerId > 0 then
 				set_registry(parsed['ID'], parsed['Main job'])
+			end
+		end
+	elseif id == 0x063 then -- Player buffs for Aura detection
+		local parsed = packets.parse('incoming', data)
+		for i=1, 32 do
+			local buff = tonumber(parsed[string.format('Buffs %s', i)]) or 0
+			local time = tonumber(parsed[string.format('Time %s', i)]) or 0
+			
+			if buff > 0 and buff ~= 255 and enfeebling:contains(buff) then
+				if math.ceil(1009810800 + (time / 60) + 0x100000000 / 60 * 9) - os.time() == 5 then
+					buffs.register_debuff_aura_status(packet_player.name, buff, true)
+				else
+					-- log('not aura but will register as aura')
+					-- log(buff)
+					-- buffs.register_debuff_aura_status(packet_player.name, buff, true)
+				end
 			end
 		end
 	elseif id == 0x076 then
@@ -105,6 +122,11 @@ function processDebuffMobs(mob_id)
     end
 end
 
+function removeAura(buff_id)
+	if buff_id and enfeebling:contains(buff_id) then
+		buffs.remove_debuff_aura(packet_player.name,buff_id)
+	end
+end
 
 
 --[[
@@ -299,6 +321,7 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
     end--/message ID checks
 end
 
+windower.register_event('lose buff', removeAura)
 -----------------------------------------------------------------------------------------------------------
 --[[
 Copyright © 2016, Lorand

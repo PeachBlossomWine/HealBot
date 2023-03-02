@@ -9,7 +9,8 @@ local buffs = {
     debuffList = {},
     buffList = {},
     ignored_debuffs = {},
-    action_buff_map = lor_settings.load('data/action_buff_map.lua')
+    action_buff_map = lor_settings.load('data/action_buff_map.lua'),
+	auras = {},
 }
 local lc_res = _libs.lor.resources.lc_res
 local ffxi = _libs.lor.ffxi
@@ -70,6 +71,12 @@ function buffs.review_active_buffs(player, buff_list)
                 buffs.register_debuff(player, res.buffs[bname], false)
             end
         end
+		checklist = buffs.auras[player.name] or {}
+        for bname,binfo in pairs(checklist) do
+            if not active:contains(bname) then
+				buffs.remove_debuff_aura(player.name,bname)
+            end
+        end
     end
 end
 
@@ -107,32 +114,34 @@ function buffs.getDebuffQueue()
     local dbq = ActionQueue.new()
     local now = os.clock()
     for targ, debuffs in pairs(buffs.debuffList) do
-        for id, info in pairs(debuffs) do
-			local debuff = res.buffs[id]
-			local removalSpellName = debuff_map[debuff.en]
-			atcd(123,'Removal debuff enqueue -  ID: ' .. id .. ' Target: ' .. targ)
-			if (removalSpellName ~= nil) then
-				if (info.attempted == nil) or ((now - info.attempted) >= 3) then
-					local spell = res.spells:with('en', removalSpellName)
-					if healer:can_use(spell) and ffxi.target_is_valid(spell, targ) and id ~= 20 then
-						 -- handle AoE
-                        if settings.aoe_na then
-                            local numAccessionRange = buffs.getRemovableDebuffCountAroundTarget(targ, 10, id)
-                            if numAccessionRange >= 3 and accessionable:contains(spell.en) then
-                                spell.accession = true
-                            end
-                        end
-                        -- handle ignores
-                        local ign = buffs.ignored_debuffs[debuff.en]
-                        if not ((ign ~= nil) and ((ign.all == true) or ((ign[targ] ~= nil) and (ign[targ] == true)))) then
-                            dbq:enqueue('debuff', spell, targ, debuff, ' ('..debuff.en..')')
-                        end
+		if not debuffs.aura then
+			for id, info in pairs(debuffs) do
+				local debuff = res.buffs[id]
+				local removalSpellName = debuff_map[debuff.en]
+				atcd(123,'Removal debuff enqueue -  ID: ' .. id .. ' Target: ' .. targ)
+				if (removalSpellName ~= nil) then
+					if (info.attempted == nil) or ((now - info.attempted) >= 3) then
+						local spell = res.spells:with('en', removalSpellName)
+						if healer:can_use(spell) and ffxi.target_is_valid(spell, targ) and id ~= 20 then
+							 -- handle AoE
+							if settings.aoe_na then
+								local numAccessionRange = buffs.getRemovableDebuffCountAroundTarget(targ, 10, id)
+								if numAccessionRange >= 3 and accessionable:contains(spell.en) then
+									spell.accession = true
+								end
+							end
+							-- handle ignores
+							local ign = buffs.ignored_debuffs[debuff.en]
+							if not ((ign ~= nil) and ((ign.all == true) or ((ign[targ] ~= nil) and (ign[targ] == true)))) then
+								dbq:enqueue('debuff', spell, targ, debuff, ' ('..debuff.en..')')
+							end
+						end
 					end
+				else
+					buffs.debuffList[targ][id] = nil
 				end
-			else
-				buffs.debuffList[targ][id] = nil
-			end
-        end -- for
+			end -- for
+		end
     end -- for
     return dbq:getQueue()
 end -- function
@@ -362,6 +371,20 @@ end
 --          Buff Tracking Functions
 --==============================================================================
 
+--Aura
+function buffs.register_debuff_aura_status(target, debuff, aura_flag)
+	buffs.auras[target] = buffs.auras[target] or {}
+	local auras_tbl = buffs.auras[target]
+	auras_tbl[debuff] = {aura_status = aura_flag}
+end
+
+
+function buffs.remove_debuff_aura(target, debuff)
+	if buffs.auras[target] and buffs.auras[target][debuff] then
+		buffs.auras[target][debuff] = nil
+	end
+end
+
 
 --[[
     Register a debuff gain/loss on the given target, optionally with the action
@@ -401,13 +424,17 @@ function buffs.register_debuff(target, debuff, gain, action)
                 end
             end
         end
-        debuff_tbl[debuff.id] = {landed = os.clock()}
+
+		local aura_flag = buffs.auras[tname] and buffs.auras[tname][debuff.id] and buffs.auras[tname][debuff.id].aura_status or false
+		debuff_tbl[debuff.id] = {landed = os.clock(), aura = aura_flag }
+		
         if is_enemy and hb.modes.mob_debug then
             atc(('Detected %sdebuff: %s %s %s [%s]'):format(msg, debuff.en, rarr, tname, tid))
         end
         atcd(('Detected %sdebuff: %s %s %s [%s]'):format(msg, debuff.en, rarr, tname, tid))
     else
         debuff_tbl[debuff.id] = nil
+		buffs.auras[tname][debuff.id] = nil
         if is_enemy and hb.modes.mob_debug then
             atc(('Detected %sdebuff: %s wore off %s [%s]'):format(msg, debuff.en, tname, tid))
         end
@@ -416,22 +443,6 @@ function buffs.register_debuff(target, debuff, gain, action)
 end
 
 
--- local last_action = {}
--- function register_action(atype, aid)
-    -- last_action.type = atype
-    -- last_action.id = aid
--- end
-
--- windower.register_event('gain buff', function(buff_id)
-    -- atcfs('Gained: %s %s [Type: %s]', buff_id, res.buffs[buff_id].en, last_action.type)
-    -- if last_action.type == 'Geomancy' then
-        -- buffs.action_buff_map[last_action.type] = buffs.action_buff_map[last_action.type] or {}
-        -- if buffs.action_buff_map[last_action.type][last_action.id] == nil then
-            -- buffs.action_buff_map[last_action.type][last_action.id] = buff_id
-            -- buffs.action_buff_map:save(true)
-        -- end
-    -- end
--- end)
 function buffs.process_buff_packet(target_id, status)
     if not target_id then return end
     local target = windower.ffxi.get_mob_by_id(target_id)

@@ -18,17 +18,14 @@ end
 
 
 function utils.normalize_action(action, action_type)
-    --atcf('utils.normalize_action(%s, %s)', tostring(action), tostring(action_type))
     if istable(action) then return action end
     if action_type == nil then return nil end
     if isstr(action) then
         if tonumber(action) == nil then
             local naction = res[action_type]:with('en', action)
             if naction ~= nil then
-                --atcf("res.%s[%s] found for %s", action_type, naction.id, action)
                 return naction
             end
-            --atcf("Searching resources for normalized name for %s [%s]", action, action_type)
             return res[action_type]:with('enn', utils.normalize_str(action))
         end
         action = tonumber(action) 
@@ -78,7 +75,10 @@ function processCommand(command,...)
         --windower.send_command(('lua %s %s'):format(command, _addon.name))
 		windower.send_command(('lua %s %s'):format(command, 'healbot'))
     elseif command == 'refresh' then
-        utils.load_configs()
+	    utils.load_configs()
+	elseif command == 'show' then
+		table.vprint(buffs.debuffList)
+		table.vprint(buffs.auras)
     elseif S{'start','on'}:contains(command) then
         hb.activate()
     elseif S{'stop','end','off'}:contains(command) then

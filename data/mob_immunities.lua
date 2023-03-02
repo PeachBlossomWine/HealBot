@@ -557,6 +557,9 @@ return {
     ["Sere Stump"] = S{
         194
     },
+    ["Skuld"] = S{
+        2
+    },
     ["Soulflayer"] = S{
         2
     },
