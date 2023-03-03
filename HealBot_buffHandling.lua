@@ -9,6 +9,8 @@ local buffs = {
     debuffList = {},
     buffList = {},
     ignored_debuffs = {},
+	gaol_auras = S{146,147,148,149,167,174,175,404},
+	perm_ignored_debuffs = S{540,557,558,559,560,561,562,563,564,565,566,567},
     action_buff_map = lor_settings.load('data/action_buff_map.lua'),
 	auras = {},
 }
@@ -132,7 +134,7 @@ function buffs.getDebuffQueue()
 							end
 							-- handle ignores
 							local ign = buffs.ignored_debuffs[debuff.en]
-							if not ((ign ~= nil) and ((ign.all == true) or ((ign[targ] ~= nil) and (ign[targ] == true)))) then
+							if not buffs.perm_ignored_debuffs:contains(tonumber(id)) and not ((ign ~= nil) and ((ign.all == true) or ((ign[targ] ~= nil) and (ign[targ] == true)))) then
 								dbq:enqueue('debuff', spell, targ, debuff, ' ('..debuff.en..')')
 							end
 						end
@@ -394,7 +396,7 @@ function buffs.register_debuff(target, debuff, gain, action)
     debuff = utils.normalize_action(debuff, 'buffs')
     
     if debuff == nil then
-        return              --hack
+        return
     end
     
     if debuff.enn == 'slow' then
@@ -424,8 +426,12 @@ function buffs.register_debuff(target, debuff, gain, action)
                 end
             end
         end
-
+		
 		local aura_flag = buffs.auras[tname] and buffs.auras[tname][debuff.id] and buffs.auras[tname][debuff.id].aura_status or false
+		if buffs.gaol_auras:contains(debuff.id) then
+			aura_flag = buffs.auras[tname] and buffs.auras[tname][debuff.id] and buffs.auras[tname][debuff.id].aura_status or true
+		end
+
 		debuff_tbl[debuff.id] = {landed = os.clock(), aura = aura_flag }
 		
         if is_enemy and hb.modes.mob_debug then
@@ -452,8 +458,6 @@ end
 
 function buffs.register_buff(target, buff, gain, action)
     if not target then return end
---local function _register_buff(target, buff, gain, action)
-    --atcfs("%s -> %s [gain: %s]", buff, target.name, gain)
     if not isstr(buff) then
         if buff.is_indi or buff.is_geo then
             buffs.buffList[target.name] = buffs.buffList[target.name] or {}
@@ -516,8 +520,6 @@ function buffs.register_buff(target, buff, gain, action)
         end
     end 
 end
---buffs.register_buff = traceable(_register_buff)
-
 
 function buffs.resetDebuffTimers(player)
     if (player == nil) then

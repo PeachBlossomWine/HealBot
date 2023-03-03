@@ -77,10 +77,12 @@ function processCommand(command,...)
     elseif command == 'refresh' then
 	    utils.load_configs()
 	elseif command == 'show' then
-		atc('Debufflist:')
+		atc('Party Debuff Table:')
 		table.vprint(buffs.debuffList)
 		atc('Aura Table:')
 		table.vprint(buffs.auras)
+		atc('Ignored Debuff Table:')
+		table.vprint(buffs.ignored_debuffs)
     elseif S{'start','on'}:contains(command) then
         hb.activate()
     elseif S{'stop','end','off'}:contains(command) then

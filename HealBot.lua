@@ -1,7 +1,7 @@
 _addon.name = 'HB'
 _addon.author = 'Lorand - Enhanced by PBW'
 _addon.command = 'hb'
-_addon.lastUpdate = '2023.03.02.5'
+_addon.lastUpdate = '2023.03.02.6'
 _addon.version = _addon.lastUpdate
 
 require('luau')
@@ -183,7 +183,6 @@ end
 
 
 
-
 function hb.activate()
     local player = windower.ffxi.get_player()
     if player ~= nil then
@@ -306,7 +305,6 @@ end
 
 function hb.isPerformingAction(moving)
     local acting = healer:is_acting()
-    --local status = ('is %s'):format(acting and 'performing an action' or (moving and 'moving' or 'idle'))
 	local status = ('are %s'):format(acting and 'performing an action' or (moving and 'moving' or 'idle'))
     
     if (os.clock() - healer.zone_enter) < 25 then
@@ -316,9 +314,8 @@ function hb.isPerformingAction(moving)
     elseif healer.zone_wait then
         healer.zone_wait = false
         buffs.resetBuffTimers('ALL', S{'Protect V', 'Shell V'})
-    elseif healer:buff_active('Petrification','Charm','Terror','Stun','Mute') then -- ('Sleep','Petrification','Charm','Terror','Lullaby','Stun','Silence','Mute')
+    elseif healer:buff_active('Petrification','Charm','Terror','Stun','Mute') then 
         acting = true
-        --status = 'is disabled'
 		status = 'are disabled'
     end
     
@@ -330,7 +327,6 @@ function hb.isPerformingAction(moving)
         end
     end
 	
-	-- Changed for anon
 	healer.name = "You"
 	
     local hb_status = hb.active and '\\cs(0,0,255)[ON]\\cr' or '\\cs(255,0,0)[OFF]\\cr'
