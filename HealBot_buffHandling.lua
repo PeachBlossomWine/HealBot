@@ -10,7 +10,7 @@ local buffs = {
     buffList = {},
     ignored_debuffs = {},
 	gaol_auras = S{146,147,148,149,167,174,175,404},
-	perm_ignored_debuffs = S{540,557,558,559,560,561,562,563,564,565,566,567},
+	perm_ignored_debuffs = S{136,137,138,139,140,141,142,540,557,558,559,560,561,562,563,564,565,566,567},
     action_buff_map = lor_settings.load('data/action_buff_map.lua'),
 	auras = {},
 }
