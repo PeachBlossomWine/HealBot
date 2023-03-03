@@ -180,7 +180,6 @@ end
 
 function buffs.registerNewBuffName(targetName, bname, use)
 
-	local song_map = S{"Army's Paeon","Army's Paeon II","Army's Paeon III","Army's Paeon IV","Army's Paeon V","Army's Paeon VI","Army's Paeon VII","Army's Paeon VIII","Mage's Ballad","Mage's Ballad II","Mage's Ballad III","Knight's Minne","Knight's Minne II","Knight's Minne III","Knight's Minne IV","Knight's Minne V","Valor Minuet","Valor Minuet II","Valor Minuet III","Valor Minuet IV","Valor Minuet V","Sword Madrigal","Blade Madrigal","Hunter's Prelude","Archer's Prelude","Sheepfoe Mambo","Dragonfoe Mambo","Fowl Aubade","Herb Pastoral","Shining Fantasia","Scop's Operetta","Puppet's Operetta","Jester's Operetta","Gold Capriccio","Devotee Serenade","Warding Round","Goblin Gavotte","Cactuar Fugue","Protected Aria","Advancing March","Victory March","Honor March","Sinewy Etude","Dextrous Etude","Vivacious Etude","Quick Etude","Learned Etude","Spirited Etude","Enchanting Etude","Herculean Etude","Uncanny Etude","Vital Etude","Swift Etude","Sage Etude","Logical Etude","Bewitching Etude","Fire Carol","Ice Carol","Wind Carol","Earth Carol","Lightning Carol","Water Carol","Light Carol","Dark Carol","Fire Carol II","Ice Carol II","Wind Carol II","Earth Carol II","Lightning Carol II","Water Carol II","Light Carol II","Dark Carol II","Goddess's Hymnus","Chocobo Mazurka","Raptor Mazurka","Foe Sirvente","Adventurer's Dirge","Sentinel's Scherzo",}
     if bname:lower() ~= 'all' then
 		spellName = utils.formatActionName(bname)
 	end
@@ -203,7 +202,7 @@ function buffs.registerNewBuffName(targetName, bname, use)
 	
 	-- Song override, no check targets.
     if target and action and not ffxi.target_is_valid(action, target) and targetName:lower() ~= 'everyone' and bname:lower() ~= 'all' then
-		if not(song_map:contains(spellName)) then
+		if not (spells_songBuffs:contains(res.spells:with('en', spellName).id)) then
 			atc(target.name..' is an invalid target for '..action.en)
 			return
 		else
@@ -432,7 +431,7 @@ function buffs.register_debuff(target, debuff, gain, action)
 			aura_flag = buffs.auras[tname] and buffs.auras[tname][debuff.id] and buffs.auras[tname][debuff.id].aura_status or true
 		end
 
-		debuff_tbl[debuff.id] = {landed = os.clock(), aura = aura_flag }
+		debuff_tbl[debuff.id] = {landed = os.clock(), aura = aura_flag}
 		
         if is_enemy and hb.modes.mob_debug then
             atc(('Detected %sdebuff: %s %s %s [%s]'):format(msg, debuff.en, rarr, tname, tid))
