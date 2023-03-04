@@ -75,8 +75,10 @@ function handle_incoming_chunk(id, data)
 			local time = tonumber(parsed[string.format('Time %s', i)]) or 0
 			
 			if buff > 0 and buff ~= 255 and enfeebling:contains(buff) then
-				if math.ceil(1009810800 + (time / 60) + 0x100000000 / 60 * 9) - os.time() == 5 then
+				if math.ceil(1009810800 + (time / 60) + 0x100000000 / 60 * 9) - os.time() <= 5 then
 					buffs.register_debuff_aura_status(packet_player.name, buff, 'yes')
+				-- else
+					-- buffs.register_debuff_aura_status(packet_player.name, buff, 'no')
 				end
 			end
 		end

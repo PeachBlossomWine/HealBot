@@ -116,7 +116,7 @@ function buffs.getDebuffQueue()
     local now = os.clock()
     for targ, debuffs in pairs(buffs.debuffList) do
 		for id, info in pairs(debuffs) do
-			if not (info.aura == 'yes') then
+			if info.aura == 'no' then
 				local debuff = res.buffs[id]
 				local removalSpellName
 				for list, category in debuff_map_id:it() do
