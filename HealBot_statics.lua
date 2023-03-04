@@ -88,13 +88,13 @@ debuff_casemap = {['nocturne']='Nocturne',['accuracy down']='Accuracy Down',['ma
 
 
 ignoreDebuffs = {
-	['Accuracy Down'] = S{'WHM','BLM','RDM','BRD','SMN','SCH','GEO'},
+	['Accuracy Down'] = S{'WHM','BLM','SMN','SCH','GEO'},
 	['AGI Down'] = S{'WHM','BLM','RDM','BRD','SMN','SCH','GEO'},
-	['Attack Down'] = S{'WHM','BLM','RDM','BRD','SMN','SCH','GEO'},
-	['DEX Down'] = S{'WHM','BLM','RDM','BRD','SMN','SCH','GEO'},
-	['Inhibit TP'] = S{'WHM','BLM','RDM','BRD','SMN','SCH','GEO'},
-	['Max TP Down'] = S{'WHM','BLM','RDM','BRD','SMN','SCH','GEO'},
-	['STR Down'] = S{'WHM','BLM','RDM','BRD','SMN','SCH','GEO'},
+	['Attack Down'] = S{'WHM','BLM','SMN','SCH','GEO'},
+	['DEX Down'] = S{'WHM','BLM','SMN','SCH','GEO'},
+	['Inhibit TP'] = S{'WHM','BLM','SMN','SCH','GEO'},
+	['Max TP Down'] = S{'WHM','BLM','SMN','SCH','GEO'},
+	['STR Down'] = S{'WHM','BLM','SMN','SCH','GEO'},
 	['addle'] = S{'WAR','MNK','THF','BST','RNG','DRG','SAM','COR','PUP','DNC'},
 	['blind'] = S{'WHM','BLM','RDM','BRD','SMN','SCH','GEO'},
 	['silence'] = S{'WAR','MNK','THF','BST','RNG','DRG','SAM','COR','PUP','DNC'}

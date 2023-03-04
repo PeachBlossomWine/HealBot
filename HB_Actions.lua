@@ -17,10 +17,7 @@ end
 local function local_queue_insert(action, target)
 	if (tostring(action) ~= nil) and (tostring(target) ~= nil) then
 		actions.queue:append(tostring(action)..' → '..tostring(target))
-	else
-	
 	end
-    --actions.queue:append(tostring(action)..' → '..tostring(target))
 end
 
 local function local_queue_disp()
@@ -35,7 +32,6 @@ end
 function actions.get_defensive_action()
 	local action = {}
 	local player = player or windower.ffxi.get_player()
-	--local targets = hb.getMonitoredPlayers()
 	
 	if (not settings.disable.cure) then
 		local cureq = CureUtils.get_cure_queue()

@@ -124,7 +124,8 @@ function buffs.getDebuffQueue()
 						removalSpellName = tostring(category)
 					end
 				end
-				if (healer.main_job == 'DNC' or healer.sub_job == 'DNC') then
+				-- handle DNC jobs
+				if ffxi.handle_dnc(healer) then
 					if dnc_debuff_map_id:contains(id) then
 						removalSpellName = 'Erase'
 					else
@@ -135,7 +136,8 @@ function buffs.getDebuffQueue()
 				if (removalSpellName ~= nil) then
 					if (info.attempted == nil) or ((now - info.attempted) >= 3) then
 						local spell = res.spells:with('en', removalSpellName)
-						if (healer.main_job == 'DNC' or healer.sub_job == 'DNC') then
+						-- handle DNC jobs
+						if ffxi.handle_dnc(healer) then
 							spell = res.job_abilities:with('en', 'Healing Waltz')
 						end
 						if healer:can_use(spell) and ffxi.target_is_valid(spell, targ) then
@@ -441,6 +443,10 @@ function buffs.register_debuff(target, debuff, gain, action)
         end
 		
 		local aura_flag = buffs.auras[tname] and buffs.auras[tname][debuff.id] and buffs.auras[tname][debuff.id].aura_status or 'no'
+		if buffs.gaol_auras:contains(debuff.id) then
+			aura_flag = buffs.auras[tname] and buffs.auras[tname][debuff.id] and buffs.auras[tname][debuff.id].aura_status or 'yes'
+		end
+
 		debuff_tbl[debuff.id] = {landed = os.clock(), aura = aura_flag}
 		
         if is_enemy and hb.modes.mob_debug then
