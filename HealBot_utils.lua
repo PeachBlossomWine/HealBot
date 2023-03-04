@@ -72,7 +72,6 @@ function processCommand(command,...)
     local args = map(windower.convert_auto_trans, {...})
     
     if S{'reload','unload'}:contains(command) then
-        --windower.send_command(('lua %s %s'):format(command, _addon.name))
 		windower.send_command(('lua %s %s'):format(command, 'healbot'))
     elseif command == 'refresh' then
 	    utils.load_configs()

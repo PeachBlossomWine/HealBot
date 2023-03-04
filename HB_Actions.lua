@@ -67,7 +67,7 @@ function actions.get_defensive_action()
 				else
 					dbact_target = windower.ffxi.get_mob_by_name(dbact.name)
 					local_queue_insert(dbact.action.en, dbact.name)
-					if (action.debuff == nil) and healer:in_casting_range(dbact.name) and healer:ready_to_use(dbact.action) and not(dbact_target.hpp == 0) and dbact.debuff.id ~= 20 and (player.vitals.mp >= dbact.action.mp_cost) then
+					if (action.debuff == nil) and healer:in_casting_range(dbact.name) and healer:ready_to_use(dbact.action) and not(dbact_target.hpp == 0) then
 						action.debuff = dbact
 					end
 				end
@@ -88,7 +88,7 @@ function actions.get_defensive_action()
 				local_queue_insert(bact.action.en, bact.name)
 			end
             
-			if (action.buff == nil) and healer:in_casting_range(bact.name) and healer:ready_to_use(bact.action) and not(bact_target.hpp == 0) and (player.vitals.mp >= bact.action.mp_cost) then
+			if (action.buff == nil) and healer:in_casting_range(bact.name) and healer:ready_to_use(bact.action) and not(bact_target.hpp == 0) then
 				action.buff = bact
 			end
 		end
@@ -254,7 +254,7 @@ function actions.get_offensive_action(player, partner)
     while not dbuffq:empty() do
         local dbact = dbuffq:pop()
         local_queue_insert(dbact.action.en, target.name)
-        if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) and (player.vitals.mp >= dbact.action.mp_cost) then
+        if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) then
             action.db = dbact
         end
     end
@@ -287,15 +287,9 @@ function actions.get_offensive_action(player, partner)
     elseif (not settings.disable.spam) and settings.spam.active and (settings.spam.name ~= nil) then
         local spam_action = lor_res.action_for(settings.spam.name)
         if (target.hpp > 0) and healer:ready_to_use(spam_action) and healer:in_casting_range('<t>') then
-            local _p_ok = (player.vitals.mp >= spam_action.mp_cost)
-            if spam_action.tp_cost ~= nil then
-                _p_ok = (_p_ok and (player.vitals.tp >= spam_action.tp_cost))
-            end
-            if _p_ok then
-                return {action=spam_action,name='<t>'}
-            else
-                atcd('MP/TP not ok for '..settings.spam.name)
-            end
+			return {action=spam_action,name='<t>'}
+        else
+			atcd('MP/TP not ok for '..settings.spam.name)
         end
     end
     
@@ -315,7 +309,7 @@ function actions.get_offensive_action_list(player, mob_index)
     while not dbuffq:empty() do
         local dbact = dbuffq:pop()
         local_queue_insert(dbact.action.en, target.name)
-        if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) and (player.vitals.mp >= dbact.action.mp_cost) then
+        if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) then
             action.db = dbact
         end
     end

@@ -76,7 +76,7 @@ function handle_incoming_chunk(id, data)
 			
 			if buff > 0 and buff ~= 255 and enfeebling:contains(buff) then
 				if math.ceil(1009810800 + (time / 60) + 0x100000000 / 60 * 9) - os.time() == 5 then
-					buffs.register_debuff_aura_status(packet_player.name, buff, true)
+					buffs.register_debuff_aura_status(packet_player.name, buff, 'yes')
 				end
 			end
 		end

@@ -112,19 +112,33 @@ end
 
 
 function buffs.getDebuffQueue()
-
     local dbq = ActionQueue.new()
     local now = os.clock()
     for targ, debuffs in pairs(buffs.debuffList) do
 		for id, info in pairs(debuffs) do
-			if not info.aura then
+			if not (info.aura == 'yes') then
 				local debuff = res.buffs[id]
-				local removalSpellName = debuff_map[debuff.en]
+				local removalSpellName
+				for list, category in debuff_map_id:it() do
+					if list:contains(tonumber(id)) then
+						removalSpellName = tostring(category)
+					end
+				end
+				if (healer.main_job == 'DNC' or healer.sub_job == 'DNC') then
+					if dnc_debuff_map_id:contains(id) then
+						removalSpellName = 'Erase'
+					else
+						removalSpellName = nil
+					end
+				end
 				atcd(123,'Removal debuff enqueue -  ID: ' .. id .. ' Target: ' .. targ)
 				if (removalSpellName ~= nil) then
 					if (info.attempted == nil) or ((now - info.attempted) >= 3) then
 						local spell = res.spells:with('en', removalSpellName)
-						if healer:can_use(spell) and ffxi.target_is_valid(spell, targ) and id ~= 20 then
+						if (healer.main_job == 'DNC' or healer.sub_job == 'DNC') then
+							spell = res.job_abilities:with('en', 'Healing Waltz')
+						end
+						if healer:can_use(spell) and ffxi.target_is_valid(spell, targ) then
 							 -- handle AoE
 							if settings.aoe_na then
 								local numAccessionRange = buffs.getRemovableDebuffCountAroundTarget(targ, 10, id)
@@ -426,11 +440,7 @@ function buffs.register_debuff(target, debuff, gain, action)
             end
         end
 		
-		local aura_flag = buffs.auras[tname] and buffs.auras[tname][debuff.id] and buffs.auras[tname][debuff.id].aura_status or false
-		if buffs.gaol_auras:contains(debuff.id) then
-			aura_flag = buffs.auras[tname] and buffs.auras[tname][debuff.id] and buffs.auras[tname][debuff.id].aura_status or true
-		end
-
+		local aura_flag = buffs.auras[tname] and buffs.auras[tname][debuff.id] and buffs.auras[tname][debuff.id].aura_status or 'no'
 		debuff_tbl[debuff.id] = {landed = os.clock(), aura = aura_flag}
 		
         if is_enemy and hb.modes.mob_debug then
