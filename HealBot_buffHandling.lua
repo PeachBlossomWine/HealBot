@@ -142,6 +142,7 @@ function buffs.getDebuffQueue()
 						end
 						if healer:can_use(spell) and ffxi.target_is_valid(spell, targ) then
 							 -- handle AoE
+							spell.accession = false
 							if settings.aoe_na then
 								local numAccessionRange = buffs.getRemovableDebuffCountAroundTarget(targ, 10, id)
 								if numAccessionRange >= 3 and accessionable:contains(spell.en) then
