@@ -118,28 +118,11 @@ function buffs.getDebuffQueue()
 		for id, info in pairs(debuffs) do
 			if info.aura == 'no' then
 				local debuff = res.buffs[id]
-				local removalSpellName
-				for list, category in debuff_map_id:it() do
-					if list:contains(tonumber(id)) then
-						removalSpellName = tostring(category)
-					end
-				end
-				-- handle DNC jobs
-				if ffxi.handle_dnc(healer) then
-					if dnc_debuff_map_id:contains(id) then
-						removalSpellName = 'Erase'
-					else
-						removalSpellName = nil
-					end
-				end
+				local removalSpellName = buffs.handle_removalSpellName(healer, id)
 				atcd(123,'Removal debuff enqueue -  ID: ' .. id .. ' Target: ' .. targ)
 				if (removalSpellName ~= nil) then
 					if (info.attempted == nil) or ((now - info.attempted) >= 3) then
-						local spell = res.spells:with('en', removalSpellName)
-						-- handle DNC jobs
-						if ffxi.handle_dnc(healer) then
-							spell = res.job_abilities:with('en', 'Healing Waltz')
-						end
+						local spell = removalSpellName
 						if healer:can_use(spell) and ffxi.target_is_valid(spell, targ) then
 							 -- handle AoE
 							spell.accession = false
@@ -165,6 +148,36 @@ function buffs.getDebuffQueue()
     return dbq:getQueue()
 end -- function
 
+--Handle removal spells for jobs
+function buffs.handle_removalSpellName(healer, id)
+	local aoe_cure = res.spells[7]
+	local single_cure = res.spells[1]
+	local reg_removalSpellName = nil
+	local dnc_removalSpellName = nil
+
+	--DNC handling
+	if healer.main_job == 'DNC' or (healer.sub_job == 'DNC' and not (S{'WHM','SCH'}:contains(healer.main_job))) then
+		for list, category in dnc_debuff_map_id:it() do
+			if list:contains(tonumber(id)) then
+				dnc_removalSpellName = tostring(category)
+			end
+		end
+		return (dnc_removalSpellName and res.job_abilities:with('en', dnc_removalSpellName)) or nil
+	--Rest of jobs
+	else
+		for list, category in debuff_map_id:it() do
+			if list:contains(tonumber(id)) then
+				reg_removalSpellName = tostring(category)
+			end
+		end
+		if reg_removalSpellName == 'Asleep' then
+			return (healer:can_use(aoe_cure) and aoe_cure) or (healer:can_use(single_cure) and single_cure) or nil
+		else
+			return (reg_removalSpellName and res.spells:with('en', reg_removalSpellName)) or nil
+		end
+	end
+	return nil
+end
 
 --==============================================================================
 --          Input Handling Functions
