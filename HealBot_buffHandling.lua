@@ -150,31 +150,29 @@ end -- function
 
 --Handle removal spells for jobs
 function buffs.handle_removalSpellName(healer, id)
-	local aoe_cure = res.spells[7]
-	local single_cure = res.spells[1]
-	local reg_removalSpellName = nil
-	local dnc_removalSpellName = nil
+	local aoe_action, single_action, debuff_map_type, removalActionName, ja_cure, ma_cure
 
-	--DNC handling
 	if healer.main_job == 'DNC' or (healer.sub_job == 'DNC' and not (S{'WHM','SCH'}:contains(healer.main_job))) then
-		for list, category in dnc_debuff_map_id:it() do
-			if list:contains(tonumber(id)) then
-				dnc_removalSpellName = tostring(category)
-			end
-		end
-		return (dnc_removalSpellName and res.job_abilities:with('en', dnc_removalSpellName)) or nil
-	--Rest of jobs
+		aoe_action = res.job_abilities[195]
+		single_action = res.job_abilities[190]
+		debuff_map_type = dnc_debuff_map_id
+		ja_cure = true
 	else
-		for list, category in debuff_map_id:it() do
-			if list:contains(tonumber(id)) then
-				reg_removalSpellName = tostring(category)
-			end
+		aoe_action = res.spells[7]
+		single_action = res.spells[1]
+		debuff_map_type = debuff_map_id
+		ma_cure = true
+	end
+	-- Check tables for debuff id
+	for list, category in debuff_map_type:it() do
+		if list:contains(tonumber(id)) then
+			removalActionName = tostring(category)
 		end
-		if reg_removalSpellName == 'Asleep' then
-			return (healer:can_use(aoe_cure) and aoe_cure) or (healer:can_use(single_cure) and single_cure) or nil
-		else
-			return (reg_removalSpellName and res.spells:with('en', reg_removalSpellName)) or nil
-		end
+	end
+	if removalActionName == 'Asleep' then
+		return (healer:can_use(aoe_action) and aoe_action) or (healer:can_use(single_action) and single_action) or nil
+	else
+		return (ja_cure and removalActionName and res.job_abilities:with('en', removalActionName)) or (ma_cure and removalActionName and res.spells:with('en', removalActionName)) or nil
 	end
 	return nil
 end

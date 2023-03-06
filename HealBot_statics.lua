@@ -41,14 +41,12 @@ messages_specific_debuff_gain = {
     [591]={'Bewildered Daze'}
 }
 messages_specific_debuff_lose = {
-    [351]={'blindness','paralysis','poison','silence'},
+    [351]={'blindness','paralysis','poison','silence','disease'},
     [359]={'doom'},
 }
 
---dnc_debuff_map_id = S{3,4,5,6,8,9,11,12,13,21,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,144,145,146,147,148,149,167,168,174,175,189,298,404,572}
-
 dnc_debuff_map_id = T{
-		["Divine Waltz"] 	= T{2,19,193},
+		["Asleep"] 			= T{2,19,193},
 		["Healing Waltz"] 	= T{3,4,5,6,8,9,11,12,13,21,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,144,145,146,147,148,149,167,168,174,175,189,298,404,572},
 }
 
@@ -94,14 +92,13 @@ debuff_casemap = {['nocturne']='Nocturne',['accuracy down']='Accuracy Down',['ma
 
 ignoreDebuffs = {
 	['Accuracy Down'] = S{'WHM','BLM','SMN','SCH','GEO'},
-	['AGI Down'] = S{'WHM','BLM','RDM','BRD','SMN','SCH','GEO'},
+	['AGI Down'] = S{'WHM','BLM','SMN','SCH','GEO'},
 	['Attack Down'] = S{'WHM','BLM','SMN','SCH','GEO'},
 	['DEX Down'] = S{'WHM','BLM','SMN','SCH','GEO'},
 	['Inhibit TP'] = S{'WHM','BLM','SMN','SCH','GEO'},
 	['Max TP Down'] = S{'WHM','BLM','SMN','SCH','GEO'},
 	['STR Down'] = S{'WHM','BLM','SMN','SCH','GEO'},
-	['addle'] = S{'WAR','MNK','THF','BST','RNG','DRG','SAM','COR','PUP','DNC'},
-	['blind'] = S{'WHM','BLM','RDM','BRD','SMN','SCH','GEO'},
+	['blind'] = S{'WHM','BLM','SMN','SCH','GEO'},
 	['silence'] = S{'WAR','MNK','THF','BST','RNG','DRG','SAM','COR','PUP','DNC'}
 }
 
