@@ -13,6 +13,7 @@ local buffs = {
 	perm_ignored_debuffs = S{136,137,138,139,140,141,142,540,557,558,559,560,561,562,563,564,565,566,567},
     action_buff_map = lor_settings.load('data/action_buff_map.lua'),
 	auras = {},
+	dispel_table = {}
 }
 local lc_res = _libs.lor.resources.lc_res
 local ffxi = _libs.lor.ffxi
@@ -414,6 +415,17 @@ function buffs.remove_debuff_aura(target, debuff)
 	end
 end
 
+function buffs.register_dispelable_buffs(target, debuff, gain)
+	if gain then
+		buffs.dispel_table[target] = buffs.dispel_table[target] or {}
+		local dispel_tbl = buffs.dispel_table[target]
+		dispel_tbl[debuff] = {landed = os.clock()}
+	else
+		if buffs.dispel_table[target] and buffs.dispel_table[target][debuff] then
+			buffs.dispel_table[target][debuff] = nil
+		end
+	end
+end
 
 --[[
     Register a debuff gain/loss on the given target, optionally with the action

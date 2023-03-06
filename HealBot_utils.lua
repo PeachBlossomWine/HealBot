@@ -82,6 +82,12 @@ function processCommand(command,...)
 		table.vprint(buffs.auras)
 		atc('Ignored Debuff Table:')
 		table.vprint(buffs.ignored_debuffs)
+		atc('Offsense Table:')
+		table.vprint(offense.mobs)
+		atc('Offsense debuffs table:')
+		table.vprint(offense.debuffs)
+		atc('Dispel table:')
+		table.vprint(buffs.dispel_table)
     elseif S{'start','on'}:contains(command) then
         hb.activate()
     elseif S{'stop','end','off'}:contains(command) then

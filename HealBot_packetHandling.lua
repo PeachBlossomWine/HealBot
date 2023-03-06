@@ -164,8 +164,9 @@ end
     :param set monitored_ids: the IDs of PCs that are being monitored
 --]]
 function processAction(ai, monitored_ids)
+	local battle_target = windower.ffxi.get_mob_by_target('bt') or nil
     for _,targ in pairs(ai.targets) do
-        if monitored_ids[ai.actor_id] or monitored_ids[targ.id] then
+        if monitored_ids[ai.actor_id] or monitored_ids[targ.id] or (battle_target and battle_target.id == targ.id)then
             local actor = windower.ffxi.get_mob_by_id(ai.actor_id)
             local target = windower.ffxi.get_mob_by_id(targ.id)
             
@@ -263,6 +264,7 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
             buffs.register_debuff(target, buff, false)
         else
             buffs.register_buff(target, buff, false)
+			buffs.register_dispelable_buffs(target.id, buff.id, false)
         end
     elseif messages_noEffect:contains(tact.message_id) then     --ai.param: spell; tact.param: buff/debuff
         --Spell had no effect on {target}
@@ -316,6 +318,18 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
         offense.register_immunity(target, res.buffs[tact.param])
     elseif messages_paralyzed:contains(tact.message_id) then
         buffs.register_debuff(actor, 'paralysis', true)
+	elseif actor and (actor.is_npc or ai.targets[1].id == healer.id) and actor.name ~= healer.name then
+		if ai.category == 11 then
+			if res.monster_abilities[ai.param] then 
+				if res.buffs[ai.targets[1].actions[1].param] ~= 0 then
+					buffs.register_dispelable_buffs(target.id, ai.targets[1].actions[1].param, true)
+				end
+			end
+		elseif ai.category == 4 then
+			if res.spells[ai.param] then
+				buffs.register_dispelable_buffs(target.id, ai.param, true)
+			end
+		end
     end--/message ID checks
 end
 
