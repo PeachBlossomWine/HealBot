@@ -150,18 +150,18 @@ end -- function
 
 --Handle removal spells for jobs
 function buffs.handle_removalSpellName(healer, id)
-	local aoe_action, single_action, debuff_map_type, removalActionName, ja_cure, ma_cure
+	local aoe_action, single_action, debuff_map_type, removalActionName, ja_action, ma_action
 
 	if healer.main_job == 'DNC' or (healer.sub_job == 'DNC' and not (S{'WHM','SCH'}:contains(healer.main_job))) then
 		aoe_action = res.job_abilities[195]
 		single_action = res.job_abilities[190]
 		debuff_map_type = dnc_debuff_map_id
-		ja_cure = true
+		ja_action = true
 	else
 		aoe_action = res.spells[7]
 		single_action = res.spells[1]
 		debuff_map_type = debuff_map_id
-		ma_cure = true
+		ma_action = true
 	end
 	-- Check tables for debuff id
 	for list, category in debuff_map_type:it() do
@@ -172,7 +172,7 @@ function buffs.handle_removalSpellName(healer, id)
 	if removalActionName == 'Asleep' then
 		return (healer:can_use(aoe_action) and aoe_action) or (healer:can_use(single_action) and single_action) or nil
 	else
-		return (ja_cure and removalActionName and res.job_abilities:with('en', removalActionName)) or (ma_cure and removalActionName and res.spells:with('en', removalActionName)) or nil
+		return (ja_action and removalActionName and res.job_abilities:with('en', removalActionName)) or (ma_action and removalActionName and res.spells:with('en', removalActionName)) or nil
 	end
 	return nil
 end
