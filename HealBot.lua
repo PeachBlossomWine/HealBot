@@ -1,7 +1,7 @@
 _addon.name = 'HB'
 _addon.author = 'Lorand - Enhanced by PBW'
 _addon.command = 'hb'
-_addon.lastUpdate = '2023.03.05.1'
+_addon.lastUpdate = '2023.03.07.5'
 _addon.version = _addon.lastUpdate
 
 require('luau')
@@ -97,6 +97,7 @@ hb._events['job'] = windower.register_event('job change', function()
     printStatus()
 end)
 
+hb._events['dis'] = windower.register_event('action', handle_dispel_action)
 hb._events['inc'] = windower.register_event('incoming chunk', handle_incoming_chunk)
 hb._events['cmd'] = windower.register_event('addon command', processCommand)
 
@@ -347,7 +348,8 @@ function hb.process_ipc(msg)
                 local player = windower.ffxi.get_player()
                 local response = {
                     method='POST', pk='buff_ids', val=player.buffs,
-                    pid=player.id, name=player.name, stype=player.spawn_type, aura_table=buffs.auras,
+                    pid=player.id, name=player.name, stype=player.spawn_type, 
+					aura_table=buffs.auras,
                 }
                 local encoded = serialua.encode(response)
                 windower.send_ipc_message(encoded)
@@ -372,7 +374,6 @@ function hb.process_ipc(msg)
 							else
 								buffs.remove_debuff_aura(player_name,tonumber(id)) -- maybe not necessary?
 							end
-							
 						end
 					end
                     buffs.review_active_buffs(player, loaded.val)

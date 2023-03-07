@@ -9,7 +9,8 @@ local offense = {
     immunities=lor_settings.load('data/mob_immunities.lua'),
     assist={active = false, engage = false, nolock = false, sametarget = false,},
 	moblist={active = false, mobs=S{}, debuffs={},},
-    debuffs={}, ignored={}, mobs={}, dispel={},
+    debuffs={}, ignored={}, mobs={}, 
+	dispel={active = true, mobs={}},
     debuffing_active = true
 }
 
@@ -148,6 +149,27 @@ function offense.getDebuffQueue(player, target, mob_debuff_list_flag)
 				if offense.mobs[target.id][id] == nil then
 					if not (offense.immunities[target.name] and offense.immunities[target.name][id]) then
 						dbq:enqueue('debuff_mob', debuff.spell, target.name, debuff.res, (' (%s)'):format(debuff.spell.en))
+					end
+				end
+			end
+		end
+    end
+    return dbq:getQueue()
+end
+
+
+function offense.getDispelQueue(player, target)
+    local dbq = ActionQueue.new()
+    if offense.dispel.active and (S{'RDM','BRD'}:contains(player.main_job) or S{'RDM'}:contains(player.sub_job)) then
+		if offense.dispel.mobs[target.id] then
+			for _, debuff in pairs(offense.dispel.mobs[target.id]) do
+				for k,_ in pairs(debuff) do
+					if k ~= nil then
+						if player.main_job == 'RDM' or player.sub_job == 'RDM' then
+							dbq:enqueue('spells', res.spells[260], target.name, res.spells[260], ' Dispel')
+						elseif player.main_job == 'BRD' then
+							dbq:enqueue('spells', res.spells[462], target.name, res.spells[462], ' Magic Finale')
+						end
 					end
 				end
 			end

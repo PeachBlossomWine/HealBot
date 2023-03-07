@@ -19,7 +19,6 @@ function ActionQueue:getQueue()
     return self.queue
 end
 
-
 function ActionQueue:enqueue(actionType, action, name, secondary, msg)
     --atcf('ActionQueue:enqueue(%s, %s, %s, %s, %s)', tostring(actionType), tostring(action), tostring(name), tostring(secondary), tostring(msg))
     local is_cure = actionType:startswith('cur')
@@ -36,7 +35,7 @@ function ActionQueue:enqueue(actionType, action, name, secondary, msg)
         for index = 1, self.queue:length() do
             local qi = self.queue[index]
             local qprio = getPlayerPriority[qi.name]
-            local higher = compFunc[actionType](-1, pprio, secondary, index, qprio, qi[secLabel])
+			local higher = compFunc[actionType](-1, pprio, secondary, index, qprio, qi[secLabel])
             if (higher == -1) and (index < highestAbove) then
                 highestAbove = index
             end
@@ -75,6 +74,13 @@ function compFunc.default(index1, pa1, pb1, index2, pa2, pb2)
     end
 end
 --compFunc.default = traceable(_default)
+
+function compFunc.spells(index1, prio1, buff1, index2, prio2, buff2)
+    --atcf('compFunc.buff(%s, %s, %s, %s, %s, %s)', tostring(index1), tostring(prio1), tostring(buff1), tostring(index2), tostring(prio2), tostring(buff2))
+    local bp1 = getDispelPriority(buff1)
+    local bp2 = getDispelPriority(buff2)
+    return compFunc.default(index1, prio1, bp1, index2, prio2, bp2)
+end
 
 
 function compFunc.buff(index1, prio1, buff1, index2, prio2, buff2)
@@ -191,6 +197,12 @@ function getDebuffPriority(debuff)
     return prios.debuffs[ndebuff.en] or prios.debuffs[ndebuff.enn] or prios.default
 end
 
+
+function getDispelPriority(spells)
+    local ndebuff = utils.normalize_action(spells, 'spells')
+    local prios = hb.config.priorities
+    return prios.debuffs[ndebuff.en] or prios.debuffs[ndebuff.enn] or prios.default
+end
 
 --======================================================================================================================
 --[[

@@ -415,14 +415,15 @@ function buffs.remove_debuff_aura(target, debuff)
 	end
 end
 
+--Dispel tracking
 function buffs.register_dispelable_buffs(target, debuff, gain)
 	if gain then
-		buffs.dispel_table[target] = buffs.dispel_table[target] or {}
-		local dispel_tbl = buffs.dispel_table[target]
+		offense.dispel.mobs[target] = offense.dispel.mobs[target] or {}
+		local dispel_tbl = offense.dispel.mobs[target]
 		dispel_tbl[debuff] = {landed = os.clock()}
-	else
-		if buffs.dispel_table[target] and buffs.dispel_table[target][debuff] then
-			buffs.dispel_table[target][debuff] = nil
+	else -- removal
+		if offense.dispel.mobs[target] and offense.dispel.mobs[target][debuff] then
+			offense.dispel.mobs[target][debuff] = nil
 		end
 	end
 end
@@ -542,7 +543,8 @@ function buffs.register_buff(target, buff, gain, action)
         end
     end
     local buff_tbl = is_enemy and offense.mobs[tid] or buffs.buffList[tname]
-    if is_enemy and offense.dispel[bkey] or buff_tbl[bkey] then
+    --if is_enemy and offense.dispel[bkey] or buff_tbl[bkey] then
+	if buff_tbl[bkey] then
         buff_tbl[bkey] = buff_tbl[bkey] or {}
         if gain then
             buff_tbl[bkey].landed = os.clock()

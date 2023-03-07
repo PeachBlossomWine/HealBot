@@ -87,7 +87,7 @@ function processCommand(command,...)
 		atc('Offsense debuffs table:')
 		table.vprint(offense.debuffs)
 		atc('Dispel table:')
-		table.vprint(buffs.dispel_table)
+		table.vprint(offense.dispel.mobs)
     elseif S{'start','on'}:contains(command) then
         hb.activate()
     elseif S{'stop','end','off'}:contains(command) then
@@ -97,11 +97,20 @@ function processCommand(command,...)
         local cmd = args[1] and args[1]:lower() or (settings.aoe_na and 'off' or 'resume')
         if S{'off','end','false','pause'}:contains(cmd) then
             settings.aoe_na = false
-            atc('AOE is now OFF.')
+            atc('AOE is now off.')
         else
             settings.aoe_na = true
-			atc('AOE is ENABLED.')
+			atc('AOE is active.')
         end
+	elseif S{'dispel'}:contains(command) then
+		local cmd = args[1] and args[1]:lower() or (offense.dispel.active and 'off' or 'resume')
+		if S{'off','end','false','pause'}:contains(cmd) then
+			offense.dispel.active = false
+			atc('Auto Dispel is now off.')
+		elseif S{'resume','on'}:contains(cmd) then
+			offense.dispel.active = true
+			atc('Auto Dispel is now active.')
+		end
     elseif S{'disable'}:contains(command) then
         if not validate(args, 1, 'Error: No argument specified for Disable') then return end
         disableCommand(args[1]:lower(), true)
@@ -799,6 +808,17 @@ function utils.isMonster(mob_index)
 	if mob_in_question and mob_in_question.is_npc and mob_in_question.id%4096<=2046 and mob_in_question.valid_target then
 		return true
 	end
+end
+
+function utils.check_claim_id(id)
+	for k, v in pairs(windower.ffxi.get_party()) do
+		if type(v) == 'table' then
+			if id and v.mob and v.mob.id == id then
+				return true
+			end
+		end
+	end
+	return false
 end
 
 function utils.ready_to_use(action)

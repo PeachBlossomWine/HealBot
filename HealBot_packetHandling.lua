@@ -34,6 +34,35 @@ function get_registry(id)
     end
 end
 
+-- Track mob buffs for dispel action
+function handle_dispel_action(act)
+	for _,targ in pairs(act.targets) do
+		local target = windower.ffxi.get_mob_by_id(targ.id)
+		local valid_target = act.valid_target
+		local actor = windower.ffxi.get_mob_by_id(act.actor_id)		
+		local category = act.category  
+		local param = act.param
+		local targets = act.targets
+		local action_buff = targets[1].actions[1].param
+	
+		if target and (target.is_npc and targets[1].id == actor.id) and target.name ~= healer.name and S{4,11}:contains(category) then 
+			if category == 11 then
+				if res.monster_abilities[param] and utils.isMonster(target.index) then 
+					if action_buff ~= 0 and not (dispel_buffs_blacklist:contains(action_buff)) then
+						buffs.register_dispelable_buffs(target.id, action_buff, true)
+					end
+				end
+			elseif category == 4 then
+				if res.spells[param] and utils.isMonster(target.index) then
+					if action_buff ~= 0 and not (dispel_buffs_blacklist:contains(action_buff)) then
+						buffs.register_dispelable_buffs(target.id, action_buff, true)
+					end
+				end
+			end
+		end
+	end
+end
+
 --[[
     Analyze the data contained in incoming packets for useful info.
     :param int id: packet ID
@@ -118,9 +147,12 @@ function processDebuffMobs(mob_id)
     if mob_ids and offense.mobs[mob_id] then
 		offense.mobs[mob_id] = nil
     end
+	if offense.dispel.mobs and offense.dispel.mobs[mob_id] then
+		offense.dispel.mobs[mob_id] = nil
+	end
 end
 
-function removeAura(buff_id)
+function handle_lose_buff(buff_id)
 	if buff_id and enfeebling:contains(buff_id) then
 		buffs.remove_debuff_aura(packet_player.name,buff_id)
 	end
@@ -164,9 +196,8 @@ end
     :param set monitored_ids: the IDs of PCs that are being monitored
 --]]
 function processAction(ai, monitored_ids)
-	local battle_target = windower.ffxi.get_mob_by_target('bt') or nil
     for _,targ in pairs(ai.targets) do
-        if monitored_ids[ai.actor_id] or monitored_ids[targ.id] or (battle_target and battle_target.id == targ.id)then
+        if monitored_ids[ai.actor_id] or monitored_ids[targ.id] then
             local actor = windower.ffxi.get_mob_by_id(ai.actor_id)
             local target = windower.ffxi.get_mob_by_id(targ.id)
             
@@ -181,15 +212,6 @@ function processAction(ai, monitored_ids)
                             buffs.register_buff(target, healer.geo.latest, true)
                         end
                     end
-                
-                    -- if (tact.message_id == 0) and (actor.name == healer.name) then
-                        -- local spell = res.spells[ai.param]
-                        -- if spell ~= nil then
-                            -- if spell.type == 'Geomancy' then
-                                -- register_action(spell.type, ai.param)
-                            -- end
-                        -- end
-                    -- end
                 
                     if hb.modes.showPacketInfo then
                         local msg = res.action_messages[tact.message_id] or {en='???'}
@@ -250,7 +272,7 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
         elseif msg_gain_ws:contains(tact.message_id) then
             cause = res.weapon_skills[ai.param]
         end
-        
+
         local buff = res.buffs[tact.param]
         if enfeebling:contains(tact.param) then
             buffs.register_debuff(target, buff, true, cause)
@@ -264,7 +286,7 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
             buffs.register_debuff(target, buff, false)
         else
             buffs.register_buff(target, buff, false)
-			buffs.register_dispelable_buffs(target.id, buff.id, false)
+			buffs.register_dispelable_buffs(target.id, buff.id, false)	--Dispel removal
         end
     elseif messages_noEffect:contains(tact.message_id) then     --ai.param: spell; tact.param: buff/debuff
         --Spell had no effect on {target}
@@ -278,8 +300,7 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
                         buffs.register_debuff(target, debuff, false)
                     end
                 end
-            elseif spells_buffs:contains(spell.id) then
-                --The buff must already be active, or there must be some debuff preventing the buff from landing
+            elseif spells_buffs:contains(spell.id) then		--The buff must already be active, or there must be some debuff preventing the buff from landing
                 local buff = buffs.buff_for_action(spell)
                 if (buff == nil) then
                     atc(123, 'ERROR: No buff found for spell: '..spell.en)
@@ -289,10 +310,13 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
                         buffs.register_debuff(target, 'slow', true)
                     end
                 end
-            elseif spell_debuff_idmap[spell.id] ~= nil and targ_is_enemy then
-                --The debuff already landed from someone else
+            elseif spell_debuff_idmap[spell.id] ~= nil and targ_is_enemy then	--The debuff already landed from someone else
                 local debuff_id = spell_debuff_idmap[spell.id]
                 buffs.register_debuff(target, debuff_id, true)
+			elseif targ_is_enemy and S{260,360,462}:contains(spell.id) then		--Dispel no effect, assuming every buff is removed
+				if offense.dispel.mobs and offense.dispel.mobs[target.id] then
+					offense.dispel.mobs[target.id] = nil
+				end
             end
         end
     elseif messages_specific_debuff_gain[tact.message_id] ~= nil then
@@ -318,22 +342,10 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
         offense.register_immunity(target, res.buffs[tact.param])
     elseif messages_paralyzed:contains(tact.message_id) then
         buffs.register_debuff(actor, 'paralysis', true)
-	elseif actor and (actor.is_npc or ai.targets[1].id == healer.id) and actor.name ~= healer.name then
-		if ai.category == 11 then
-			if res.monster_abilities[ai.param] then 
-				if res.buffs[ai.targets[1].actions[1].param] ~= 0 then
-					buffs.register_dispelable_buffs(target.id, ai.targets[1].actions[1].param, true)
-				end
-			end
-		elseif ai.category == 4 then
-			if res.spells[ai.param] then
-				buffs.register_dispelable_buffs(target.id, ai.param, true)
-			end
-		end
     end--/message ID checks
 end
 
-windower.register_event('lose buff', removeAura)
+windower.register_event('lose buff', handle_lose_buff)
 -----------------------------------------------------------------------------------------------------------
 --[[
 Copyright © 2016, Lorand
