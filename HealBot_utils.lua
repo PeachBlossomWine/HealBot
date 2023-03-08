@@ -75,19 +75,31 @@ function processCommand(command,...)
 		windower.send_command(('lua %s %s'):format(command, 'healbot'))
     elseif command == 'refresh' then
 	    utils.load_configs()
-	elseif command == 'show' then
-		atc('Party Debuff Table:')
-		table.vprint(buffs.debuffList)
-		atc('Aura Table:')
-		table.vprint(buffs.auras)
-		atc('Ignored Debuff Table:')
-		table.vprint(buffs.ignored_debuffs)
-		atc('Offsense Table:')
-		table.vprint(offense.mobs)
-		atc('Offsense debuffs table:')
-		table.vprint(offense.debuffs)
-		atc('Dispel table:')
-		table.vprint(offense.dispel.mobs)
+	elseif S{'show','sh'}:contains(command) then
+		if (args[1] and args[1]:lower() == 'party') or not args[1] then
+			atc('Party Debuff Table:')
+			table.vprint(buffs.debuffList)
+		end
+		if (args[1] and args[1]:lower() == 'aura') or not args[1] then
+			atc('Aura Table:')
+			table.vprint(buffs.auras)
+		end
+		if (args[1] and args[1]:lower() == 'ignore') or not args[1] then
+			atc('Ignored Debuff Table:')
+			table.vprint(buffs.ignored_debuffs)
+		end
+		if (args[1] and args[1]:lower() == 'offense') or not args[1] then
+			atc('Offense Table:')
+			table.vprint(offense.mobs)
+		end
+		if (args[1] and args[1]:lower() == 'debuff') or not args[1] then
+			atc('Offense debuffs table:')
+			table.vprint(offense.debuffs)
+		end
+		if (args[1] and args[1]:lower() == 'dispel') or not args[1] then
+			atc('Dispel table:')
+			table.vprint(offense.dispel.mobs)
+		end
     elseif S{'start','on'}:contains(command) then
         hb.activate()
     elseif S{'stop','end','off'}:contains(command) then
@@ -805,7 +817,7 @@ end
 
 function utils.isMonster(mob_index)
 	local mob_in_question = windower.ffxi.get_mob_by_index(mob_index)
-	if mob_in_question and mob_in_question.is_npc and mob_in_question.id%4096<=2046 and mob_in_question.valid_target then
+	if mob_in_question and mob_in_question.is_npc and mob_in_question.spawn_type == 16 and mob_in_question.valid_target then
 		return true
 	end
 end

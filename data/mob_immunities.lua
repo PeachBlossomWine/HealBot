@@ -583,6 +583,9 @@ return {
         2,
         6
     },
+    ["U Bnai"] = S{
+        7
+    },
     ["Vampyr Jarl"] = S{
         2
     },

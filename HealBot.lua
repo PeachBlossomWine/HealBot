@@ -1,7 +1,7 @@
 _addon.name = 'HB'
 _addon.author = 'Lorand - Enhanced by PBW'
 _addon.command = 'hb'
-_addon.lastUpdate = '2023.03.07.5'
+_addon.lastUpdate = '2023.03.08.1'
 _addon.version = _addon.lastUpdate
 
 require('luau')
