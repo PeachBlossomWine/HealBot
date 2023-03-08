@@ -418,10 +418,10 @@ end
 --Dispel tracking
 function buffs.register_dispelable_buffs(target, debuff, gain)
 	if gain then
-		if offense.dispel.mobs[target] == nil then
-			offense.dispel.mobs[target] = {}
+		if offense.dispel.mobs and offense.dispel.mobs[target] then
 			offense.dispel.mobs[target][debuff]= {landed = os.clock()}
 		else
+			offense.dispel.mobs[target] = {}
 			offense.dispel.mobs[target][debuff]= {landed = os.clock()}
 		end
 	else -- removal
