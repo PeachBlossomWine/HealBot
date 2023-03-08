@@ -46,13 +46,17 @@ function handle_dispel_action(act)
 		local action_buff = targets[1].actions[1].param
 	
 		if target and (target.is_npc and targets[1].id == actor.id) and target.name ~= healer.name and S{4,11}:contains(category) then 
-			if category == 11 then
+			if category == 11 then	-- Monster abilitiies
 				if res.monster_abilities[param] and utils.isMonster(target.index) then 
 					if action_buff ~= 0 and not (dispel_buffs_blacklist:contains(action_buff)) then
 						buffs.register_dispelable_buffs(target.id, action_buff, true)
+					elseif action_buff == 0 and special_mob_ja[param] then		-- Special abilitiies that don't return buff value.
+						for _,mob_buff in pairs(special_mob_ja[param]) do
+							buffs.register_dispelable_buffs(target.id, mob_buff, true)
+						end
 					end
 				end
-			elseif category == 4 then
+			elseif category == 4 then	-- Monster spells
 				if res.spells[param] and utils.isMonster(target.index) then
 					if action_buff ~= 0 and not (dispel_buffs_blacklist:contains(action_buff)) then
 						buffs.register_dispelable_buffs(target.id, action_buff, true)
