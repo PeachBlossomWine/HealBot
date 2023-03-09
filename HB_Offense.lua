@@ -61,7 +61,7 @@ function offense.cleanup()
         end
     end
 	if offense.dispel.mobs then
-		offense.dispel.mobs = nil
+		offense.dispel.mobs = {}
 	end
 end
 
