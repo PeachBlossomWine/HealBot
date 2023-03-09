@@ -168,9 +168,9 @@ function offense.getDispelQueue(player, target)
 			for _, debuff in pairs(offense.dispel.mobs[target.id]) do
 				for k,_ in pairs(debuff) do
 					if k ~= nil then
-						if player.main_job == 'RDM' or player.sub_job == 'RDM' then
+						if player.main_job == 'RDM' or player.sub_job == 'RDM' and healer:can_use(res.spells[260]) then
 							dbq:enqueue('spells', res.spells[260], target.name, res.spells[260], ' Dispel')
-						elseif player.main_job == 'BRD' then
+						elseif player.main_job == 'BRD' and healer:can_use(res.spells[462]) then
 							dbq:enqueue('spells', res.spells[462], target.name, res.spells[462], ' Magic Finale')
 						end
 					end
