@@ -10,7 +10,7 @@ local offense = {
     assist={active = false, engage = false, nolock = false, sametarget = false,},
 	moblist={active = false, mobs=S{}, debuffs={},},
     debuffs={}, ignored={}, mobs={}, 
-	dispel={active = true, mobs={}},
+	dispel={active = true, mobs={}, ignored=S{},},
     debuffing_active = true
 }
 
@@ -168,10 +168,12 @@ function offense.getDispelQueue(player, target)
 			for _, debuff in pairs(offense.dispel.mobs[target.id]) do
 				for k,_ in pairs(debuff) do
 					if k ~= nil then
-						if player.main_job == 'RDM' or player.sub_job == 'RDM' and healer:can_use(res.spells[260]) then
-							dbq:enqueue('spells', res.spells[260], target.name, res.spells[260], ' Dispel')
-						elseif player.main_job == 'BRD' and healer:can_use(res.spells[462]) then
-							dbq:enqueue('spells', res.spells[462], target.name, res.spells[462], ' Magic Finale')
+						if not offense.dispel.ignored:contains(target.name) then
+							if player.main_job == 'RDM' or player.sub_job == 'RDM' and healer:can_use(res.spells[260]) then
+								dbq:enqueue('spells', res.spells[260], target.name, res.spells[260], ' Dispel')
+							elseif player.main_job == 'BRD' and healer:can_use(res.spells[462]) then
+								dbq:enqueue('spells', res.spells[462], target.name, res.spells[462], ' Magic Finale')
+							end
 						end
 					end
 				end

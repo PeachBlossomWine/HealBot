@@ -122,6 +122,23 @@ function processCommand(command,...)
 		elseif S{'resume','on'}:contains(cmd) then
 			offense.dispel.active = true
 			atc('Auto Dispel is now active.')
+		elseif cmd == 'ignore' then
+			local mob_string = args[2]:lower():capitalize()
+			offense.dispel.ignored:add(mob_string)
+			atc('Added mob to dispel ignore list: '..mob_string)
+		elseif cmd == 'unignore' then
+			local mob_string = args[2]:lower():capitalize()
+			if offense.dispel.ignored:contains(mob_string) then
+				offense.dispel.ignored:remove(mob_string)
+				atc('Removed mob from dispel ignore list: '..mob_string)
+				local show_dispel_ignore_names = ''
+				for k,v in pairs(offense.dispel.ignored) do
+					show_dispel_ignore_names = show_dispel_ignore_names..'['..k..']'
+				end
+				atc('Dispel Ignore List: '..show_dispel_ignore_names)
+			else
+				atc('Error: Mob not in current list')
+			end
 		end
     elseif S{'disable'}:contains(command) then
         if not validate(args, 1, 'Error: No argument specified for Disable') then return end
@@ -145,7 +162,7 @@ function processCommand(command,...)
 			local mob_string = args[2]:lower():capitalize()
 			if offense.moblist.mobs:contains(mob_string) then
 				offense.moblist.mobs:remove(mob_string)
-				atc('Removed mob to debuff list: '..mob_string)
+				atc('Removed mob from debuff list: '..mob_string)
 				local show_moblist_names = ''
 				for k,v in pairs(offense.moblist.mobs) do
 					show_moblist_names = show_moblist_names..'['..k..']'
