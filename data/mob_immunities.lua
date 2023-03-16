@@ -207,7 +207,8 @@ return {
         28
     },
     ["Bozzetto Songstress"] = S{
-        2
+        2,
+        7
     },
     ["Bozzetto Swiftshooter"] = S{
         28
