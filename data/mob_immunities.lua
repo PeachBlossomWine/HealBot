@@ -372,6 +372,9 @@ return {
     ["Gyroscopic Gears"] = S{
         2
     },
+    ["Henwen"] = S{
+        7
+    },
     ["Heqet"] = S{
         2
     },
