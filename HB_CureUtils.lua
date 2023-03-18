@@ -42,6 +42,7 @@ cu.blue = {
 	[1] = {id=578, 	en='Wild Carrot',		res=res.spells[578]},
     [2] = {id=593, 	en='Magic Fruit',		res=res.spells[593]},
 	[3] = {id=658, 	en='Plenilune Embrace',	res=res.spells[658]},
+	[4] = {id=541, 	en='Blood Saber',		res=res.spells[541]},	-- For disabling BLU Cure and only BLU Aoe
 }
 cu.bluega = {
 	[1] = {id=581, 	en='Healing Breeze',	res=res.spells[581]},

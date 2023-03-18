@@ -373,7 +373,7 @@ function processCommand(command,...)
     elseif command == 'minblue' then
         if not validate(args, 1, 'Error: No argument specified for minBlue') then return end
         local val = tonumber(args[1])
-        if (val ~= nil) and (1 <= val) and (val <= 3) then
+        if (val ~= nil) and (1 <= val) and (val <= 4) then
             settings.healing.min.blue = val
             atc('Minimum blue tier set to '..val)
         else
