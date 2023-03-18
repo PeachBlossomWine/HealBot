@@ -181,7 +181,12 @@ function cu.pick_best_curaga_possibility()
     end
     min_hpp = min_hpp * 0.7 --add extra weight
     local target = {name=best_target, missing=w_missing, hpp=min_hpp}
-    return cu.get_usable_cure(tier, settings.healing.modega), target
+	if settings.healing.modega == 'bluega' then
+		target = {name=windower.ffxi.get_player().name, missing=w_missing, hpp=min_hpp}
+		return cu.get_usable_cure(tier, settings.healing.modega), target
+	else
+		return cu.get_usable_cure(tier, settings.healing.modega), target
+	end
 end
 
 
