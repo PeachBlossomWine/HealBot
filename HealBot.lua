@@ -15,7 +15,7 @@ serialua = _libs.lor.serialization
 hb = {
     active = false, configs_loaded = false, partyMemberInfo = {}, ignoreList = S{}, extraWatchList = S{}, job_registry= T{},
     modes = {['showPacketInfo'] = false, ['debug'] = false, ['mob_debug'] = false, ['independent'] = false},
-    _events = {}, txts = {}, config = {}
+    _events = {}, txts = {}, config = {}, showdebuff = true,
 }
 healer = T{}
 settings = {}
@@ -106,6 +106,8 @@ hb._events['cmd'] = windower.register_event('addon command', processCommand)
     Executes before each frame is rendered for display.
     Acts as the run() method of a threaded application.
 --]]
+local last_render = 0
+local delay = 0.5
 hb._events['render'] = windower.register_event('prerender', function()
     if not hb.configs_loaded then return end
 
@@ -163,6 +165,10 @@ hb._events['render'] = windower.register_event('prerender', function()
             windower.send_ipc_message(ipc_req)
             healer.last_ipc_sent = now
         end
+		if (os.clock()-last_render) > delay and hb.active and hb.showdebuff then
+			utils.debuffs_disp()
+			last_render = os.clock()
+		end
     end
 end)
 
@@ -392,7 +398,6 @@ function hb.process_ipc(msg)
 end
 
 hb._events['ipc'] = windower.register_event('ipc message', hb.process_ipc)
-
 
 --======================================================================================================================
 --[[

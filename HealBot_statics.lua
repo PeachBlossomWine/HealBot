@@ -14,14 +14,14 @@ messages_gainEffect = S{73,82,127,128,141,160,164,166,186,194,203,205,230,236,23
 
 msg_gain_no_source = S{73,128,160,164,166,203,205,266,267,269,270,272,277,278,279,280}
 msg_gain_abil = S{127,141,319,320,321,645}
-msg_gain_spell = S{82,230,236,237,268,271}
+msg_gain_spell = S{82,230,236,237,268,269,270,271,272,280}
 msg_gain_ws = S{186,194,242,243} -- 185?
 msg_gain_other = S{374,375,412}
 
 messages_loseEffect = S{64,74,83,123,159,168,204,206,322,341,342,343,344,350,378,453,531,647}
 messages_wearOff = S{204,206}
 messages_paralyzed = S{29,84}
-messages_noEffect = S{75}
+messages_noEffect = S{75,283,423,659}
 messages_specific_debuff_gain = {
     [142]={'Accuracy Down','Evasion Down'},
     [144]={'Accuracy Down','Evasion Down'},

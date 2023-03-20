@@ -30,7 +30,14 @@ return {
             ['size'] = 10,
             ['visible'] = true,
             ['x'] = 1200,
-            ['y'] = 125,
+            ['y'] = 80,
+        },
+		['debuffList'] = {
+            ['font'] = 'consolas',
+            ['size'] = 10,
+            ['visible'] = true,
+            ['x'] = 1000,
+            ['y'] = 80,
         },
         ['montoredBox'] = {
             ['font'] = 'consolas',
@@ -48,6 +55,13 @@ return {
         },
 		['bg'] = {
             ['alpha'] = 50,
+            ['blue'] = 0,
+            ['green'] = 0,
+            ['red'] = 0,
+            ['visible'] = true,
+        },
+		['bg_other'] = {
+            ['alpha'] = 130,
             ['blue'] = 0,
             ['green'] = 0,
             ['red'] = 0,

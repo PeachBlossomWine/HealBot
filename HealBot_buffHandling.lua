@@ -436,6 +436,7 @@ end
     that caused the debuff
 --]]
 function buffs.register_debuff(target, debuff, gain, action)
+
     debuff = utils.normalize_action(debuff, 'buffs')
     
     if debuff == nil then
@@ -446,7 +447,7 @@ function buffs.register_debuff(target, debuff, gain, action)
         buffs.register_buff(target, 'Haste', false)
         buffs.register_buff(target, 'Flurry', false)
     end
-    local tid, tname = target.id, target.name
+    local tid, tname, tindex = target.id, target.name, target.index
     local is_enemy = (target.spawn_type == 16)
     if is_enemy then
         offense.mobs[tid] = offense.mobs[tid] or {}
@@ -474,8 +475,12 @@ function buffs.register_debuff(target, debuff, gain, action)
 		if buffs.gaol_auras:contains(debuff.id) then
 			aura_flag = buffs.auras[tname] and buffs.auras[tname][debuff.id] and buffs.auras[tname][debuff.id].aura_status or 'yes'
 		end
-
-		debuff_tbl[debuff.id] = {landed = os.clock(), aura = aura_flag}
+		
+		if action then
+			debuff_tbl[debuff.id] = {landed = os.clock(), aura = aura_flag, action.name, tname, tindex}
+		else
+			debuff_tbl[debuff.id] = {landed = os.clock(), aura = aura_flag, 'Unknown Spell', tname, tindex}
+		end
 		
         if is_enemy and hb.modes.mob_debug then
             atc(('Detected %sdebuff: %s %s %s [%s]'):format(msg, debuff.en, rarr, tname, tid))

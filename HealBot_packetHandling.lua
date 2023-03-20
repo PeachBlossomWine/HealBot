@@ -316,7 +316,8 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
                 end
             elseif spell_debuff_idmap[spell.id] ~= nil and targ_is_enemy then	--The debuff already landed from someone else
                 local debuff_id = spell_debuff_idmap[spell.id]
-                buffs.register_debuff(target, debuff_id, true)
+				local cause = res.spells[spell.id]
+                buffs.register_debuff(target, debuff_id, true, cause)
 			elseif targ_is_enemy and S{260,360,462}:contains(spell.id) then		--Dispel no effect, assuming every buff is removed
 				if offense.dispel.mobs and offense.dispel.mobs[target.id] then
 					offense.dispel.mobs[target.id] = nil
@@ -344,8 +345,8 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
         end
     elseif S{655}:contains(tact.message_id) and targ_is_enemy then    --${actor} casts ${spell}.${lb}${target} completely resists the spell.
         offense.register_immunity(target, res.buffs[tact.param])
-    elseif messages_paralyzed:contains(tact.message_id) then
-        buffs.register_debuff(actor, 'paralysis', true)
+    -- elseif messages_paralyzed:contains(tact.message_id) and not targ_is_enemy then
+        -- buffs.register_debuff(actor, 'paralysis', true, cause)
     end--/message ID checks
 end
 

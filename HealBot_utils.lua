@@ -489,6 +489,17 @@ function processCommand(command,...)
             watchall = false
             atc(123,'Watch all parties set to false.')
         end
+	elseif S{'showdebuff'}:contains(command) then
+		local cmd = args[1] and args[1]:lower() or (hb.showdebuff and 'off' or 'on')
+        if S{'on','true'}:contains(cmd) then
+            hb.showdebuff = true
+            atc('Debuff List is displayed.')
+			hb.txts.debuffList:visible(true)
+        elseif S{'off','false'}:contains(cmd) then
+            hb.showdebuff = false
+			hb.txts.debuffList:visible(false)
+            atc('Debuff List is hidden.')
+		end
     elseif command == 'ignoretrusts' then
         utils.toggleX(settings, 'ignoreTrusts', args[1], 'Ignoring of Trust NPCs', 'IgnoreTrusts')
     elseif command == 'packetinfo' then
@@ -872,6 +883,30 @@ function utils.ready_to_use(action)
     end
 end
 
+function utils.debuffs_disp()
+	local debuffs_lists = L()
+
+	if next(offense.mobs) ~= nil then
+		debuffs_lists:append('-Debuff List-')
+		local t_target = windower.ffxi.get_mob_by_target('t') or nil
+		for mob_id,debuff_table in pairs(offense.mobs) do
+			local claim_target = windower.ffxi.get_mob_by_id(mob_id) and windower.ffxi.get_mob_by_id(mob_id).claim_id or nil
+			if (utils.check_claim_id(claim_target)) or (t_target and t_target.valid_target and t_target.is_npc and t_target.spawn_type == 16 and t_target.id == mob_id) then
+				local count = 0
+				for _,v2 in pairs(debuff_table) do
+					if count == 0 then 
+						debuffs_lists:append('['..v2[2]..'] - '..mob_id)
+					end
+					debuffs_lists:append(v2[1])
+					count = count +1
+				end
+			end
+		end
+	end
+    hb.txts.debuffList:text(getPrintable(debuffs_lists))
+    hb.txts.debuffList:visible(settings.textBoxes.debuffList.visible)
+end
+
 --==============================================================================
 --          String Formatting Functions
 --==============================================================================
@@ -1029,10 +1064,11 @@ end
 
 function utils.refresh_textBoxes()
 	local OurReso = windower.get_windower_settings()
-	local X_action_queue = OurReso.x_res - 725
+	local X_action_queue = OurReso.x_res - 765
 	local X_mon_box = OurReso.x_res - 305
+	local X_debuff_list =  OurReso.x_res - 1065
 
-    local boxes = {'actionQueue','moveInfo','actionInfo','montoredBox'}
+    local boxes = {'actionQueue','moveInfo','actionInfo','montoredBox','debuffList'}
     for _,box in pairs(boxes) do
         local bs = settings.textBoxes[box]
 		local bst
@@ -1042,9 +1078,10 @@ function utils.refresh_textBoxes()
 			bst = {pos={x=X_mon_box, y=bs.y}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
 		elseif box == 'actionQueue' then
 			bst = {pos={x=X_action_queue, y=bs.y}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
+		elseif box == 'debuffList' then
+			bst = {pos={x=X_debuff_list, y=bs.y}, bg=settings.textBoxes.bg_other, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
 		end
 	
-        --bst.flags = {right=(bs.x < 0), bottom=(bs.y < 0)}
         if (bs.font ~= nil) then
             bst.text = {font=bs.font}
         end
