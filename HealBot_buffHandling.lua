@@ -431,6 +431,16 @@ function buffs.register_dispelable_buffs(target, debuff, gain)
 	end
 end
 
+function buffs.register_ipc_debuff_loss(target, debuff)
+	local tid = target.id
+    local is_enemy = (target.spawn_type == 16)
+    if is_enemy then
+        hb.ipc_mob_debuffs[tid] = hb.ipc_mob_debuffs[tid] or {}
+    end
+    local temp_debuff_tbl = is_enemy and hb.ipc_mob_debuffs[tid]
+	temp_debuff_tbl[debuff.id] = {targ=target, db=debuff}
+end
+
 --[[
     Register a debuff gain/loss on the given target, optionally with the action
     that caused the debuff

@@ -185,6 +185,7 @@ function processMessage(ai, monitored_ids)
                     buffs.resetDebuffTimers('ALL')
                 elseif enfeebling:contains(ai.param_1) then
                     buffs.register_debuff(target, res.buffs[ai.param_1], false)
+					buffs.register_ipc_debuff_loss(target, res.buffs[ai.param_1])
                 else
                     buffs.register_buff(target, res.buffs[ai.param_1], false)
                 end
@@ -294,6 +295,7 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
         local buff = res.buffs[tact.param]
         if enfeebling:contains(tact.param) then
             buffs.register_debuff(target, buff, false)
+			buffs.register_ipc_debuff_loss(target, buff)
         else
             buffs.register_buff(target, buff, false)
 			buffs.register_dispelable_buffs(target.id, buff.id, false)	--Dispel removal

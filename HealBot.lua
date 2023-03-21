@@ -15,7 +15,7 @@ serialua = _libs.lor.serialization
 hb = {
     active = false, configs_loaded = false, partyMemberInfo = {}, ignoreList = S{}, extraWatchList = S{}, job_registry= T{},
     modes = {['showPacketInfo'] = false, ['debug'] = false, ['mob_debug'] = false, ['independent'] = false},
-    _events = {}, txts = {}, config = {}, showdebuff = true,
+    _events = {}, txts = {}, config = {}, showdebuff = true, ipc_mob_debuffs = T{}
 }
 healer = T{}
 settings = {}
@@ -355,10 +355,11 @@ function hb.process_ipc(msg)
                 local response = {
                     method='POST', pk='buff_ids', val=player.buffs,
                     pid=player.id, name=player.name, stype=player.spawn_type, 
-					aura_table=buffs.auras,
+					aura_table=buffs.auras, mob_loss_debuff_table=hb.ipc_mob_debuffs,
                 }
                 local encoded = serialua.encode(response)
                 windower.send_ipc_message(encoded)
+				hb.ipc_mob_debuffs = T{}
             else
                 atcfs(123, 'Invalid pk for GET request: %s', loaded.pk)
             end
@@ -383,6 +384,15 @@ function hb.process_ipc(msg)
 						end
 					end
                     buffs.review_active_buffs(player, loaded.val)
+					if loaded.mob_loss_debuff_table then
+						if next(loaded.mob_loss_debuff_table) ~= nil then
+							for tid, debuff in pairs(loaded.mob_loss_debuff_table) do
+								for _,v in pairs(debuff) do
+									buffs.register_debuff(v.targ, v.db, false)
+								end
+							end
+						end
+					end
                 else
                     atcfs(123, 'Missing name in POST message: %s', msg)
                 end

@@ -366,6 +366,9 @@ return {
     ["Gnarled Rampart"] = S{
         194
     },
+    ["Goblin Replica"] = S{
+        2
+    },
     ["Gogmagog"] = S{
         7
     },
