@@ -897,7 +897,7 @@ function utils.debuffs_disp()
 					if count == 0 then 
 						debuffs_lists:append('['..v2[2]..'] - '..mob_id)
 					end
-					debuffs_lists:append(v2[1])
+					debuffs_lists:append(v2[1].." : "..string.format(os.date('%M:%S',os.time()-v2.landed)))
 					count = count +1
 				end
 			end

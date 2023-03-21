@@ -15,8 +15,37 @@ messages_gainEffect = S{73,82,127,128,141,160,164,166,186,194,203,205,230,236,23
 msg_gain_no_source = S{73,128,160,164,166,203,205,266,267,269,270,272,277,278,279,280}
 msg_gain_abil = S{127,141,319,320,321,645}
 msg_gain_spell = S{82,230,236,237,268,269,270,271,272,280}
-msg_gain_ws = S{186,194,242,243} -- 185?
+msg_gain_ws = S{185,186,194,242,243}
 msg_gain_other = S{374,375,412}
+
+stat_down_ws = {
+	[83]={name="Armor Break",text="(-25% Def)",buff="Defense Down"},
+	[87]={name="Full Break",text="(-12.5% Def/-20 Acc+Eva)",buff="Defense Down"},
+	[89]={name="Metatron Torment",text="(-18.75 Def)",buff="Defense Down"},
+	[155]={name="Tachi: Ageha",text="(-25% Def)",buff="Defense Down"},
+	[181]={name="Shell Crusher",text="(-25% Def)",buff="Defense Down"},
+	[187]={name="Garland of Bliss",text="(-12.5% Def)",buff="Defense Down"},
+}
+
+bluemage_spells = {
+	[561]={name="Frightful Roar",text="(-10% Def)",buff="Defense Down"},
+	[633]={name="Enervation",text="(-10% Def/-8 MDB)",buff="Defense Down"},
+	[650]={name="Seedspray",text="(-8% Def)",buff="Defense Down"},
+	[651]={name="Corrosive Ooze",text="(-5% Def)",buff="Defense Down"},
+	[670]={name="Benthic Typhoon",text="(-10% Def)",buff="Defense Down"},
+	[692]={name="Sudden Lunge",text="(Stun)",buff="Stun"},
+	[717]={name="Sweeping Gouge",text="(-18% Def)",buff="Defense Down"},
+	[719]={name="Searing Tempest",text="(Burn)",buff="Burn"},
+	[720]={name="Spectral Floe",text="(Terror)",buff="Terror"},
+	[721]={name="Anvil Lightning",text="(Stun)",buff="Stun"},
+	[722]={name="Entomb",text="(Petrification)",buff="Petrification"},
+	[725]={name="Blinding Fulgor",text="(Flash)",buff="Flash"},
+	[726]={name="Scouring Spate",text="(-20% Atk)",buff="Attack Down"},
+	[727]={name="Silent Storm",text="(Silence)",buff="Silence"},
+	[728]={name="Tenebral Crush",text="(-20% Def)",buff="Defense Down"},
+	[740]={name="Tourbillion",text="(-33% Def)",buff="Defense Down"},
+	[742]={name="Bilgestorm",text="(-25% Def)",buff="Defense Down"},
+}
 
 messages_loseEffect = S{64,74,83,123,159,168,204,206,322,341,342,343,344,350,378,453,531,647}
 messages_wearOff = S{204,206}

@@ -419,10 +419,10 @@ end
 function buffs.register_dispelable_buffs(target, debuff, gain)
 	if gain then
 		if offense.dispel.mobs and offense.dispel.mobs[target] then
-			offense.dispel.mobs[target][debuff]= {landed = os.clock()}
+			offense.dispel.mobs[target][debuff]= {landed = os.time()}
 		else
 			offense.dispel.mobs[target] = {}
-			offense.dispel.mobs[target][debuff]= {landed = os.clock()}
+			offense.dispel.mobs[target][debuff]= {landed = os.time()}
 		end
 	else -- removal
 		if offense.dispel.mobs[target] and offense.dispel.mobs[target][debuff] then
@@ -477,9 +477,9 @@ function buffs.register_debuff(target, debuff, gain, action)
 		end
 		
 		if action then
-			debuff_tbl[debuff.id] = {landed = os.clock(), aura = aura_flag, action.name, tname, tindex}
+			debuff_tbl[debuff.id] = {landed = os.time(), aura = aura_flag, action.name, tname, tindex}
 		else
-			debuff_tbl[debuff.id] = {landed = os.clock(), aura = aura_flag, 'Unknown Spell', tname, tindex}
+			debuff_tbl[debuff.id] = {landed = os.time(), aura = aura_flag, 'Unknown Spell', tname, tindex}
 		end
 		
         if is_enemy and hb.modes.mob_debug then
@@ -512,7 +512,7 @@ function buffs.register_buff(target, buff, gain, action)
             buffs.buffList[target.name][buff.spell.en] = buffs.buffList[target.name][buff.spell.en] or {}
             buffs.buffList[target.name][buff.spell.en] = buffs.buffList[target.name][buff.spell.en] or {}
             if gain then
-                buffs.buffList[target.name][buff.spell.en].landed = os.clock()
+                buffs.buffList[target.name][buff.spell.en].landed = os.time()
             else
                 buffs.buffList[target.name][buff.spell.en].landed = nil
             end
@@ -555,7 +555,7 @@ function buffs.register_buff(target, buff, gain, action)
 	if buff_tbl[bkey] then
         buff_tbl[bkey] = buff_tbl[bkey] or {}
         if gain then
-            buff_tbl[bkey].landed = os.clock()
+            buff_tbl[bkey].landed = os.time()
             if is_enemy and hb.modes.mob_debug then
                 atc(('Detected %sbuff: %s %s %s [%s]'):format(msg, nbuff.en, rarr, tname, tid))
             end
