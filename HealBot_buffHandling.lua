@@ -437,8 +437,10 @@ function buffs.register_ipc_debuff_loss(target, debuff)
     if is_enemy then
         hb.ipc_mob_debuffs[tid] = hb.ipc_mob_debuffs[tid] or {}
     end
-    local temp_debuff_tbl = is_enemy and hb.ipc_mob_debuffs[tid]
-	temp_debuff_tbl[debuff.id] = {targ=target, db=debuff}
+    local temp_debuff_tbl = (is_enemy and hb.ipc_mob_debuffs[tid]) or nil
+	if temp_debuff_tbl then
+		temp_debuff_tbl[debuff.id] = {targ=target, db=debuff}
+	end
 end
 
 --[[
