@@ -1066,7 +1066,6 @@ function utils.refresh_textBoxes()
 	local OurReso = windower.get_windower_settings()
 	local X_action_queue = OurReso.x_res - 765
 	local X_mon_box = OurReso.x_res - 305
-	local X_debuff_list =  OurReso.x_res - 1065
 
     local boxes = {'actionQueue','moveInfo','actionInfo','montoredBox','debuffList'}
     for _,box in pairs(boxes) do
@@ -1079,7 +1078,7 @@ function utils.refresh_textBoxes()
 		elseif box == 'actionQueue' then
 			bst = {pos={x=X_action_queue, y=bs.y}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
 		elseif box == 'debuffList' then
-			bst = {pos={x=X_debuff_list, y=bs.y}, bg=settings.textBoxes.bg_other, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
+			bst = {pos={x=bs.x, y=bs.y}, bg=settings.textBoxes.bg_other, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
 		end
 	
         if (bs.font ~= nil) then

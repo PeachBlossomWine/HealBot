@@ -36,8 +36,8 @@ return {
             ['font'] = 'consolas',
             ['size'] = 10,
             ['visible'] = true,
-            ['x'] = 1000,
-            ['y'] = 80,
+            ['x'] = 400,
+            ['y'] = 90,
         },
         ['montoredBox'] = {
             ['font'] = 'consolas',
