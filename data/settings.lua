@@ -39,6 +39,13 @@ return {
             ['x'] = 400,
             ['y'] = 90,
         },
+		['toggleList'] = {
+            ['font'] = 'consolas',
+            ['size'] = 10,
+            ['visible'] = true,
+            ['x'] = 1400,
+            ['y'] = 520,
+        },
         ['montoredBox'] = {
             ['font'] = 'consolas',
             ['size'] = 10,

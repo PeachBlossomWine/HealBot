@@ -500,6 +500,24 @@ function processCommand(command,...)
 			hb.txts.debuffList:visible(false)
             atc('Debuff List is hidden.')
 		end
+	elseif S{'automp'}:contains(command) then
+		local cmd = args[1] and args[1]:lower() or (hb.autoRecoverMPMode and 'off' or 'on')
+        if S{'on','true'}:contains(cmd) then
+            hb.autoRecoverMPMode = true
+            atc('Auto Recover MP [Coalition Ether] is ON.')
+        elseif S{'off','false'}:contains(cmd) then
+			hb.autoRecoverMPMode = false
+            atc('Auto Recover MP [Coalition Ether] is OFF.')
+		end
+	elseif S{'autohp'}:contains(command) then
+		local cmd = args[1] and args[1]:lower() or (hb.autoRecoverHPMode and 'off' or 'on')
+        if S{'on','true'}:contains(cmd) then
+            hb.autoRecoverHPMode = true
+            atc('Auto Recover HP [Vile Elixir] is ON.')
+        elseif S{'off','false'}:contains(cmd) then
+			hb.autoRecoverHPMode = false
+            atc('Auto Recover HP [Vile Elixir] is OFF.')
+		end
     elseif command == 'ignoretrusts' then
         utils.toggleX(settings, 'ignoreTrusts', args[1], 'Ignoring of Trust NPCs', 'IgnoreTrusts')
     elseif command == 'packetinfo' then
@@ -907,6 +925,52 @@ function utils.debuffs_disp()
     hb.txts.debuffList:visible(settings.textBoxes.debuffList.visible)
 end
 
+function utils.toggle_disp()
+	local toggle_list = L()
+	local hp_toggle = hb.autoRecoverHPMode and '\\cs(0,0,255)[ON]\\cr' or '\\cs(255,0,0)[OFF]\\cr'
+	toggle_list:append(('[Auto HP]: %s'):format(hp_toggle))
+	local mp_toggle = hb.autoRecoverMPMode and '\\cs(0,0,255)[ON]\\cr' or '\\cs(255,0,0)[OFF]\\cr'
+	toggle_list:append(('[Auto MP]: %s'):format(mp_toggle))
+    hb.txts.toggleList:text(getPrintable(toggle_list))
+    hb.txts.toggleList:visible(settings.textBoxes.toggleList.visible)
+end
+
+function utils.haveItem(item_id)
+	for bag in T(__bags.usable):it() do
+		for item, index in T(windower.ffxi.get_items(bag.id)):it() do
+			if type(item) == 'table' and item.id == item_id then
+				return true
+			end
+		end
+	end
+	return false
+end
+
+function utils.check_recovery_item()
+	if (not hb.autoRecoverMPMode) and (not hb.autoRecoverHPMode) then return false end
+
+	if hb.autoRecoverHPMode and not moving and windower.ffxi.get_player().vitals.hpp < 30 then
+		if utils.haveItem(4175) then
+			atc(123,'HP LOW: Vile Elixir +1')
+			windower.chat.input('/item "Vile Elixir +1" <me>')
+			return true
+		elseif utils.haveItem(4174) then
+			atc(123,'HP LOW: Vile Elixir')
+			windower.chat.input('/item "Vile Elixir" <me>')
+			return true
+		end
+	end
+	
+	if hb.autoRecoverMPMode and not moving and windower.ffxi.get_player().vitals.mpp < 25 then
+		if utils.haveItem(5987) then
+			atc(123,'MP LOW: Coalition Ether')
+			windower.chat.input('/item "Coalition Ether" <me>')
+			return true
+		end
+	end
+	return false
+end
+
 --==============================================================================
 --          String Formatting Functions
 --==============================================================================
@@ -1067,7 +1131,7 @@ function utils.refresh_textBoxes()
 	local X_action_queue = OurReso.x_res - 765
 	local X_mon_box = OurReso.x_res - 305
 
-    local boxes = {'actionQueue','moveInfo','actionInfo','montoredBox','debuffList'}
+    local boxes = {'actionQueue','moveInfo','actionInfo','montoredBox','debuffList','toggleList'}
     for _,box in pairs(boxes) do
         local bs = settings.textBoxes[box]
 		local bst
@@ -1079,6 +1143,8 @@ function utils.refresh_textBoxes()
 			bst = {pos={x=X_action_queue, y=bs.y}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
 		elseif box == 'debuffList' then
 			bst = {pos={x=bs.x, y=bs.y}, bg=settings.textBoxes.bg_other, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
+		elseif box == 'toggleList' then
+			bst = {pos={x=X_mon_box, y=bs.y}, bg=settings.textBoxes.bg, stroke={alpha=255, blue=0, green=0, red=0, width=0}}
 		end
 	
         if (bs.font ~= nil) then

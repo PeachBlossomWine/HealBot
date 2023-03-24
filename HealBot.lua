@@ -15,7 +15,7 @@ serialua = _libs.lor.serialization
 hb = {
     active = false, configs_loaded = false, partyMemberInfo = {}, ignoreList = S{}, extraWatchList = S{}, job_registry= T{},
     modes = {['showPacketInfo'] = false, ['debug'] = false, ['mob_debug'] = false, ['independent'] = false},
-    _events = {}, txts = {}, config = {}, showdebuff = true, ipc_mob_debuffs = T{}
+    _events = {}, txts = {}, config = {}, showdebuff = true, ipc_mob_debuffs = T{}, autoRecoverMPMode = false, autoRecoverHPMode = false
 }
 healer = T{}
 settings = {}
@@ -42,6 +42,16 @@ local pt_keys = {'party1_count', 'party2_count', 'party3_count'}
 local pm_keys = {
     {'p0','p1','p2','p3','p4','p5'}, {'a10','a11','a12','a13','a14','a15'}, {'a20','a21','a22','a23','a24','a25'}
 }
+
+__bags = {}
+local getBagType = function(access, equippable)
+    return S(res.bags):filter(function(key) return (key.access == access and key.en ~= 'Recycle' and (not key.equippable or key.equippable == equippable)) or key.id == 0 and key end)
+end
+
+do -- Setup Bags.
+    __bags.usable = T(getBagType('Everywhere', false))
+end
+
 
 hb._events['load'] = windower.register_event('load', function()
     if not _libs.lor then
@@ -165,8 +175,11 @@ hb._events['render'] = windower.register_event('prerender', function()
             windower.send_ipc_message(ipc_req)
             healer.last_ipc_sent = now
         end
-		if (os.clock()-last_render) > delay and hb.active and hb.showdebuff then
-			utils.debuffs_disp()
+		if (os.clock()-last_render) > 0.5 then
+			if hb.active and hb.showdebuff then
+				utils.debuffs_disp()
+			end
+			utils.toggle_disp()
 			last_render = os.clock()
 		end
     end

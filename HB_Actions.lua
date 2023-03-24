@@ -108,6 +108,7 @@ function actions.get_defensive_action()
 	elseif (action.buff ~= nil) then
 		return action.buff
 	end
+	utils.check_recovery_item()
 	return nil
 end
 
