@@ -10,13 +10,15 @@ sparr = ' '..rarr..' '
 
 messages_magicDamage = S{2,252}
 messages_magicHealed = S{7}
-messages_gainEffect = S{73,82,127,128,141,160,164,166,186,194,203,205,230,236,237,242,243,266,267,268,269,270,271,272,277,278,279,280,319,320,321,374,375,412,645} -- 42?
+messages_gainEffect = S{73,82,100,127,128,141,160,164,166,186,194,203,205,230,236,237,242,243,266,267,268,269,270,271,272,277,278,279,280,319,320,321,374,375,412,519,520,521,529,591,602,645}
 
 msg_gain_no_source = S{73,128,160,164,166,203,205,266,267,269,270,272,277,278,279,280}
-msg_gain_abil = S{127,141,319,320,321,645}
+msg_gain_abil = S{100,127,141,319,320,321,519,520,521,529,591,602,645}
 msg_gain_spell = S{82,230,236,237,268,269,270,271,272,280}
 msg_gain_ws = S{185,186,194,242,243}
 msg_gain_other = S{374,375,412}
+
+dnc_steps = {[519]=386,[520]=391,[521]=396,[591]=448}
 
 stat_down_ws = {
 	[83]={name="Armor Break",text="(-25% Def)",buff="Defense Down"},
@@ -62,12 +64,8 @@ messages_specific_debuff_gain = {
     [333]={'INT Down'},
     [334]={'MND Down'},
     [335]={'CHR Down'},
-    --[519]={'Lethargic Daze'},
-    --[520]={'Sluggish Daze'},
-    --[521]={'Weakened Daze'},
     [533]={'Accuracy Down'},
     [534]={'Attack Down'},
-    [591]={'Bewildered Daze'}
 }
 messages_specific_debuff_lose = {
     [351]={'blindness','paralysis','poison','silence','disease'},

@@ -272,14 +272,24 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
     elseif messages_gainEffect:contains(tact.message_id) then   --ai.param: spell; tact.param: buff/debuff
         --{target} gains the effect of {buff} / {target} is {debuff}ed
         local cause = nil
+		local tier = nil
+		local steps_cause = nil
         if msg_gain_abil:contains(tact.message_id) then
-            cause = res.job_abilities[ai.param]
+			if S{519,520,521,591}:contains(tact.message_id) then -- Steps
+				cause = res.job_abilities[ai.param]
+				tier = ai.targets[1].actions[1].param
+				steps_cause = {name=string.format("%s: Lv.%s", cause.name, tier)}
+			else
+				cause = res.job_abilities[ai.param]
+			end
         elseif msg_gain_spell:contains(tact.message_id) then
             cause = res.spells[ai.param]
         end
 
         local buff = res.buffs[tact.param]
-        if enfeebling:contains(tact.param) then
+		if dnc_steps[tact.message_id] then
+			buffs.register_debuff(target, res.buffs[dnc_steps[tact.message_id]], true, steps_cause)
+		elseif enfeebling:contains(tact.param) then
 			if bluemage_spells[ai.param] then
 				cause = res.spells[ai.param]
 				local blu_spell_cause = {name=string.format("%s %s", cause.name, bluemage_spells[ai.param].text)}
@@ -288,7 +298,7 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
 				buffs.register_debuff(target, buff, true, cause)
 			end
         else
-            buffs.register_buff(target, buff, true, cause)
+			buffs.register_buff(target, buff, true, cause)
         end
     elseif messages_loseEffect:contains(tact.message_id) then   --ai.param: spell; tact.param: buff/debuff
         --{target}'s {buff} wore off
