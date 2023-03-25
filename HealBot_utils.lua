@@ -903,7 +903,6 @@ function utils.ready_to_use(action)
 end
 
 function utils.debuffs_disp()
-	--local debuffs_lists = L()
 	debuffs_lists = L()
 	if next(offense.mobs) ~= nil or next(offense.dispel.mobs) ~= nil then
 		if next(offense.mobs) ~= nil then
@@ -911,35 +910,14 @@ function utils.debuffs_disp()
 			local tindex = 0
 			for mob_id,debuff_table in pairs(offense.mobs) do
 				tindex = utils.get_mob_index(debuff_table)
-				local claim_target = windower.ffxi.get_mob_by_index(tindex) and windower.ffxi.get_mob_by_index(tindex).claim_id or nil
+				local claim_target = tindex and windower.ffxi.get_mob_by_index(tindex) and windower.ffxi.get_mob_by_index(tindex).claim_id or nil
 				if (utils.check_claim_id(claim_target)) or (t_target and t_target.valid_target and t_target.is_npc and t_target.spawn_type == 16 and t_target.id == mob_id) then
-					--partial_list = debuff_display(debuff_table,true,false)
-					utils.debuff_display(debuff_table,true,false,mob_id,tindex)
+					utils.debuff_display_builder(debuff_table,true,false,mob_id,tindex)
 					if next(offense.dispel.mobs) ~= nil then
 						if offense.dispel.mobs[mob_id] then
-							utils.debuff_display(offense.dispel.mobs[mob_id],false,true,mob_id)
+							utils.debuff_display_builder(offense.dispel.mobs[mob_id],false,true,mob_id)
 						end
 					end
-					
-					
-					-- local count = 0
-					-- for _,v2 in pairs(debuff_table) do
-						-- if count == 0 then 
-							-- debuffs_lists:append('['..v2.mob_name..'] - '..mob_id)
-						-- end
-						-- debuffs_lists:append(v2.spell_name.." : "..string.format(os.date('%M:%S',os.time()-v2.landed)))
-						-- count = count +1
-					-- end
-					-- --Dispel buffs
-					-- if next(offense.dispel.mobs) ~= nil then
-						-- if offense.dispel.mobs[mob_id] then
-							-- for _,dispel_buffs in pairs(offense.dispel.mobs[mob_id]) do
-								-- local colorCode = "\\cs(255,165,0)"
-								-- local formattedMessage = string.format("%s%s\\cr", colorCode, dispel_buffs.debuff_name)
-								-- debuffs_lists:append(formattedMessage.." : "..string.format(os.date('%M:%S',os.time()-dispel_buffs.landed)))
-							-- end
-						-- end
-					-- end
 				end
 			end
 		end
@@ -949,19 +927,9 @@ function utils.debuffs_disp()
 			local tindex = 0
 			for mob_id,dispel_table in pairs(offense.dispel.mobs) do
 				tindex = utils.get_mob_index(dispel_table)
-				local claim_target = windower.ffxi.get_mob_by_index(tindex) and windower.ffxi.get_mob_by_index(tindex).claim_id or nil
+				local claim_target = tindex and windower.ffxi.get_mob_by_index(tindex) and windower.ffxi.get_mob_by_index(tindex).claim_id or nil
 				if not offense.mobs[mob_id] and ((utils.check_claim_id(claim_target)) or (t_target and t_target.valid_target and t_target.is_npc and t_target.spawn_type == 16 and t_target.id == mob_id)) then
-					utils.debuff_display(dispel_table,true,true,mob_id,tindex)
-					-- local count = 0
-					-- for _,dispel_buffs in pairs(dispel_table) do
-						-- if count == 0 then 
-							-- debuffs_lists:append('['..dispel_buffs.mob_name..'] - '..mob_id)
-						-- end
-						-- local colorCode = "\\cs(255,165,0)"
-						-- local formattedMessage = string.format("%s%s\\cr", colorCode, dispel_buffs.debuff_name)
-						-- debuffs_lists:append(formattedMessage.." : "..string.format(os.date('%M:%S',os.time()-dispel_buffs.landed)))
-						-- count = count +1
-					-- end
+					utils.debuff_display_builder(dispel_table,true,true,mob_id,tindex)
 				end
 			end
 		end
@@ -970,7 +938,7 @@ function utils.debuffs_disp()
     hb.txts.debuffList:visible(settings.textBoxes.debuffList.visible)
 end
 
-function utils.debuff_display(d_table, name, dispel, mob_id, mob_index)
+function utils.debuff_display_builder(d_table, name, dispel, mob_id, mob_index)
 	local count = 0
 	local colorOrange = "\\cs(255,165,0)"
 	local colorRed = "\\cs(255,50,0)"
