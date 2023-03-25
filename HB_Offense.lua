@@ -165,15 +165,13 @@ function offense.getDispelQueue(player, target)
     local dbq = ActionQueue.new()
     if offense.dispel.active and (S{'RDM','BRD'}:contains(player.main_job) or S{'RDM'}:contains(player.sub_job)) then
 		if offense.dispel.mobs[target.id] then
-			for _, debuff in pairs(offense.dispel.mobs[target.id]) do
-				for k,_ in pairs(debuff) do
-					if k ~= nil then
-						if not offense.dispel.ignored:contains(target.name) then
-							if player.main_job == 'RDM' or player.sub_job == 'RDM' and healer:can_use(res.spells[260]) then
-								dbq:enqueue('spells', res.spells[260], target.name, res.spells[260], ' Dispel')
-							elseif player.main_job == 'BRD' and healer:can_use(res.spells[462]) then
-								dbq:enqueue('spells', res.spells[462], target.name, res.spells[462], ' Magic Finale')
-							end
+			for debuff,_ in pairs(offense.dispel.mobs[target.id]) do
+				if debuff ~= nil then
+					if not offense.dispel.ignored:contains(target.name) then
+						if player.main_job == 'RDM' or player.sub_job == 'RDM' and healer:can_use(res.spells[260]) then
+							dbq:enqueue('spells', res.spells[260], target.name, res.spells[260], ' Dispel')
+						elseif player.main_job == 'BRD' and healer:can_use(res.spells[462]) then
+							dbq:enqueue('spells', res.spells[462], target.name, res.spells[462], ' Magic Finale')
 						end
 					end
 				end

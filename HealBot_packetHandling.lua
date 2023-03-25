@@ -37,29 +37,29 @@ end
 -- Track mob buffs for dispel action
 function handle_dispel_action(act)
 	for _,targ in pairs(act.targets) do
-		local target = windower.ffxi.get_mob_by_id(targ.id)
+		local target = windower.ffxi.get_mob_by_id(targ.id) or nil
 		local valid_target = act.valid_target
-		local actor = windower.ffxi.get_mob_by_id(act.actor_id)		
+		local actor = windower.ffxi.get_mob_by_id(act.actor_id)	or nil	
 		local category = act.category  
 		local param = act.param
 		local targets = act.targets
 		local action_buff = targets[1].actions[1].param
 	
-		if target and utils.isMonster(actor.index) and utils.isMonster(target.index) and S{4,11}:contains(category) then 
+		if target and actor and utils.isMonster(actor.index) and utils.isMonster(target.index) and S{4,11}:contains(category) then 
 			if category == 11 then	-- Monster abilitiies
 				if res.monster_abilities[param] and not (dispel_mob_ja_blacklist:contains(param)) then 
 					if res.buffs[action_buff] and not special_mob_ja[param] and not (dispel_buffs_blacklist:contains(action_buff)) then
-						buffs.register_dispelable_buffs(target.id, action_buff, true)
+						buffs.register_dispelable_buffs(target.id, action_buff, true, target.name, target.index)
 					elseif special_mob_ja[param] then	-- Special abilitiies that don't return buff value.
 						for _,mob_buff in pairs(special_mob_ja[param]) do
-							buffs.register_dispelable_buffs(target.id, mob_buff, true)
+							buffs.register_dispelable_buffs(target.id, mob_buff, true, target.name, target.index)
 						end
 					end
 				end
 			elseif category == 4 then	-- Monster spells
 				if res.spells[param] then
 					if res.buffs[action_buff] and not (dispel_buffs_blacklist:contains(action_buff)) then
-						buffs.register_dispelable_buffs(target.id, action_buff, true)
+						buffs.register_dispelable_buffs(target.id, action_buff, true, target.name, target.index)
 					end
 				end
 			end
@@ -269,7 +269,19 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
 			local ws_cause = {name=string.format("%s %s", res.weapon_skills[ai.param].name, stat_down_ws[ai.param].text)}
 			buffs.register_debuff(target, stat_down_ws[ai.param].buff, true, ws_cause)
 		end
-    elseif messages_gainEffect:contains(tact.message_id) then   --ai.param: spell; tact.param: buff/debuff
+	elseif S{1,67}:contains(tact.message_id) and S{1,3}:contains(ai.category) and targ_is_enemy then
+		if ai.category == 1 and ai.targets[1].actions[1].has_add_efct and ai.targets[1].actions[1].add_efct_message_id == 603 then	--THF Treasure Hunter
+			local TH_cause = {name=string.format("TH: %s", ai.targets[1].actions[1].add_efct_param)}
+			res.buffs[1000] = res.buffs[1000] or {}
+			res.buffs[1000] = {id=1000,en="Treasure Hunter",ja="TH",enl="Treasure Hunter",jal="TH"}
+			buffs.register_debuff(target, res.buffs[1000].en, true, TH_cause)
+		elseif ai.category == 3 and ai.targets[1].actions[1].message == 608 then --RNG Treasure Hunter
+			res.buffs[1000] = res.buffs[1000] or {}
+			res.buffs[1000] = {id=1000,en="Treasure Hunter",ja="TH",enl="Treasure Hunter",jal="TH"}
+			local TH_cause = {name=string.format("TH: %s", ai.targets[1].actions[1].param)}
+			buffs.register_debuff(target, res.buffs[1000].en, true, TH_cause)
+		end
+	elseif messages_gainEffect:contains(tact.message_id) then   --ai.param: spell; tact.param: buff/debuff
         --{target} gains the effect of {buff} / {target} is {debuff}ed
         local cause = nil
 		local tier = nil
@@ -307,8 +319,10 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
             buffs.register_debuff(target, buff, false)
 			buffs.register_ipc_debuff_loss(target, buff)
         else
-            buffs.register_buff(target, buff, false)
-			buffs.register_dispelable_buffs(target.id, buff.id, false)	--Dispel removal
+			if not targ_is_enemy then
+				buffs.register_buff(target, buff, false)
+			end
+			buffs.register_dispelable_buffs(target.id, buff.id, false, target.name, target.index)	--Dispel removal
         end
     elseif messages_noEffect:contains(tact.message_id) then     --ai.param: spell; tact.param: buff/debuff
         --Spell had no effect on {target}

@@ -416,17 +416,21 @@ function buffs.remove_debuff_aura(target, debuff)
 end
 
 --Dispel tracking
-function buffs.register_dispelable_buffs(target, debuff, gain)
+function buffs.register_dispelable_buffs(target, debuff, gain, tname, tindex)
 	if gain then
 		if offense.dispel.mobs and offense.dispel.mobs[target] then
-			offense.dispel.mobs[target][debuff]= {landed = os.time()}
+			offense.dispel.mobs[target][debuff]= {landed = os.time(), debuff_name = res.buffs[debuff].en, mob_name = tname, mob_index = tindex}
 		else
 			offense.dispel.mobs[target] = {}
-			offense.dispel.mobs[target][debuff]= {landed = os.time()}
+			offense.dispel.mobs[target][debuff]= {landed = os.time(), debuff_name = res.buffs[debuff].en, mob_name = tname, mob_index = tindex}
 		end
 	else -- removal
 		if offense.dispel.mobs[target] and offense.dispel.mobs[target][debuff] then
 			offense.dispel.mobs[target][debuff] = nil
+		end
+		local mob_ids = table.keys(offense.dispel.mobs)
+		if mob_ids and offense.dispel.mobs[target] and next(offense.dispel.mobs[target]) == nil then
+			offense.dispel.mobs[target] = nil
 		end
 	end
 end
@@ -489,9 +493,9 @@ function buffs.register_debuff(target, debuff, gain, action)
 		end
 		
 		if action then
-			debuff_tbl[debuff.id] = {landed = os.time(), aura = aura_flag, action.name, tname, tindex}
+			debuff_tbl[debuff.id] = {landed = os.time(), aura = aura_flag, spell_name = action.name, mob_name = tname, mob_index = tindex}
 		else
-			debuff_tbl[debuff.id] = {landed = os.time(), aura = aura_flag, 'Unknown Spell', tname, tindex}
+			debuff_tbl[debuff.id] = {landed = os.time(), aura = aura_flag, spell_name = 'Unknown Spell', mob_name = tname, mob_index = tindex}
 		end
 		
         if is_enemy and hb.modes.mob_debug then
@@ -500,6 +504,10 @@ function buffs.register_debuff(target, debuff, gain, action)
         atcd(('Detected %sdebuff: %s %s %s [%s]'):format(msg, debuff.en, rarr, tname, tid))
     else
         debuff_tbl[debuff.id] = nil
+		local mob_ids = table.keys(offense.mobs)
+		if mob_ids and offense.mobs[tid] and next(offense.mobs[tid]) == nil then
+			offense.mobs[tid] = nil
+		end
         if is_enemy and hb.modes.mob_debug then
             atc(('Detected %sdebuff: %s wore off %s [%s]'):format(msg, debuff.en, tname, tid))
         end
@@ -562,6 +570,7 @@ function buffs.register_buff(target, buff, gain, action)
             end
         end
     end
+
     local buff_tbl = is_enemy and offense.mobs[tid] or buffs.buffList[tname]
     --if is_enemy and offense.dispel[bkey] or buff_tbl[bkey] then
 	if buff_tbl[bkey] then
