@@ -493,9 +493,9 @@ function buffs.register_debuff(target, debuff, gain, action)
 		end
 		
 		if action then
-			debuff_tbl[debuff.id] = {landed = os.time(), aura = aura_flag, spell_name = action.name, mob_name = tname, mob_index = tindex}
+			debuff_tbl[debuff.id] = {landed = os.time(), aura = aura_flag, spell_name = action.name, spell_id = action.id, mob_name = tname, mob_index = tindex}
 		else
-			debuff_tbl[debuff.id] = {landed = os.time(), aura = aura_flag, spell_name = 'Unknown Spell', mob_name = tname, mob_index = tindex}
+			debuff_tbl[debuff.id] = {landed = os.time(), aura = aura_flag, spell_name = 'Unknown Spell', spell_id = 10000, mob_name = tname, mob_index = tindex}
 		end
 		
         if is_enemy and hb.modes.mob_debug then

@@ -231,6 +231,135 @@ function processAction(ai, monitored_ids)
 end
 
 
+function handle_shot(target, shot_id)
+    if not offense.mobs[target.id] then return false end
+    local cause = nil
+	local cor_upgrade_cause = nil
+	local buff_id = nil
+	
+    if shot_id == 125 and offense.mobs[target.id][128] then	 -- Fire
+		cause = res.spells[235] -- Burn
+		buff_id = 128
+		if not offense.mobs[target.id][buff_id].shot then
+			cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Fire Shot)')}
+			offense.mobs[target.id][buff_id].shot = 1
+			buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+		else
+			cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Fire Shot) x2')}
+			offense.mobs[target.id][buff_id].shot = 2
+			buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+		end
+	elseif shot_id == 126 then -- Ice
+		if offense.mobs[target.id][4] and S{58,80}:contains(offense.mobs[target.id][4].spell_id) and not offense.mobs[target.id][4].shot then -- Paralysis
+			buff_id = 4
+			cause = res.spells[offense.mobs[target.id][buff_id].spell_id]
+			cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Ice Shot)')}
+			offense.mobs[target.id][buff_id].shot = 1
+			buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+		end
+		if offense.mobs[target.id][129] then -- Burn
+            cause = res.spells[236]
+			buff_id = 129
+            if not offense.mobs[target.id][buff_id].shot then
+				cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Ice Shot)')}
+                offense.mobs[target.id][buff_id].shot = 1
+                buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+            else
+				cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Ice Shot) x2')}
+                offense.mobs[target.id][buff_id].shot = 2
+                buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+            end
+        end
+	elseif shot_id == 127 and offense.mobs[target.id][130] then -- Wind
+		cause = res.spells[237] -- Choke
+		buff_id = 130
+		if not offense.mobs[target.id][buff_id].shot then
+			cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Wind Shot)')}
+			offense.mobs[target.id][buff_id].shot = 1
+			buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+		else
+			cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Wind Shot) x2')}
+			offense.mobs[target.id][buff_id].shot = 2
+			buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+		end
+	elseif shot_id == 128 then -- Earth
+		if offense.mobs[target.id][13] and S{56,344,345}:contains(offense.mobs[target.id][13].spell_id) and not offense.mobs[target.id][13].shot then -- Slow
+			buff_id = 13
+			cause = res.spells[offense.mobs[target.id][buff_id].spell_id]
+			cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Earth Shot)')}
+			offense.mobs[target.id][buff_id].shot = 1
+			buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+		end
+		if offense.mobs[target.id][131] then -- Rasp
+            cause = res.spells[238]
+			buff_id = 131
+            if not offense.mobs[target.id][buff_id].shot then
+				cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Earth Shot)')}
+                offense.mobs[target.id][buff_id].shot = 1
+                buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+            else
+				cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Earth Shot) x2')}
+                offense.mobs[target.id][buff_id].shot = 2
+                buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+            end
+        end
+	elseif shot_id == 129 and offense.mobs[target.id][132] then -- Thunder
+		cause = res.spells[239] -- Shock
+		buff_id = 132
+		if not offense.mobs[target.id][buff_id].shot then
+			cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Thunder Shot)')}
+			offense.mobs[target.id][buff_id].shot = 1
+			buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+		else
+			cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Thunder Shot) x2')}
+			offense.mobs[target.id][buff_id].shot = 2
+			buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+		end
+	elseif shot_id == 130 then -- Water
+		if offense.mobs[target.id][3] and S{220,221}:contains(offense.mobs[target.id][3].spell_id) and not offense.mobs[target.id][3].shot then -- Slow
+			buff_id = 3
+			cause = res.spells[offense.mobs[target.id][buff_id].spell_id]
+			cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Water Shot)')}
+			offense.mobs[target.id][buff_id].shot = 1
+			buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+		end
+		if offense.mobs[target.id][133] then -- Drown
+            cause = res.spells[240]
+			buff_id = 133
+            if not offense.mobs[target.id][buff_id].shot then
+				cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Water Shot)')}
+                offense.mobs[target.id][buff_id].shot = 1
+                buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+            else
+				cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Water Shot) x2')}
+                offense.mobs[target.id][buff_id].shot = 2
+                buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+            end
+        end
+	elseif shot_id == 131 and offense.mobs[target.id][134] and not offense.mobs[target.id][134].shot then -- Light
+		buff_id = 134 -- Dia
+		cause = res.spells[offense.mobs[target.id][buff_id].spell_id]
+		cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Light Shot)')}
+		offense.mobs[target.id][buff_id].shot = 1
+		buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+	elseif shot_id == 132 then -- Dark
+		if offense.mobs[target.id][5] and S{254,276,347,348}:contains(offense.mobs[target.id][5].spell_id) and not offense.mobs[target.id][5].shot then -- Slow
+			buff_id = 5 -- Blind
+			cause = res.spells[offense.mobs[target.id][buff_id].spell_id]
+			cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Dark Shot)')}
+			offense.mobs[target.id][buff_id].shot = 1
+			buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+		end
+		if offense.mobs[target.id][135] and not offense.mobs[target.id][135].shot then 
+			buff_id = 135 -- Bio
+			cause = res.spells[offense.mobs[target.id][buff_id].spell_id]
+			cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Dark Shot)')}
+			offense.mobs[target.id][buff_id].shot = 1
+			buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+		end
+	end
+end
+
 --[[
     Register the effects that were discovered in an action packet
     :param ai: parsed action info
@@ -269,6 +398,8 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
 			local ws_cause = {name=string.format("%s %s", res.weapon_skills[ai.param].name, stat_down_ws[ai.param].text)}
 			buffs.register_debuff(target, stat_down_ws[ai.param].buff, true, ws_cause)
 		end
+	elseif ai.category == 6 and S{125,126,127,128,129,130,131,132}:contains(ai.param) and ai.targets[1].actions[1].message_id ~= 323 then	--Corsair shots
+		handle_shot(target, ai.param)
 	elseif S{1,67}:contains(tact.message_id) and S{1,3}:contains(ai.category) and targ_is_enemy then
 		if ai.category == 1 and ai.targets[1].actions[1].has_add_efct and ai.targets[1].actions[1].add_efct_message_id == 603 then	--THF Treasure Hunter
 			local TH_cause = {name=string.format("TH: %s", ai.targets[1].actions[1].add_efct_param)}
