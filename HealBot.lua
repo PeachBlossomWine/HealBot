@@ -117,7 +117,6 @@ hb._events['cmd'] = windower.register_event('addon command', processCommand)
     Acts as the run() method of a threaded application.
 --]]
 local last_render = 0
-local delay = 0.5
 hb._events['render'] = windower.register_event('prerender', function()
     if not hb.configs_loaded then return end
 
@@ -175,11 +174,12 @@ hb._events['render'] = windower.register_event('prerender', function()
             windower.send_ipc_message(ipc_req)
             healer.last_ipc_sent = now
         end
-		if (os.clock()-last_render) > 0.5 then
+		if (os.clock()-last_render) > 0.3 then
 			if hb.active and hb.showdebuff then
 				utils.debuffs_disp()
 			end
 			utils.toggle_disp()
+			utils.check_debuffs_timer()
 			last_render = os.clock()
 		end
     end

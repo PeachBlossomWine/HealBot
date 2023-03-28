@@ -59,7 +59,7 @@ function handle_dispel_action(act)
 			elseif category == 4 then	-- Monster spells
 				if res.spells[param] then
 					if res.buffs[action_buff] and not (dispel_buffs_blacklist:contains(action_buff)) then
-						buffs.register_dispelable_buffs(target.id, action_buff, true, target.name, target.index)
+						buffs.register_dispelable_buffs(target.id, action_buff, true, target.name, target.index, res.spells[param].en)
 					end
 				end
 			end
@@ -360,6 +360,31 @@ function handle_shot(target, shot_id)
 	end
 end
 
+-- Tracking BLM -ja spells
+function handle_ja_spells(target, spell)
+	local buff_id = 3000
+
+	if offense.mobs[target.id] and offense.mobs[target.id][buff_id] and spell.id == offense.mobs[target.id][buff_id].spell_id then -- 2nd to 5th
+		local tier = offense.mobs[target.id][buff_id].tier
+		if tier < 5 then
+			tier = tier + 1
+			res.buffs[buff_id] = {id=buff_id,en=messages_blm_ja_spells_names[spell.id][tier],spell_id=spell.id}
+			local blm_ja_spell_cause = {id=spell.id, name=string.format("%s: %s", spell.name, messages_blm_ja_spells_names[spell.id][tier])}
+			buffs.register_debuff(target, res.buffs[buff_id], true, blm_ja_spell_cause)
+			if offense.mobs[target.id] then
+				offense.mobs[target.id][buff_id].tier = tier
+			end
+		end
+	else -- First landed debuff
+		res.buffs[buff_id] = {id=buff_id,en=messages_blm_ja_spells_names[spell.id][1],spell_id=spell.id}
+		local blm_ja_spell_cause = {id=spell.id, name=string.format("%s: %s", spell.name, messages_blm_ja_spells_names[spell.id][1])}
+		buffs.register_debuff(target, res.buffs[buff_id], true, blm_ja_spell_cause)
+		if offense.mobs[target.id] and offense.mobs[target.id][buff_id] then
+			offense.mobs[target.id][buff_id].tier = 1
+		end
+	end
+end
+
 --[[
     Register the effects that were discovered in an action packet
     :param ai: parsed action info
@@ -380,11 +405,13 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
             buffs.register_debuff(target, 'Bio', true, spell)
         elseif S{23,24,25,26,27,33,34,35,36,37}:contains(ai.param) then
             buffs.register_debuff(target, 'Dia', true, spell)
+		elseif messages_blm_ja_spells:contains(ai.param) then	--BLM ja spells
+			handle_ja_spells(target, spell)
 		elseif ai.param == 503 then -- Impact
 			buffs.register_debuff(target, 'CHR Down', true, spell)
-		elseif bluemage_spells[ai.param] then
-			local blu_spell_cause = {name=string.format("%s %s", spell.name, bluemage_spells[ai.param].text)}
-			buffs.register_debuff(target, bluemage_spells[ai.param].buff, true, blu_spell_cause)
+		elseif messages_bluemage_spells[ai.param] then
+			local blu_spell_cause = {id=ai.param, name=string.format("%s %s", spell.name, messages_bluemage_spells[ai.param].text)}
+			buffs.register_debuff(target, messages_bluemage_spells[ai.param].buff, true, blu_spell_cause)
         end
     elseif messages_magicHealed:contains(tact.message_id) then
         local spell = res.spells[ai.param]
@@ -392,24 +419,26 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
             buffs.register_debuff(target, 'Bio', true, spell)
         elseif S{23,24,25,26,27,33,34,35,36,37}:contains(ai.param) then
             buffs.register_debuff(target, 'Dia', true, spell)
+		elseif ai.param == 503 then
+			buffs.register_debuff(target, 'CHR Down', true, spell)
         end
 	elseif msg_gain_ws:contains(tact.message_id) then
-		if stat_down_ws[ai.param] then
-			local ws_cause = {name=string.format("%s %s", res.weapon_skills[ai.param].name, stat_down_ws[ai.param].text)}
-			buffs.register_debuff(target, stat_down_ws[ai.param].buff, true, ws_cause)
+		if messages_stat_down_ws[ai.param] then
+			local ws_cause = {id=ai.param, name=string.format("%s %s", res.weapon_skills[ai.param].name, messages_stat_down_ws[ai.param].text)}
+			buffs.register_debuff(target, messages_stat_down_ws[ai.param].buff, true, ws_cause)
 		end
-	elseif ai.category == 6 and S{125,126,127,128,129,130,131,132}:contains(ai.param) and ai.targets[1].actions[1].message_id ~= 323 then	--Corsair shots
+	elseif ai.category == 6 and messages_cor_shots:contains(ai.param) and ai.targets[1].actions[1].message_id ~= 323 then	--Corsair shots
 		handle_shot(target, ai.param)
 	elseif S{1,67}:contains(tact.message_id) and S{1,3}:contains(ai.category) and targ_is_enemy then
 		if ai.category == 1 and ai.targets[1].actions[1].has_add_efct and ai.targets[1].actions[1].add_efct_message_id == 603 then	--THF Treasure Hunter
-			local TH_cause = {name=string.format("TH: %s", ai.targets[1].actions[1].add_efct_param)}
+			local TH_cause = {id=1000, name=string.format("TH: %s", ai.targets[1].actions[1].add_efct_param)}
 			res.buffs[1000] = res.buffs[1000] or {}
 			res.buffs[1000] = {id=1000,en="Treasure Hunter",ja="TH",enl="Treasure Hunter",jal="TH"}
 			buffs.register_debuff(target, res.buffs[1000].en, true, TH_cause)
 		elseif ai.category == 3 and ai.targets[1].actions[1].message == 608 then --RNG Treasure Hunter
 			res.buffs[1000] = res.buffs[1000] or {}
 			res.buffs[1000] = {id=1000,en="Treasure Hunter",ja="TH",enl="Treasure Hunter",jal="TH"}
-			local TH_cause = {name=string.format("TH: %s", ai.targets[1].actions[1].param)}
+			local TH_cause = {id=1000, name=string.format("TH: %s", ai.targets[1].actions[1].param)}
 			buffs.register_debuff(target, res.buffs[1000].en, true, TH_cause)
 		end
 	elseif messages_gainEffect:contains(tact.message_id) then   --ai.param: spell; tact.param: buff/debuff
@@ -421,7 +450,7 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
 			if S{519,520,521,591}:contains(tact.message_id) then -- Steps
 				cause = res.job_abilities[ai.param]
 				tier = ai.targets[1].actions[1].param
-				steps_cause = {name=string.format("%s: Lv.%s", cause.name, tier)}
+				steps_cause = {id=ai.param, name=string.format("%s: Lv.%s", cause.name, tier)}
 			else
 				cause = res.job_abilities[ai.param]
 			end
@@ -430,13 +459,13 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
         end
 
         local buff = res.buffs[tact.param]
-		if dnc_steps[tact.message_id] then
-			buffs.register_debuff(target, res.buffs[dnc_steps[tact.message_id]], true, steps_cause)
+		if messages_dnc_steps[tact.message_id] then
+			buffs.register_debuff(target, res.buffs[messages_dnc_steps[tact.message_id]], true, steps_cause)
 		elseif enfeebling:contains(tact.param) then
-			if bluemage_spells[ai.param] then
+			if messages_bluemage_spells[ai.param] then
 				cause = res.spells[ai.param]
-				local blu_spell_cause = {name=string.format("%s %s", cause.name, bluemage_spells[ai.param].text)}
-				buffs.register_debuff(target, bluemage_spells[ai.param].buff, true, blu_spell_cause)
+				local blu_spell_cause = {id=ai.param, name=string.format("%s %s", cause.name, messages_bluemage_spells[ai.param].text)}
+				buffs.register_debuff(target, messages_bluemage_spells[ai.param].buff, true, blu_spell_cause)
 			else
 				buffs.register_debuff(target, buff, true, cause)
 			end
@@ -491,11 +520,10 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
 				end
             end
         end
-    elseif messages_specific_debuff_gain[tact.message_id] ~= nil then
-        local gained_debuffs = messages_specific_debuff_gain[tact.message_id]
-        for _,gained_debuff in pairs(gained_debuffs) do
-            buffs.register_debuff(target, gained_debuff, true)
-        end
+    elseif messages_absorb_spells[tact.message_id] ~= nil then
+        local abs_debuffs = messages_absorb_spells[tact.message_id]
+		local cause = res.spells[abs_debuffs.spell_id]
+		buffs.register_debuff(target, abs_debuffs.buff, true, cause)
     elseif messages_specific_debuff_lose[tact.message_id] ~= nil then
         local lost_debuffs = messages_specific_debuff_lose[tact.message_id]
         for _,lost_debuff in pairs(lost_debuffs) do

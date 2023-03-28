@@ -974,6 +974,20 @@ function utils.get_mob_index(s_table)
 	return nil
 end
 
+function utils.check_debuffs_timer()
+	if next(offense.mobs) == nil then return end
+	for mob_id,debuff_table in pairs(offense.mobs) do
+		for k,v in pairs(debuff_table) do
+			if maximum_debuff_timers[v.spell_id] then
+				local now = os.time()
+				if now-debuff_table[k].landed >= maximum_debuff_timers[v.spell_id] then
+					offense.mobs[mob_id][k] = nil
+				end
+			end
+		end
+	end
+end
+
 function utils.toggle_disp()
 	local toggle_list = L()
 	local hp_toggle = hb.autoRecoverHPMode and '\\cs(0,0,255)[ON]\\cr' or '\\cs(255,0,0)[OFF]\\cr'

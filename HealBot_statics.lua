@@ -8,20 +8,68 @@
 rarr = string.char(129,168)
 sparr = ' '..rarr..' '
 
-messages_magicDamage = S{2,252}
+messages_magicDamage = S{2,252,264}
 messages_magicHealed = S{7}
 messages_gainEffect = S{73,82,100,127,128,141,160,164,166,186,194,203,205,230,236,237,242,243,266,267,268,269,270,271,272,277,278,279,280,319,320,321,374,375,412,519,520,521,529,591,602,645}
 
 msg_gain_no_source = S{73,128,160,164,166,203,205,266,267,269,270,272,277,278,279,280}
 msg_gain_abil = S{100,127,141,319,320,321,519,520,521,529,591,602,645}
-msg_gain_spell = S{82,230,236,237,268,269,270,271,272,280}
+msg_gain_spell = S{82,230,236,237,267,268,269,270,271,272,280}
 msg_gain_ws = S{185,186,194,242,243}
 msg_gain_other = S{374,375,412}
 
-cor_shots = S{125,126,127,128,129,130,131,132}
-dnc_steps = T{[519]=386,[520]=391,[521]=396,[591]=448}
+messages_cor_shots = S{125,126,127,128,129,130,131,132}
+messages_dnc_steps = T{[519]=386,[520]=391,[521]=396,[591]=448}
 
-stat_down_ws = {
+maximum_debuff_timers = T{[496]=60,[497]=60,[498]=60,[499]=60,[500]=60,[501]=60}
+
+messages_blm_ja_spells = S{496,497,498,499,500,501}
+messages_blm_ja_spells_names = {
+    [496] = {
+        [1] = 'Fire Damage + 5%',
+        [2] = 'Fire Damage + 10%',
+        [3] = 'Fire Damage + 15%',
+        [4] = 'Fire Damage + 20%',
+        [5] = 'Fire Damage + 25%',
+        },
+    [497] = {
+        [1] = 'Ice Damage + 5%',
+        [2] = 'Ice Damage + 10%',
+        [3] = 'Ice Damage + 15%',
+        [4] = 'Ice Damage + 20%',
+        [5] = 'Ice Damage + 25%',
+        },
+    [498] = {
+        [1] = 'Wind Damage + 5%',
+        [2] = 'Wind Damage + 10%',
+        [3] = 'Wind Damage + 15%',
+        [4] = 'Wind Damage + 20%',
+        [5] = 'Wind Damage + 25%',
+        },
+    [499] = {
+        [1] = 'Earth Damage + 5%',
+        [2] = 'Earth Damage + 10%',
+        [3] = 'Earth Damage + 15%',
+        [4] = 'Earth Damage + 20%',
+        [5] = 'Earth Damage + 25%',
+        },
+    [500] = {
+        [1] = 'Lightning Damage + 5%',
+        [2] = 'Lightning Damage + 10%',
+        [3] = 'Lightning Damage + 15%',
+        [4] = 'Lightning Damage + 20%',
+        [5] = 'Lightning Damage + 25%',
+        },
+    [501] = {
+        [1] = 'Water Damage + 5%',
+        [2] = 'Water Damage + 10%',
+        [3] = 'Water Damage + 15%',
+        [4] = 'Water Damage + 20%',
+        [5] = 'Water Damage + 25%',
+        },
+}
+
+messages_stat_down_ws = {
 	[83]={name="Armor Break",text="(-25% Def)",buff="Defense Down"},
 	[87]={name="Full Break",text="(-12.5% Def/-20 Acc+Eva)",buff="Defense Down"},
 	[89]={name="Metatron Torment",text="(-18.75 Def)",buff="Defense Down"},
@@ -30,7 +78,7 @@ stat_down_ws = {
 	[187]={name="Garland of Bliss",text="(-12.5% Def)",buff="Defense Down"},
 }
 
-bluemage_spells = {
+messages_bluemage_spells = {
 	[561]={name="Frightful Roar",text="(-10% Def)",buff="Defense Down"},
 	[633]={name="Enervation",text="(-10% Def/-8 MDB)",buff="Defense Down"},
 	[650]={name="Seedspray",text="(-8% Def)",buff="Defense Down"},
@@ -54,19 +102,15 @@ messages_loseEffect = S{64,74,83,123,159,168,204,206,322,341,342,343,344,350,378
 messages_wearOff = S{204,206}
 messages_paralyzed = S{29,84}
 messages_noEffect = S{75,283,423,659}
-messages_specific_debuff_gain = {
-    [142]={'Accuracy Down','Evasion Down'},
-    [144]={'Accuracy Down','Evasion Down'},
-    [145]={'Accuracy Down','Evasion Down'},
-    [329]={'STR Down'},
-    [330]={'DEX Down'},
-    [331]={'VIT Down'},
-    [332]={'AGI Down'},
-    [333]={'INT Down'},
-    [334]={'MND Down'},
-    [335]={'CHR Down'},
-    [533]={'Accuracy Down'},
-    [534]={'Attack Down'},
+messages_absorb_spells = {
+    [329]={spell_id=266,buff='STR Down'},
+    [330]={spell_id=267,buff='DEX Down'},
+    [331]={spell_id=268,buff='VIT Down'},
+    [332]={spell_id=269,buff='AGI Down'},
+    [333]={spell_id=270,buff='INT Down'},
+    [334]={spell_id=271,buff='MND Down'},
+    [335]={spell_id=272,buff='CHR Down'},
+    [533]={spell_id=242,buff='Accuracy Down'},
 }
 messages_specific_debuff_lose = {
     [351]={'blindness','paralysis','poison','silence','disease'},
