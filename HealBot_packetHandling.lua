@@ -529,19 +529,8 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
         for _,lost_debuff in pairs(lost_debuffs) do
             buffs.register_debuff(target, lost_debuff, false)
         end
-    elseif S{185}:contains(tact.message_id) then    --${actor} uses ${weapon_skill}.${lb}${target} takes ${number} points of damage.
-        local mabil = res.monster_abilities[ai.param]
-        if (mabil ~= nil) then
-            if (hb.config.mabil_debuffs[mabil.en] ~= nil) then
-                for dbf,_ in pairs(hb.config.mabil_debuffs[mabil.en]) do
-                    buffs.register_debuff(target, dbf, true)
-                end
-            end
-        end
     elseif S{655}:contains(tact.message_id) and targ_is_enemy then    --${actor} casts ${spell}.${lb}${target} completely resists the spell.
         offense.register_immunity(target, res.buffs[tact.param])
-    -- elseif messages_paralyzed:contains(tact.message_id) and not targ_is_enemy then
-        -- buffs.register_debuff(actor, 'paralysis', true, cause)
     end--/message ID checks
 end
 
