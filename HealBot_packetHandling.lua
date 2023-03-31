@@ -168,6 +168,7 @@ end
     :param ai: parsed action info
     :param set monitored_ids: the IDs of PCs that are being monitored
 --]]
+--0x029
 function processMessage(ai, monitored_ids)
     if monitored_ids[ai.actor_id] or monitored_ids[ai.target_id] then
         if not (messages_blacklist:contains(ai.message_id)) then

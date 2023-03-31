@@ -144,7 +144,7 @@ function cu.pick_best_curaga_possibility()
 					if memberA ~= memberB then
                         local dist = a.pos and a.pos:getDistance(b.pos)
                         distances[memberA]:insert(dist)
-                        if dist < 10 then
+                        if dist and dist < 10 then
                             coverage[memberA]:insert(memberB)
                         end
                     end
