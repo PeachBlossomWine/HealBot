@@ -469,10 +469,6 @@ function buffs.register_debuff(target, debuff, gain, action)
 		end
 	end
     
-    if debuff.enn == 'slow' then
-        buffs.register_buff(target, 'Haste', false)
-        buffs.register_buff(target, 'Flurry', false)
-    end
     local tid, tname, tindex = target.id, target.name, target.index
     local is_enemy = (target.spawn_type == 16)
     if is_enemy then

@@ -8,10 +8,18 @@ return {
             ['curaga'] = 2,
             ['cure'] = 3,
             ['waltz'] = 3,
-            ['waltzga'] = 2,
+            ['waltzga'] = 1,
 			['blue'] = 2,
 			['bluega'] = 2,
-        }
+        },
+		['max']= {
+		    ['curaga'] = 5,
+            ['cure'] = 6,
+            ['waltz'] = 5,
+            ['waltzga'] = 2,
+			['blue'] = 3,
+			['bluega'] = 3,
+		},
     },
     ['ignoreTrusts'] = false,
     ['spam'] = {

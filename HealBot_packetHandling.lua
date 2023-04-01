@@ -503,9 +503,6 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
                     atc(123, 'ERROR: No buff found for spell: '..spell.en)
                 else
                     buffs.register_buff(target, buff, false)
-                    if S{'Haste','Flurry'}:contains(buff.en) then
-                        buffs.register_debuff(target, 'slow', true)
-                    end
                 end
             elseif spell_debuff_idmap[spell.id] ~= nil and targ_is_enemy then	--The debuff already landed from someone else
                 local debuff_id = spell_debuff_idmap[spell.id]

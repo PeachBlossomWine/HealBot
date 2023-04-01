@@ -80,11 +80,15 @@ function actions.get_defensive_action()
 			
 			if (bact and bact.action and bact.action.en) then
 				bact_target = windower.ffxi.get_mob_by_name(bact.name)
-				local_queue_insert(bact.action.en, bact.name)
+				if not (buffs.debuffList[bact.name] and buffs.debuffList[bact.name][13] and S{'Haste','Haste II','Flurry','Flurry II'}:contains(bact.action.en)) then
+					local_queue_insert(bact.action.en, bact.name)
+				end
 			end
             
 			if (action.buff == nil) and healer:in_casting_range(bact.name) and healer:ready_to_use(bact.action) and not(bact_target.hpp == 0) then
-				action.buff = bact
+				if not (buffs.debuffList[bact.name] and buffs.debuffList[bact.name][13] and S{'Haste','Haste II','Flurry','Flurry II'}:contains(bact.action.en)) then
+					action.buff = bact
+				end
 			end
 		end
 	end
