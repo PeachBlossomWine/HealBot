@@ -85,6 +85,7 @@ messages_bluemage_spells = {
 	[651]={name="Corrosive Ooze",text="(-5% Def)",buff="Defense Down"},
 	[670]={name="Benthic Typhoon",text="(-10% Def)",buff="Defense Down"},
 	[692]={name="Sudden Lunge",text="(Stun)",buff="Stun"},
+	[708]={name="Subduction",text="(Gravity)",buff="Weight"},
 	[717]={name="Sweeping Gouge",text="(-18% Def)",buff="Defense Down"},
 	[719]={name="Searing Tempest",text="(Burn)",buff="Burn"},
 	[720]={name="Spectral Floe",text="(Terror)",buff="Terror"},
