@@ -407,7 +407,8 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
         elseif S{23,24,25,26,27,33,34,35,36,37}:contains(ai.param) then
             buffs.register_debuff(target, 'Dia', true, spell)
 		elseif helix_spells:contains(ai.param) then
-		    buffs.register_debuff(target, 'Helix', true, spell)
+			local helix_spell_cause = {id=ai.param, name=string.format("%s [%s]", spell.name, ai.targets[1].actions[1].param)}
+		    buffs.register_debuff(target, 'Helix', true, helix_spell_cause)
 		elseif messages_blm_ja_spells:contains(ai.param) then	--BLM ja spells
 			handle_ja_spells(target, spell)
 		elseif ai.param == 503 then -- Impact
