@@ -406,7 +406,7 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
             buffs.register_debuff(target, 'Bio', true, spell)
         elseif S{23,24,25,26,27,33,34,35,36,37}:contains(ai.param) then
             buffs.register_debuff(target, 'Dia', true, spell)
-		elseif S{278,279,280,281,282,283,284,285}:contains(ai.param) then
+		elseif helix_spells:contains(ai.param) then
 		    buffs.register_debuff(target, 'Helix', true, spell)
 		elseif messages_blm_ja_spells:contains(ai.param) then	--BLM ja spells
 			handle_ja_spells(target, spell)
