@@ -407,7 +407,7 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
         elseif S{23,24,25,26,27,33,34,35,36,37}:contains(ai.param) then
             buffs.register_debuff(target, 'Dia', true, spell)
 		elseif helix_spells:contains(ai.param) then
-			local helix_dmg = ai.targets[1].actions[1].param <= 9999 or 9999
+			local helix_dmg = ai.targets[1].actions[1].param <= 9999 and ai.targets[1].actions[1].param or 9999
 			local helix_spell_cause = {id=ai.param, name=string.format("%s [%s]", spell.name, helix_dmg)}
 		    buffs.register_debuff(target, 'Helix', true, helix_spell_cause)
 		elseif ai.param == 502 then -- Kaustra
