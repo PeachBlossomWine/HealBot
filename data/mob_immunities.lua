@@ -375,6 +375,9 @@ return {
     ["Gorgimera"] = S{
         2
     },
+    ["Gulltop"] = S{
+        6
+    },
     ["Gyroscopic Gears"] = S{
         2
     },
