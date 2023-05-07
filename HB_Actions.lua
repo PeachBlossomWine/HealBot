@@ -37,7 +37,14 @@ function actions.get_defensive_action()
 		while (not cureq:empty()) do
 			local cact = cureq:pop()
             local_queue_insert(cact.action.en, cact.name)
-			if (action.cure == nil) and healer:in_casting_range(cact.name) then
+			
+			--ST20 debuff, prevent curing.
+			local ST20 = false
+			if buffs.debuffList[cact.name] and buffs.debuffList[cact.name][20] then
+				ST20 = true
+			end
+			
+			if (action.cure == nil) and healer:in_casting_range(cact.name) and ST20 == false then
 				action.cure = cact
 			end
 		end

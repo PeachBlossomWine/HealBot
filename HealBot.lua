@@ -148,6 +148,8 @@ hb._events['render'] = windower.register_event('prerender', function()
 					if healer:dist_from(current_targ.id) > (2 + current_targ.model_size) then
 						should_move = true
 						healer:move_towards(current_targ.id)
+					else
+						should_move = false
 					end
                 end
                 if (not should_move) then
