@@ -101,6 +101,10 @@ function processCommand(command,...)
 			atc('Dispel table:')
 			table.vprint(offense.dispel.mobs)
 		end
+		if (args[1] and args[1]:lower() == 'follow') or not args[1] then
+			local targ_value = settings.follow.target or 'NIL'
+			atc('Follow target: '..targ_value)
+		end
     elseif S{'start','on'}:contains(command) then
         hb.activate()
     elseif S{'stop','end','off'}:contains(command) then
@@ -446,6 +450,7 @@ function processCommand(command,...)
         if S{'off','end','false','pause','stop','exit'}:contains(cmd) then
 			atc('Follow is now off.')
             settings.follow.active = false
+			settings.follow.target = nil
         elseif S{'distance', 'dist', 'd'}:contains(cmd) then
             local dist = tonumber(args[2])
             if (dist ~= nil) and (0 < dist) and (dist < 45) then
