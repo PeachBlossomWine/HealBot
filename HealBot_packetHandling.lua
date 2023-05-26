@@ -69,7 +69,7 @@ end
 
 function handle_outgoing_chunk(id, data)
 	if id == 0x05E and not settings.follow.target then
-		log('0x05E packet for request zone.')
+		log('0x05E: packet for request zone.')
 		hb.zone_begin = true
 	end
 end
@@ -150,11 +150,16 @@ function handle_incoming_chunk(id, data)
 		if (depop_flag or (hp_status_flag and (packet['HP %'] == 0 or packet['Status'] == 2 or packet['Status'] == 3))) and not hidden_model and not untargetable then
 			processDebuffMobs(packet['NPC'])
 		end
-	elseif id == 0x00B and hb.zone_begin and not settings.follow.target then
-		log('0x00B packet for zone NOW.')
-		local response = { method='POST', pk='follow_ids', follow_name = packet_player.name, orig_zone = windower.ffxi.get_info().zone }
-        local ipc_req = serialua.encode(response)
-		windower.send_ipc_message(ipc_req)
+	elseif id == 0x00B then 
+		if hb.zone_begin and not settings.follow.target then
+			log('0x00B: packet for zone NOW.')
+			local response = { method='POST', pk='follow_ids', follow_name = packet_player.name, orig_zone = windower.ffxi.get_info().zone }
+			local ipc_req = serialua.encode(response)
+			windower.send_ipc_message(ipc_req)
+		else
+			log('0x00B: Unset zone run.')
+			hb.should_attempt_to_cross_zone_line = false
+		end
     end
 end
 

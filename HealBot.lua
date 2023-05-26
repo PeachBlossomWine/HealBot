@@ -144,10 +144,12 @@ hb._events['render'] = windower.register_event('prerender', function()
 						end
 					end
 				end
-                if (not should_move) and follow.active and (healer:dist_from(follow.target) > follow.distance) and not (player.status == 1) then	-- Only follow if not engaged.
+				-- Only follow if not engaged.
+                if ((not should_move) and follow.active and (healer:dist_from(follow.target) > follow.distance) and not (player.status == 1)) or ((not should_move) and follow.active and hb.should_attempt_to_cross_zone_line) then
                     should_move = true
                     healer:move_towards(follow.target)
-				elseif player.status == 1 and player.target_index then		-- For when autotarget to engage correct distance
+				-- For when autotarget to engage correct distance
+				elseif player.status == 1 and player.target_index then
 					local current_targ = windower.ffxi.get_mob_by_index(player.target_index)
 					if healer:dist_from(current_targ.id) > (2 + current_targ.model_size) then
 						should_move = true
@@ -158,11 +160,6 @@ hb._events['render'] = windower.register_event('prerender', function()
                 end
                 if (not should_move) then
                     if follow.active then
-						if hb.should_attempt_to_cross_zone_line then
-							windower.ffxi.run(true)
-							coroutine.sleep(1.5)
-							hb.should_attempt_to_cross_zone_line = false		-- Reset flag in case can't zone.
-						end
                         windower.ffxi.run(false)
                     end
                 else
@@ -421,9 +418,9 @@ function hb.process_ipc(msg)
                     atcfs(123, 'Missing name in POST message: %s', msg)
                 end
 			elseif loaded.pk == 'follow_ids' then	-- For follow to zoneline
-				log('IPC for follow only received.')
+				log('IPC: for follow only received.')
 				if settings.follow.target and settings.follow.target == loaded.follow_name and settings.follow.active and loaded.orig_zone == windower.ffxi.get_info().zone then
-					log('IPC to set follow run flag.')
+					log('IPC: To set follow run to zone flag.')
 					hb.should_attempt_to_cross_zone_line = true
 				end			
             else
