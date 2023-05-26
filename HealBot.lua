@@ -160,7 +160,7 @@ hb._events['render'] = windower.register_event('prerender', function()
                     if follow.active then
 						if hb.should_attempt_to_cross_zone_line then
 							windower.ffxi.run(true)
-							coroutine.sleep(1.3)
+							coroutine.sleep(1.5)
 							hb.should_attempt_to_cross_zone_line = false		-- Reset flag in case can't zone.
 						end
                         windower.ffxi.run(false)
@@ -420,10 +420,10 @@ function hb.process_ipc(msg)
                 else
                     atcfs(123, 'Missing name in POST message: %s', msg)
                 end
-			elseif loaded.pk == 'follow_ids' then
+			elseif loaded.pk == 'follow_ids' then	-- For follow to zoneline
 				log('IPC for follow only received.')
-				if settings.follow.target and settings.follow.active and loaded.orig_zone == windower.ffxi.get_info().zone then
-					log('IPC to initiate follow run flag.')
+				if settings.follow.target and settings.follow.target == loaded.follow_name and settings.follow.active and loaded.orig_zone == windower.ffxi.get_info().zone then
+					log('IPC to set follow run flag.')
 					hb.should_attempt_to_cross_zone_line = true
 				end			
             else
