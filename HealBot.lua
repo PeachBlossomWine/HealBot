@@ -15,7 +15,8 @@ serialua = _libs.lor.serialization
 hb = {
     active = false, configs_loaded = false, partyMemberInfo = {}, ignoreList = S{}, extraWatchList = S{}, job_registry= T{},
     modes = {['showPacketInfo'] = false, ['debug'] = false, ['mob_debug'] = false, ['independent'] = false},
-    _events = {}, txts = {}, config = {}, showdebuff = true, ipc_mob_debuffs = T{}, autoRecoverMPMode = false, autoRecoverHPMode = false
+    _events = {}, txts = {}, config = {}, showdebuff = true, ipc_mob_debuffs = T{}, autoRecoverMPMode = false, autoRecoverHPMode = false,
+	zone_begin = false, should_attempt_to_cross_zone_line = false,
 }
 healer = T{}
 settings = {}
@@ -81,6 +82,8 @@ hb._events['logout'] = windower.register_event('logout', function()
 end)
 
 hb._events['zone'] = windower.register_event('zone change', function(new_id, old_id)
+	hb.should_attempt_to_cross_zone_line = false
+	hb.zone_begin = false
     healer.zone_enter = os.clock()
     buffs.resetDebuffTimers('ALL')
 	hb.active = false	-- Deactivate when zoned.
@@ -109,6 +112,7 @@ end)
 
 hb._events['dis'] = windower.register_event('action', handle_dispel_action)
 hb._events['inc'] = windower.register_event('incoming chunk', handle_incoming_chunk)
+hb._events['out'] = windower.register_event('outgoing chunk', handle_outgoing_chunk)
 hb._events['cmd'] = windower.register_event('addon command', processCommand)
 
 
@@ -154,6 +158,11 @@ hb._events['render'] = windower.register_event('prerender', function()
                 end
                 if (not should_move) then
                     if follow.active then
+						if hb.should_attempt_to_cross_zone_line then
+							windower.ffxi.run(true)
+							coroutine.sleep(1.3)
+							hb.should_attempt_to_cross_zone_line = false		-- Reset flag in case can't zone.
+						end
                         windower.ffxi.run(false)
                     end
                 else
@@ -411,6 +420,12 @@ function hb.process_ipc(msg)
                 else
                     atcfs(123, 'Missing name in POST message: %s', msg)
                 end
+			elseif loaded.pk == 'follow_ids' then
+				log('IPC for follow only received.')
+				if settings.follow.target and settings.follow.active and loaded.orig_zone == windower.ffxi.get_info().zone then
+					log('IPC to initiate follow run flag.')
+					hb.should_attempt_to_cross_zone_line = true
+				end			
             else
                 atcfs(123, 'Invalid pk for POST message: %s', loaded.pk)
             end
