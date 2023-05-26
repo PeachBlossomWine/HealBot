@@ -36,6 +36,9 @@ return {
     ["Aurix"] = S{
         6
     },
+    ["Awoken Andhrimnir"] = S{
+        2
+    },
     ["Awoken Ariri Samariri"] = S{
         6
     },
@@ -57,6 +60,9 @@ return {
     ["Awoken Mokkuralfi"] = S{
         2,
         6
+    },
+    ["Awoken Morbol Emperor"] = S{
+        2
     },
     ["Awoken Vampyr Jarl"] = S{
         6

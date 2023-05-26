@@ -187,7 +187,7 @@ end
 function getRemovalPriority(ailment)
     local debuff = utils.normalize_action(ailment, 'buffs')
     local prios = hb.config.priorities
-    return prios.status_removal[debuff.en] or prios.status_removal[debuff.enn] or prios.default
+    return prios.status_removal_id[debuff.id] or prios.status_removal[debuff.en] or prios.status_removal[debuff.enn] or prios.default
 end
 
 

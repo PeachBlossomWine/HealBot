@@ -127,5 +127,8 @@ return {
         ['slow'] = 1,
         ['weight'] = 4,
 		['sleep'] = 1
-    }
+    },
+	['status_removal_id'] = {
+		[20] = 0,
+	},
 }
