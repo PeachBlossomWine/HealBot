@@ -138,7 +138,10 @@ hb._events['render'] = windower.register_event('prerender', function()
                 local should_move = false
 				if (targ ~= nil) and (player.target_index == partner.target_index) then
 					if offense.assist.engage and (partner.status == 1) then
-						if healer:dist_from(targ.id) > 3 then
+						if healer:dist_from(targ.id) > (2.2 + targ.model_size) then
+							if not player.target_locked then
+								healer:send_cmd('input /lockon')
+							end
 							should_move = true
 							healer:move_towards(targ.id)
 						end
@@ -151,7 +154,7 @@ hb._events['render'] = windower.register_event('prerender', function()
 				-- For when autotarget to engage correct distance
 				elseif player.status == 1 and player.target_index then
 					local current_targ = windower.ffxi.get_mob_by_index(player.target_index)
-					if healer:dist_from(current_targ.id) > (2 + current_targ.model_size) then
+					if healer:dist_from(current_targ.id) > (2.2 + current_targ.model_size) then
 						should_move = true
 						healer:move_towards(current_targ.id)
 					else
