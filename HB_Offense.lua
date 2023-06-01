@@ -11,7 +11,8 @@ local offense = {
 	moblist={active = false, mobs=S{}, debuffs={},},
     debuffs={}, ignored={}, mobs={}, 
 	dispel={active = true, mobs={}, ignored=S{},},
-    debuffing_active = true
+    debuffing_active = true,
+	debuffing_battle_target = false
 }
 
 

@@ -309,6 +309,16 @@ function processCommand(command,...)
         elseif S{'off','false'}:contains(cmd) then
             offense.debuffing_active = false
             atc('Debuffing is now off.')
+		elseif S{'bt'}:contains(cmd) then
+			local battle_cmd = args[2] and args[2]:lower() or (offense.debuffing_battle_target and 'off' or 'on')
+			if S{'on','true'}:contains(battle_cmd) then
+				offense.debuffing_active = true
+				offense.debuffing_battle_target = true
+				atc('WARNING! Debuffing is now set to battle targets.')
+			elseif S{'off','false'}:contains(battle_cmd) then
+				offense.debuffing_battle_target = false
+				atc('DISABLED debuffing on battle targets.')
+			end
         elseif S{'rm','remove'}:contains(cmd) then
             utils.register_offensive_debuff(table.slice(args, 2), true)
         elseif S{'ls','list'}:contains(cmd) then

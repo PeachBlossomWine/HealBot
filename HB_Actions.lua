@@ -234,6 +234,9 @@ function actions.take_action(player, partner, targ)
 		if offense.dispel.active and offense.dispel.mobs then
 			actions.build_dispel_list(player, offense.dispel.mobs)
 		end
+		if offense.debuffing_battle_target and (windower.ffxi.get_mob_by_target('bt') or false) and next(offense.debuffs) then
+			healer:take_action(actions.get_offensive_action(player, nil, true), '<bt>')
+		end
 		return true
     end
 	return false
@@ -275,9 +278,15 @@ end
 	Builds an action queue for offensive actions.
     Returns the action deemed most important at the time.
 --]]
-function actions.get_offensive_action(player, partner)
+function actions.get_offensive_action(player, partner, battle_target)
 	player = player or windower.ffxi.get_player()
-	local target = (partner and partner.target_index and windower.ffxi.get_mob_by_index(partner.target_index)) or windower.ffxi.get_mob_by_target()
+	local target
+	if battle_target then
+		target = windower.ffxi.get_mob_by_target('bt')
+	else
+		target = (partner and partner.target_index and windower.ffxi.get_mob_by_index(partner.target_index)) or windower.ffxi.get_mob_by_target()
+	end
+	--local target = (partner and partner.target_index and windower.ffxi.get_mob_by_index(partner.target_index)) or windower.ffxi.get_mob_by_target()
     if target == nil or target.hpp == 0 then return nil end
     local action = {}
     
