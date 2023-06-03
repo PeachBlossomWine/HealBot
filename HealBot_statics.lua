@@ -176,7 +176,15 @@ removal_map = {['Blindna']={'blindness'},['Cursna']={'curse','doom'},['Paralyna'
 accessionable = S{'Blindna','Cursna','Paralyna','Poisona','Silena','Stona','Viruna','Erase'}
 
 debuff_casemap = {['nocturne']='Nocturne',['accuracy down']='Accuracy Down',['magic def. down']='Magic Def. Down',['inhibit tp']='Inhibit TP',['weight']='weight',['str down']='STR Down',['slow']='slow',['defense down']='Defense Down',['elegy']='Elegy',['choke']='Choke',['max hp down']='Max HP Down',['lullaby']='Lullaby',['paralysis']='paralysis',['int down']='INT Down',['petrification']='petrification',['vit down']='VIT Down',['requiem']='Requiem',['curse']='curse',['bio']='Bio',['chr down']='CHR Down',['disease']='disease',['frost']='Frost',['bind']='bind',['doom']='doom',['silence']='silence',['rasp']='Rasp',['addle']='addle',['poison']='poison',['evasion down']='Evasion Down',['dia']='Dia',['mnd down']='MND Down',['max mp down']='Max MP Down',['max tp down']='Max TP Down',['burn']='Burn',['magic atk. down']='Magic Atk. Down',['magic evasion down']='Magic Evasion Down',['attack down']='Attack Down',['plague']='plague',['virus']='Virus',['drown']='Drown',['shock']='Shock',['blindness']='blindness',['dex down']='DEX Down',['agi down']='AGI Down',['magic acc. down']='Magic Acc. Down'}
+spells_storms = S{'Aurorastorm','Voidstorm','Sandstorm','Windstorm','Rainstorm','Firestorm','Hailstorm','Thunderstorm','Aurorastorm II','Voidstorm II','Sandstorm II','Windstorm II','Rainstorm II','Firestorm II','Hailstorm II','Thunderstorm II'}
+spells_bar_element_self = S{'Barstone','Baraero','Barwater','Barfire','Barblizzard','Barthunder'}
+spells_bar_element_aoe = S{'Barstonra','Baraera','Barwatera','Barfira','Barblizzara','Barthundra'}
+spells_bar_status_self = S{'Barsleep','Barpoison','Barparalyze','Barblind','Barsilence','Barpetrify','Barvirus'}
+spells_bar_status_aoe = S{'Barsleepra','Barpoisonra','Barparalyzra','Barblindra','Barsilencera','Barpetra','Barvira'}
+spells_boost = S{'Boost-AGI','Boost-CHR','Boost-DEX','Boost-INT','Boost-MND','Boost-STR','Boost-VIT'}
+spells_gain = S{'Gain-AGI','Gain-CHR','Gain-DEX','Gain-INT','Gain-MND','Gain-STR','Gain-VIT'}
 
+buffs_opposing = spells_storms:union(spells_bar_element_self):union(spells_bar_element_aoe):union(spells_bar_status_self):union(spells_bar_status_aoe):union(spells_boost):union(spells_gain)
 
 ignoreDebuffs = {
 	['Accuracy Down'] = S{'WHM','BLM','SMN','SCH','GEO'},

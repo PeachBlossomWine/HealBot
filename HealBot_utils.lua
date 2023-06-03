@@ -105,6 +105,10 @@ function processCommand(command,...)
 			local targ_value = settings.follow.target or 'NIL'
 			atc('Follow target: '..targ_value)
 		end
+		if (args[1] and args[1]:lower() == 'buffs') or not args[1] then
+			atc('Buffs table: ')
+			table.vprint(buffs.buffList)
+		end
     elseif S{'start','on'}:contains(command) then
         hb.activate()
     elseif S{'stop','end','off'}:contains(command) then
