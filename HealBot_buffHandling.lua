@@ -258,20 +258,20 @@ function buffs.registerNewBuffName(targetName, bname, use)
 		for spell_check,_ in pairs (buffs.buffList[target.name]) do
 			if buffs_opposing:contains(spell_check) then
 				for opposing_spell,_ in pairs (buffs.buffList[target.name]) do
-					if spells_storms:contains(opposing_spell) then
+					if spells_storms:contains(opposing_spell) and spells_storms:contains(action.en) then
 						atc('Removing opposing storm buff: '..opposing_spell)
 						buffs.buffList[target.name][opposing_spell] = nil
-					elseif spells_boost:contains(opposing_spell) then
+					elseif spells_boost:contains(opposing_spell) and spells_boost:contains(action.en) then
 						atc('Removing opposing boost buff: '..opposing_spell)
 						buffs.buffList[target.name][opposing_spell] = nil
-					elseif spells_gain:contains(opposing_spell) then
+					elseif spells_gain:contains(opposing_spell) and spells_gain:contains(action.en) then
 						atc('Removing opposing gain buff: '..opposing_spell)
 						buffs.buffList[target.name][opposing_spell] = nil
-					elseif spells_bar_element_self:contains(opposing_spell) or spells_bar_element_aoe:contains(opposing_spell) then
-						atc('Removing opposing bar element buff: ')
+					elseif (spells_bar_element_self:contains(opposing_spell) or spells_bar_element_aoe:contains(opposing_spell)) and (spells_bar_element_self:contains(action.en) or spells_bar_element_aoe:contains(action.en)) then
+						atc('Removing opposing bar element buff: '..opposing_spell)
 						buffs.buffList[target.name][opposing_spell] = nil
-					elseif spells_bar_status_self:contains(opposing_spell) or spells_bar_status_aoe:contains(opposing_spell) then
-						atc('Removing opposing bar status buff: ')
+					elseif (spells_bar_status_self:contains(opposing_spell) or spells_bar_status_aoe:contains(opposing_spell)) and (spells_bar_status_self:contains(action.en) or spells_bar_status_aoe:contains(action.en))then
+						atc('Removing opposing bar status buff: '..opposing_spell)
 						buffs.buffList[target.name][opposing_spell] = nil
 					end
 				end
