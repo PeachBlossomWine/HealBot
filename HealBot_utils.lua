@@ -71,6 +71,7 @@ local txtbox_cmd_map = {
 function processCommand(command,...)
     command = command and command:lower() or 'help'
     local args = map(windower.convert_auto_trans, {...})
+	local player = windower.ffxi.get_player()
     
     if S{'reload','unload'}:contains(command) then
 		windower.send_command(('lua %s %s'):format(command, 'healbot'))
@@ -305,6 +306,28 @@ function processCommand(command,...)
             end
             utils.register_spam_action(args)
         end
+	elseif S{'stymie'}:contains(command) then
+		if player.main_job == 'RDM' then
+			local cmd = args[1] and args[1]:lower() or (settings.spam.active and 'off' or 'on')
+			if S{'on','true'}:contains(cmd) then
+				offense.stymie.active = true
+				if (offense.stymie.spell ~= '') then
+					atc('Stymie is now on. Action: '..offense.stymie.spell)
+				else
+					atc('Stymie is now on. To set a spell to use: //hb stymie use <action>')
+				end
+			elseif S{'off','false'}:contains(cmd) then
+				offense.stymie.active = false
+				atc('Stymie is now off.')
+			else
+				if S{'use','set'}:contains(cmd) then
+					table.remove(args, 1)
+				end
+				utils.register_stymie(args)
+			end
+		else
+			atc('Error: Not RDM main job')
+		end
     elseif S{'debuff', 'db'}:contains(command) then
         local cmd = args[1] and args[1]:lower() or (offense.debuffing_active and 'off' or 'on')
         if S{'on','true'}:contains(cmd) then
@@ -632,6 +655,22 @@ function utils.register_offensive_debuff(args, cancel, mob_debuff_list_flag)
     end
 end
 
+function utils.register_stymie(args)
+    local argstr = table.concat(args,' ')
+    local action_name = utils.formatActionName(argstr)
+    local action = lor_res.action_for(action_name)
+    if (action ~= nil) then
+        if healer:can_use(action) then
+            offense.stymie.spell = action.en
+			offense.maintain_debuff(action, false)
+            atc('Will now use Stymie with spell: ', offense.stymie.spell)
+        else
+            atc(123,'Error: Unable to cast: ', action.en)
+        end
+    else
+        atc(123,'Error: Invalid action name: ', action_name)
+    end
+end
 
 function utils.register_spam_action(args)
     local argstr = table.concat(args,' ')

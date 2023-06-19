@@ -12,7 +12,8 @@ local offense = {
     debuffs={}, ignored={}, mobs={}, 
 	dispel={active = true, mobs={}, ignored=S{},},
     debuffing_active = true,
-	debuffing_battle_target = false
+	debuffing_battle_target = false,
+	stymie={active = false, spell = '', last_used = 0, flag = false, attempt = 0},
 }
 
 

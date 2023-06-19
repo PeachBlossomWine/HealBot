@@ -286,17 +286,33 @@ function actions.get_offensive_action(player, partner, battle_target)
 	else
 		target = (partner and partner.target_index and windower.ffxi.get_mob_by_index(partner.target_index)) or windower.ffxi.get_mob_by_target()
 	end
-	--local target = (partner and partner.target_index and windower.ffxi.get_mob_by_index(partner.target_index)) or windower.ffxi.get_mob_by_target()
     if target == nil or target.hpp == 0 then return nil end
     local action = {}
-    
+
     --Prioritize debuffs over nukes/ws
     local dbuffq = offense.getDebuffQueue(player, target)
     while not dbuffq:empty() do
         local dbact = dbuffq:pop()
         local_queue_insert(dbact.action.en, target.name)
         if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) then
-            action.db = dbact
+			--Stymie
+			local stymie = lor_res.action_for("Stymie")
+			if offense.stymie.active and player.main_job == "RDM" and healer:can_use(stymie) and (healer:ready_to_use(stymie) or haveBuff(stymie.name)) and os.time() > (offense.stymie.last_used + 600) then
+				offense.stymie.flag = false
+				if dbact.action.en == offense.stymie.spell then
+					healer:take_action({action=stymie}, healer.name)
+					action.db = dbact
+					offense.stymie.attempt = os.time() -- Sets the attempt to cast the spell with Stymie
+				end
+			else
+				action.db = dbact
+			end
+			--Sets 10mins before Stymie can be used again, waits 30sec after Stymie attempts to set this timer.
+			if offense.stymie.active and player.main_job == "RDM" and not healer:ready_to_use(stymie) and not haveBuff(stymie.name) and not offense.stymie.flag and os.time() > (offense.stymie.attempt + 30) then
+				log('timer')
+				offense.stymie.last_used = os.time()
+				offense.stymie.flag = true
+			end
         end
     end
     
