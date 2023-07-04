@@ -1008,16 +1008,22 @@ function utils.debuff_display_builder(d_table, name, dispel, mob_id, mob_index)
 			local claim_target = windower.ffxi.get_mob_by_index(mob_index) and windower.ffxi.get_mob_by_index(mob_index).claim_id or nil
 			if utils.check_claim_id(claim_target) then
 				mob_claim_name = string.format("%s%s\\cr", colorRed, v.mob_name)
-				debuffs_lists:append('['..mob_claim_name..'] - '..mob_id)
+				if d_table[0] then
+					debuffs_lists:append('['..mob_claim_name..'] - '..mob_id..' - '..string.format(os.date('%M:%S',os.time()-d_table[0].landed)))
+				end
 			else
-				debuffs_lists:append('['..v.mob_name..'] - '..mob_id)
+				if d_table[0] then
+					debuffs_lists:append('['..v.mob_name..'] - '..mob_id..' - '..string.format(os.date('%M:%S',os.time()-d_table[0].landed)))
+				end
 			end
 		end
 		if dispel then
 			formattedMessage = string.format("%s%s\\cr", colorOrange, v.debuff_name)
 			debuffs_lists:append(formattedMessage.." : "..string.format(os.date('%M:%S',os.time()-v.landed)))
 		else
-			debuffs_lists:append(v.spell_name.." : "..string.format(os.date('%M:%S',os.time()-v.landed)))
+			if v.spell_name ~= "KO" then
+				debuffs_lists:append(v.spell_name.." : "..string.format(os.date('%M:%S',os.time()-v.landed)))
+			end
 		end
 		count = count +1
 	end

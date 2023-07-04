@@ -186,7 +186,7 @@ hb._events['render'] = windower.register_event('prerender', function()
             healer.last_ipc_sent = now
         end
 		if (os.clock()-last_render) > 0.3 then
-			if hb.active and hb.showdebuff then
+			if hb.showdebuff and not indoor_zones:contains(zone_info.zone) then
 				utils.debuffs_disp()
 			end
 			utils.toggle_disp()

@@ -416,8 +416,11 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
 	if target then
 		targ_is_enemy = (target.spawn_type == 16)
 	end
-	
-    if messages_magicDamage:contains(tact.message_id) then      --ai.param: spell; tact.param: damage
+
+	if messages_physDamage:contains(tact.message_id) and target and targ_is_enemy then -- tagging mob with physical damage.
+		local claim_spell_cause = {id=50000, name="KO"}
+		buffs.register_debuff(target, 'KO', true, claim_spell_cause)
+    elseif messages_magicDamage:contains(tact.message_id) then      --ai.param: spell; tact.param: damage
         local spell = res.spells[ai.param]
         if S{230,231,232,233,234}:contains(ai.param) then
             buffs.register_debuff(target, 'Bio', true, spell)
@@ -550,6 +553,15 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
         for _,lost_debuff in pairs(lost_debuffs) do
             buffs.register_debuff(target, lost_debuff, false)
         end
+	elseif msg_gain_abil:contains(tact.message_id) then
+		local cause = res.job_abilities[ai.param]
+		local buff = res.buffs[tact.param]
+		if messages_provokeTypes:contains(ai.param) and targ_is_enemy then
+			local claim_spell_cause = {id=50000, name="KO"}
+			buffs.register_debuff(target, 'KO', true, claim_spell_cause)
+		else
+			buffs.register_buff(target, buff, true, cause)
+		end
     elseif S{655}:contains(tact.message_id) and targ_is_enemy then    --${actor} casts ${spell}.${lb}${target} completely resists the spell.
         offense.register_immunity(target, res.buffs[tact.param])
     end--/message ID checks
