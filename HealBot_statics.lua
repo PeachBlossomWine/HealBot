@@ -8,6 +8,7 @@
 rarr = string.char(129,168)
 sparr = ' '..rarr..' '
 
+messages_shadows = S{31}
 messages_resists = S{284,653,654}
 messages_provokeTypes = S{35,204}
 messages_physDamage = S{1,15,63,67,352,353,354,576,577}

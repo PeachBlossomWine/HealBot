@@ -413,12 +413,12 @@ end
 --]]
 function registerEffect(ai, tact, actor, target, monitored_ids)
 
+	local claim_spell_cause = {id=50000, name="KO"}
 	if target then
 		targ_is_enemy = (target.spawn_type == 16)
 	end
 
-	if messages_physDamage:contains(tact.message_id) and target and targ_is_enemy then -- tagging mob with physical damage.
-		local claim_spell_cause = {id=50000, name="KO"}
+	if (messages_resists:contains(tact.message_id) or messages_physDamage:contains(tact.message_id) or messages_shadows:contains(tact.message_id)) and targ_is_enemy then
 		buffs.register_debuff(target, 'KO', true, claim_spell_cause)
     elseif messages_magicDamage:contains(tact.message_id) then      --ai.param: spell; tact.param: damage
         local spell = res.spells[ai.param]
@@ -441,7 +441,6 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
 			buffs.register_debuff(target, messages_bluemage_spells[ai.param].buff, true, blu_spell_cause)
 		else
 			if target and targ_is_enemy then
-				local claim_spell_cause = {id=50000, name="KO"}
 				buffs.register_debuff(target, 'KO', true, claim_spell_cause)
 			end
         end
@@ -453,14 +452,23 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
             buffs.register_debuff(target, 'Dia', true, spell)
 		elseif ai.param == 503 then
 			buffs.register_debuff(target, 'CHR Down', true, spell)
+		else
+			if target and targ_is_enemy then
+				buffs.register_debuff(target, 'KO', true, claim_spell_cause)
+			end
         end
 	elseif msg_gain_ws:contains(tact.message_id) then
 		if messages_stat_down_ws[ai.param] then
 			local ws_cause = {id=ai.param, name=string.format("%s %s", res.weapon_skills[ai.param].name, messages_stat_down_ws[ai.param].text)}
 			buffs.register_debuff(target, messages_stat_down_ws[ai.param].buff, true, ws_cause)
+		elseif targ_is_enemy then
+			buffs.register_debuff(target, 'KO', true, claim_spell_cause)
 		end
 	elseif ai.category == 6 and messages_cor_shots:contains(ai.param) and ai.targets[1].actions[1].message_id ~= 323 then	--Corsair shots
 		handle_shot(target, ai.param)
+		if targ_is_enemy then
+			buffs.register_debuff(target, 'KO', true, claim_spell_cause)
+		end
 	elseif S{1,67}:contains(tact.message_id) and S{1,3}:contains(ai.category) and targ_is_enemy then
 		if ai.category == 1 and ai.targets[1].actions[1].has_add_efct and ai.targets[1].actions[1].add_efct_message_id == 603 then	--THF Treasure Hunter
 			local TH_cause = {id=1000, name=string.format("TH: %s", ai.targets[1].actions[1].add_efct_param)}
@@ -548,6 +556,9 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
 					offense.dispel.mobs[target.id] = nil
 				end
             end
+			if not targ_is_enemy then
+				buffs.register_buff(target, buff, false)
+			end
         end
     elseif messages_absorb_spells[tact.message_id] ~= nil then
         local abs_debuffs = messages_absorb_spells[tact.message_id]
@@ -562,17 +573,12 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
 		local cause = res.job_abilities[ai.param]
 		local buff = res.buffs[tact.param]
 		if messages_provokeTypes:contains(ai.param) and targ_is_enemy then
-			local claim_spell_cause = {id=50000, name="KO"}
 			buffs.register_debuff(target, 'KO', true, claim_spell_cause)
 		else
 			buffs.register_buff(target, buff, true, cause)
 		end
     elseif S{655,656}:contains(tact.message_id) and targ_is_enemy then
         offense.register_immunity(target, res.buffs[tact.param])
-		local claim_spell_cause = {id=50000, name="KO"}
-		buffs.register_debuff(target, 'KO', true, claim_spell_cause)
-	elseif messages_resists:contains(tact.message_id) and targ_is_enemy then
-		local claim_spell_cause = {id=50000, name="KO"}
 		buffs.register_debuff(target, 'KO', true, claim_spell_cause)
     end--/message ID checks
 end
