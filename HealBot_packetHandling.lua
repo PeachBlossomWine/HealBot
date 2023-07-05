@@ -439,6 +439,11 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
 		elseif messages_bluemage_spells[ai.param] then
 			local blu_spell_cause = {id=ai.param, name=string.format("%s %s", spell.name, messages_bluemage_spells[ai.param].text)}
 			buffs.register_debuff(target, messages_bluemage_spells[ai.param].buff, true, blu_spell_cause)
+		else
+			if target and targ_is_enemy then
+				local claim_spell_cause = {id=50000, name="KO"}
+				buffs.register_debuff(target, 'KO', true, claim_spell_cause)
+			end
         end
     elseif messages_magicHealed:contains(tact.message_id) then
         local spell = res.spells[ai.param]
@@ -562,8 +567,13 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
 		else
 			buffs.register_buff(target, buff, true, cause)
 		end
-    elseif S{655}:contains(tact.message_id) and targ_is_enemy then    --${actor} casts ${spell}.${lb}${target} completely resists the spell.
+    elseif S{655,656}:contains(tact.message_id) and targ_is_enemy then
         offense.register_immunity(target, res.buffs[tact.param])
+		local claim_spell_cause = {id=50000, name="KO"}
+		buffs.register_debuff(target, 'KO', true, claim_spell_cause)
+	elseif messages_resists:contains(tact.message_id) and targ_is_enemy then
+		local claim_spell_cause = {id=50000, name="KO"}
+		buffs.register_debuff(target, 'KO', true, claim_spell_cause)
     end--/message ID checks
 end
 

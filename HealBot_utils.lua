@@ -1010,10 +1010,14 @@ function utils.debuff_display_builder(d_table, name, dispel, mob_id, mob_index)
 				mob_claim_name = string.format("%s%s\\cr", colorRed, v.mob_name)
 				if d_table[0] then
 					debuffs_lists:append('['..mob_claim_name..'] - '..mob_id..' - '..string.format(os.date('%M:%S',os.time()-d_table[0].landed)))
+				else
+					debuffs_lists:append('['..mob_claim_name..'] - '..mob_id)
 				end
 			else
 				if d_table[0] then
 					debuffs_lists:append('['..v.mob_name..'] - '..mob_id..' - '..string.format(os.date('%M:%S',os.time()-d_table[0].landed)))
+				else
+					debuffs_lists:append('['..v.mob_name..'] - '..mob_id)
 				end
 			end
 		end
