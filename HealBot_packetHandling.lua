@@ -420,7 +420,7 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
 
 	if (messages_resists:contains(tact.message_id) or messages_physDamage:contains(tact.message_id) or messages_shadows:contains(tact.message_id)) and targ_is_enemy then
 		buffs.register_debuff(target, 'KO', true, claim_spell_cause)
-    elseif messages_magicDamage:contains(tact.message_id) then      --ai.param: spell; tact.param: damage
+    elseif messages_magicDamage:contains(tact.message_id) then
         local spell = res.spells[ai.param]
         if S{230,231,232,233,234}:contains(ai.param) then
             buffs.register_debuff(target, 'Bio', true, spell)
@@ -556,8 +556,8 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
 					offense.dispel.mobs[target.id] = nil
 				end
             end
-			if not targ_is_enemy then
-				buffs.register_buff(target, buff, false)
+			if targ_is_enemy then
+				buffs.register_debuff(target, 'KO', true, claim_spell_cause)
 			end
         end
     elseif messages_absorb_spells[tact.message_id] ~= nil then
