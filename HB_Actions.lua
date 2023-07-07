@@ -68,9 +68,12 @@ function actions.get_defensive_action()
 					end
 				else
 					dbact_target = windower.ffxi.get_mob_by_name(dbact.name)
-					local_queue_insert(dbact.action.en, dbact.name)
-					if (action.debuff == nil) and healer:in_casting_range(dbact.name) and healer:ready_to_use(dbact.action) and not(dbact_target.hpp == 0) then
-						action.debuff = dbact
+					local is_trust = dbact_target and dbact_target.spawn_type == 14 or false
+					if not(is_trust and dbact.debuff.en:lower() == 'sleep') then
+						local_queue_insert(dbact.action.en, dbact.name)
+						if (action.debuff == nil) and healer:in_casting_range(dbact.name) and healer:ready_to_use(dbact.action) and not(dbact_target.hpp == 0) then
+							action.debuff = dbact
+						end
 					end
 				end
 			else
