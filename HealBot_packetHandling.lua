@@ -235,6 +235,14 @@ function processAction(ai, monitored_ids)
                             buffs.register_buff(target, healer.geo.latest, true)
                         end
                     end
+					-- if (tact.message_id == 0) and (actor.name == healer.name) then
+                        -- local spell = res.spells[ai.param]
+                        -- if spell ~= nil then
+                            -- if spell.type == 'Geomancy' then
+                                -- register_action(spell.type, ai.param)
+                            -- end
+                        -- end
+                    -- end
                 
                     if hb.modes.showPacketInfo then
                         local msg = res.action_messages[tact.message_id] or {en='???'}
