@@ -230,6 +230,8 @@ function hb.activate()
                 settings.healing.modega = 'bluega'
             else
                 disableCommand('cure', true)
+				disableCommand('curaga', true)
+				disableCommand('na', true)
             end
         else
             settings.healing.mode = 'cure'
