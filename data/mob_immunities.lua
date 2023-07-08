@@ -312,6 +312,9 @@ return {
     ["Disjoined Tarutaru"] = S{
         28
     },
+    ["Disjoined's Odin"] = S{
+        2
+    },
     ["Earth Circle"] = S{
         2,
         4,
