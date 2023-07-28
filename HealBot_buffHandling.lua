@@ -273,7 +273,7 @@ function buffs.registerNewBuffName(targetName, bname, use)
 					elseif (spells_bar_status_self:contains(opposing_spell) or spells_bar_status_aoe:contains(opposing_spell)) and (spells_bar_status_self:contains(action.en) or spells_bar_status_aoe:contains(action.en))then
 						atc('Removing opposing bar status buff: '..opposing_spell)
 						buffs.buffList[target.name][opposing_spell] = nil
-					elseif spells_haste_flurry:contains(opposing_spell) and spells_haste_flurry:contains(action.en) then
+					elseif spells_haste_flurry:contains(opposing_spell) and spells_haste_flurry:contains(action.en) and opposing_spell ~= action.en then
 						atc('Removing opposing spell buff: '..opposing_spell)
 						buffs.buffList[target.name][opposing_spell] = nil
 					end
