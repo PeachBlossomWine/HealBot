@@ -692,6 +692,7 @@ return {
         6
     },
     ["Volte's Luopan"] = S{
+        2,
         194
     },
     ["Wasp Nest"] = S{
