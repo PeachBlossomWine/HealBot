@@ -151,7 +151,7 @@ end -- function
 
 --Handle removal spells for jobs
 function buffs.handle_removalSpellName(healer, id)
-	local aoe_action, single_action, debuff_map_type, removalActionName, ja_action, ma_action
+	local aoe_action, single_action, debuff_map_type, removalActionName, ja_action, ma_action, sleep_spell
 
 	if healer.main_job == 'DNC' or (healer.sub_job == 'DNC' and not (S{'WHM','SCH'}:contains(healer.main_job))) then
 		aoe_action = res.job_abilities[195]
@@ -164,13 +164,30 @@ function buffs.handle_removalSpellName(healer, id)
 		debuff_map_type = debuff_map_id
 		ma_action = true
 	end
+	
+	if S{'BLM','RDM','DRK','GEO'}:contains(healer.main_job) then
+		sleep_spell = res.spells[259]	-- Sleep II
+	elseif healer.main_job == 'BRD' then
+		sleep_spell = res.spells[471]	-- Foe Lullaby II
+	elseif healer.main_job == 'WHM' then
+		sleep_spell = res.spells[98]	-- Repose
+	else -- Other subjobs
+		if S{'BLM','RDM','DRK'}:contains(healer.sub_job) then
+			sleep_spell = res.spells[259]	-- Sleep II
+		elseif healer.sub_job == 'GEO' then
+			sleep_spell = res.spells[253]	-- Sleep
+		end
+	end
+	
 	-- Check tables for debuff id
 	for list, category in debuff_map_type:it() do
 		if list:contains(tonumber(id)) then
 			removalActionName = tostring(category)
 		end
 	end
-	if removalActionName == 'Asleep' then
+	if removalActionName == 'Charmed' then
+		return (healer:can_use(sleep_spell) and sleep_spell) or nil
+	elseif removalActionName == 'Asleep' then
 		return (healer:can_use(aoe_action) and aoe_action) or (healer:can_use(single_action) and single_action) or nil
 	else
 		return (ja_action and removalActionName and res.job_abilities:with('en', removalActionName)) or (ma_action and removalActionName and res.spells:with('en', removalActionName)) or nil

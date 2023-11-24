@@ -104,6 +104,7 @@ return {
         28
     },
     ["Bozzetto Bruiser"] = S{
+        2,
         10,
         28
     },
@@ -167,6 +168,7 @@ return {
         194
     },
     ["Bozzetto Justiciar"] = S{
+        2,
         10,
         28
     },
@@ -208,6 +210,7 @@ return {
         28
     },
     ["Bozzetto Sharpshooter"] = S{
+        2,
         10
     },
     ["Bozzetto Shiva"] = S{
@@ -600,6 +603,7 @@ return {
         2
     },
     ["Thunder Circle"] = S{
+        2,
         4,
         6,
         12,
