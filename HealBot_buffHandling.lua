@@ -119,7 +119,7 @@ function buffs.getDebuffQueue()
 		for id, info in pairs(debuffs) do
 			if info.aura == 'no' then
 				local debuff = res.buffs[id]
-				local removalSpellName = buffs.handle_removalSpellName(healer, id)
+				local removalSpellName = buffs.handle_removalSpellName(healer, id, targ)
 				atcd(123,'Removal debuff enqueue -  ID: ' .. id .. ' Target: ' .. targ)
 				if (removalSpellName ~= nil) then
 					if (info.attempted == nil) or ((now - info.attempted) >= 3) then
@@ -141,7 +141,9 @@ function buffs.getDebuffQueue()
 						end
 					end
 				else
-					buffs.debuffList[targ][id] = nil
+					if not (S{2,19,193,14,17}:contains(id)) then
+						buffs.debuffList[targ][id] = nil
+					end
 				end
 			end -- if aura
 		end -- for
@@ -150,7 +152,7 @@ function buffs.getDebuffQueue()
 end -- function
 
 --Handle removal spells for jobs
-function buffs.handle_removalSpellName(healer, id)
+function buffs.handle_removalSpellName(healer, id, targ)
 	local aoe_action, single_action, debuff_map_type, removalActionName, ja_action, ma_action, sleep_spell
 
 	if healer.main_job == 'DNC' or (healer.sub_job == 'DNC' and not (S{'WHM','SCH'}:contains(healer.main_job))) then
@@ -185,14 +187,15 @@ function buffs.handle_removalSpellName(healer, id)
 			removalActionName = tostring(category)
 		end
 	end
-	if removalActionName == 'Charmed' then
+
+	local debuff_table = buffs.debuffList[targ]
+	if removalActionName == 'Charmed' and not (debuff_table[2] or debuff_table[19] or debuff_table[193]) then
 		return (healer:can_use(sleep_spell) and sleep_spell) or nil
-	elseif removalActionName == 'Asleep' then
+	elseif removalActionName == 'Asleep' and not (debuff_table[14] or debuff_table[17]) then
 		return (healer:can_use(aoe_action) and aoe_action) or (healer:can_use(single_action) and single_action) or nil
 	else
 		return (ja_action and removalActionName and res.job_abilities:with('en', removalActionName)) or (ma_action and removalActionName and res.spells:with('en', removalActionName)) or nil
 	end
-	return nil
 end
 
 --==============================================================================
@@ -535,13 +538,12 @@ function buffs.register_debuff(target, debuff, gain, action)
                 end
             end
         end
-		
+
 		local aura_flag = buffs.auras[tname] and buffs.auras[tname][debuff.id] and buffs.auras[tname][debuff.id].aura_status or 'no'
 		if buffs.gaol_auras:contains(debuff.id) then
 			aura_flag = buffs.auras[tname] and buffs.auras[tname][debuff.id] and buffs.auras[tname][debuff.id].aura_status or 'yes'
 		end
 		
-
 		if action then
 			if not(debuff.id == 0 and debuff_tbl[0]) then
 				debuff_tbl[debuff.id] = {landed = os.time(), aura = aura_flag, spell_name = action.name, spell_id = action.id, mob_name = tname, mob_index = tindex}
@@ -554,7 +556,7 @@ function buffs.register_debuff(target, debuff, gain, action)
 		end
 		
         if is_enemy and hb.modes.mob_debug then
-            atc(('Detected %sdebuff: %s %s %s [%s]'):format(msg, debuff.en, rarr, tname, tid))
+            atcd(('Detected %sdebuff: %s %s %s [%s]'):format(msg, debuff.en, rarr, tname, tid))
         end
         atcd(('Detected %sdebuff: %s %s %s [%s]'):format(msg, debuff.en, rarr, tname, tid))
     else
@@ -564,7 +566,7 @@ function buffs.register_debuff(target, debuff, gain, action)
 			offense.mobs[tid] = nil
 		end
         if is_enemy and hb.modes.mob_debug then
-            atc(('Detected %sdebuff: %s wore off %s [%s]'):format(msg, debuff.en, tname, tid))
+            atcd(('Detected %sdebuff: %s wore off %s [%s]'):format(msg, debuff.en, tname, tid))
         end
         atcd(('Detected %sdebuff: %s wore off %s [%s]'):format(msg, debuff.en, tname, tid))
     end
