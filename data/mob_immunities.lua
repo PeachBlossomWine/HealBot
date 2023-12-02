@@ -51,6 +51,9 @@ return {
     ["Awoken Hakenmann"] = S{
         2
     },
+    ["Awoken Hildesvini"] = S{
+        2
+    },
     ["Awoken Hjorvarth"] = S{
         2
     },

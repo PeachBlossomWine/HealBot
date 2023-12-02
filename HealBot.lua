@@ -138,6 +138,9 @@ hb._events['render'] = windower.register_event('prerender', function()
                 local should_move = false
 				if (targ ~= nil) and (player.target_index == partner.target_index) then
 					if offense.assist.engage and (partner.status == 1) then
+						if not (player.status == 1) then
+							healer:send_cmd('input /attack on')
+						end
 						if healer:dist_from(targ.id) > (2.2 + targ.model_size) then
 							if not player.target_locked then
 								healer:send_cmd('input /lockon')
@@ -171,7 +174,11 @@ hb._events['render'] = windower.register_event('prerender', function()
                 healer.last_move_check = now      --Refresh stored movement check time
             end
         end
-        
+		
+		if hb.active and offense.assist.engage and partner and (partner.status == 1) and not (player.status == 1) and not (offense.assist.nolock) then
+			healer:send_cmd('input /as '..offense.assist.name)
+		end
+		
         if hb.active and not (moving or acting) then
             --hb.active = false    --Quick stop when debugging
             if healer:action_delay_passed() then
@@ -231,7 +238,7 @@ function hb.activate()
             else
                 disableCommand('cure', true)
 				disableCommand('curaga', true)
-				disableCommand('na', true)
+				-- disableCommand('na', true)
             end
         else
             settings.healing.mode = 'cure'
