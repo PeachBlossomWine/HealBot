@@ -401,6 +401,9 @@ return {
     ["Gyroscopic Gears"] = S{
         2
     },
+    ["Harpimaira"] = S{
+        2
+    },
     ["Henwen"] = S{
         7
     },
@@ -703,6 +706,7 @@ return {
         194
     },
     ["Wasp Nest"] = S{
+        2,
         194
     },
     ["Water Circle"] = S{
