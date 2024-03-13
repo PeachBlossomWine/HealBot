@@ -127,6 +127,10 @@ return {
     ["Bozzetto Deathbringer"] = S{
         2
     },
+    ["Bozzetto Deathsinger"] = S{
+        2,
+        6
+    },
     ["Bozzetto Don"] = S{
         2
     },
