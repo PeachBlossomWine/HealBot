@@ -486,6 +486,7 @@ function buffs.register_dispelable_buffs(target, debuff, gain, tname, tindex, ts
 end
 
 function buffs.register_ipc_debuff_loss(target, debuff)
+	coroutine.sleep(0.25)
 	local tid = target.id
     local is_enemy = (target.spawn_type == 16)
     if is_enemy then
