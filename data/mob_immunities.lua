@@ -448,6 +448,9 @@ return {
         13,
         194
     },
+    ["Icy Palisade"] = S{
+        194
+    },
     ["Iku-Turso"] = S{
         194
     },
