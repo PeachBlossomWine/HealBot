@@ -488,14 +488,15 @@ end
 function buffs.register_ipc_debuff_loss(target, debuff)
 	local tid = target.id
 	local is_enemy = (target.spawn_type == 16)
+
 	if is_enemy then
-		hb.ipc_mob_debuffs[tid] = hb.ipc_mob_debuffs[tid] or {}
+		local temp_debuff_tbl = {targ=target, db=debuff}
+		if offense.mobs[tid] then
+			local response = { method='POST', pk='mob_debuff_loss_ids', mob_loss_debuff_table=temp_debuff_tbl}
+			local ipc_req = serialua.encode(response)
+			windower.send_ipc_message(ipc_req)
+		end
 	end
-	local temp_debuff_tbl = (is_enemy and hb.ipc_mob_debuffs[tid]) or nil
-	if temp_debuff_tbl then
-		temp_debuff_tbl[debuff.id] = {targ=target, db=debuff}
-	end
-	--coroutine.sleep(0.15)
 end
 
 --[[

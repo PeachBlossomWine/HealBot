@@ -390,12 +390,10 @@ function hb.process_ipc(msg)
                 local response = {
                     method='POST', pk='buff_ids', val=player.buffs,
                     pid=player.id, name=player.name, stype=player.spawn_type, 
-					aura_table=buffs.auras, mob_loss_debuff_table=hb.ipc_mob_debuffs,
+					aura_table=buffs.auras,
                 }
                 local encoded = serialua.encode(response)
                 windower.send_ipc_message(encoded)
-				hb.ipc_mob_debuffs = T{}
-				coroutine.sleep(0.15)
             else
                 atcfs(123, 'Invalid pk for GET request: %s', loaded.pk)
             end
@@ -420,19 +418,15 @@ function hb.process_ipc(msg)
 						end
 					end
                     buffs.review_active_buffs(player, loaded.val)
-					if loaded.mob_loss_debuff_table then
-						if next(loaded.mob_loss_debuff_table) ~= nil then
-							for tid, debuff in pairs(loaded.mob_loss_debuff_table) do
-								for _,v in pairs(debuff) do
-									buffs.register_debuff(v.targ, v.db, false)
-									
-								end
-							end
-						end
-					end
                 else
                     atcfs(123, 'Missing name in POST message: %s', msg)
                 end
+			elseif loaded.pk == 'mob_debuff_loss_ids' then
+				if loaded.mob_loss_debuff_table then
+					if next(loaded.mob_loss_debuff_table) ~= nil then
+						buffs.register_debuff(loaded.mob_loss_debuff_table.targ, loaded.mob_loss_debuff_table.db, false)
+					end
+				end
 			elseif loaded.pk == 'follow_ids' then	-- For follow to zoneline
 				log('IPC: for follow only received.')
 				if settings.follow.target and settings.follow.target == loaded.follow_name and settings.follow.active and loaded.orig_zone == windower.ffxi.get_info().zone then
