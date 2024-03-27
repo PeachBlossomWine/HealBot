@@ -395,6 +395,7 @@ function hb.process_ipc(msg)
                 local encoded = serialua.encode(response)
                 windower.send_ipc_message(encoded)
 				hb.ipc_mob_debuffs = T{}
+				coroutine.sleep(0.15)
             else
                 atcfs(123, 'Invalid pk for GET request: %s', loaded.pk)
             end
@@ -424,7 +425,7 @@ function hb.process_ipc(msg)
 							for tid, debuff in pairs(loaded.mob_loss_debuff_table) do
 								for _,v in pairs(debuff) do
 									buffs.register_debuff(v.targ, v.db, false)
-									coroutine.sleep(0.15)
+									
 								end
 							end
 						end
