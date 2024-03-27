@@ -380,6 +380,7 @@ function hb.process_ipc(msg)
     local loaded = serialua.decode(msg)
     if loaded == nil then
         atc(53, 'Received nil IPC message')
+		return
     elseif type(loaded) ~= 'table' then
         atcfs(264, 'IPC message: %s', loaded)
     elseif loaded.method == 'GET' then
