@@ -37,7 +37,8 @@ return {
         6
     },
     ["Awoken Andhrimnir"] = S{
-        2
+        2,
+        6
     },
     ["Awoken Ariri Samariri"] = S{
         6

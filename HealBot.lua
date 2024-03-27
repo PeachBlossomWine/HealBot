@@ -423,7 +423,7 @@ function hb.process_ipc(msg)
 							for tid, debuff in pairs(loaded.mob_loss_debuff_table) do
 								for _,v in pairs(debuff) do
 									buffs.register_debuff(v.targ, v.db, false)
-									coroutine.sleep(0.25)
+									coroutine.sleep(0.15)
 								end
 							end
 						end

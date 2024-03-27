@@ -486,16 +486,16 @@ function buffs.register_dispelable_buffs(target, debuff, gain, tname, tindex, ts
 end
 
 function buffs.register_ipc_debuff_loss(target, debuff)
-	coroutine.sleep(0.25)
 	local tid = target.id
-    local is_enemy = (target.spawn_type == 16)
-    if is_enemy then
-        hb.ipc_mob_debuffs[tid] = hb.ipc_mob_debuffs[tid] or {}
-    end
-    local temp_debuff_tbl = (is_enemy and hb.ipc_mob_debuffs[tid]) or nil
+	local is_enemy = (target.spawn_type == 16)
+	if is_enemy then
+		hb.ipc_mob_debuffs[tid] = hb.ipc_mob_debuffs[tid] or {}
+	end
+	local temp_debuff_tbl = (is_enemy and hb.ipc_mob_debuffs[tid]) or nil
 	if temp_debuff_tbl then
 		temp_debuff_tbl[debuff.id] = {targ=target, db=debuff}
 	end
+	--coroutine.sleep(0.15)
 end
 
 --[[
