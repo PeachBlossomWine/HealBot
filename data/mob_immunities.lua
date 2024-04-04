@@ -40,14 +40,22 @@ return {
         2,
         6
     },
+    ["Awoken Angantyr"] = S{
+        2
+    },
     ["Awoken Ariri Samariri"] = S{
         6
     },
     ["Awoken Dendainsonne"] = S{
+        2,
         6
     },
     ["Awoken Freke"] = S{
+        2,
         6
+    },
+    ["Awoken Gorgimera"] = S{
+        2
     },
     ["Awoken Hakenmann"] = S{
         2
@@ -71,7 +79,17 @@ return {
     ["Awoken Morbol Emperor"] = S{
         2
     },
+    ["Awoken Nihhus"] = S{
+        2
+    },
+    ["Awoken Stoorworm"] = S{
+        2
+    },
+    ["Awoken Tanngrisnir"] = S{
+        2
+    },
     ["Awoken Vampyr Jarl"] = S{
+        2,
         6
     },
     ["Azure-toothed Clawberry"] = S{
