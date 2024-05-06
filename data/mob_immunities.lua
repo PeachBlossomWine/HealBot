@@ -143,6 +143,9 @@ return {
         2,
         28
     },
+    ["Bozzetto Consul"] = S{
+        2
+    },
     ["Bozzetto Deathbringer"] = S{
         2
     },
@@ -186,6 +189,9 @@ return {
     ["Bozzetto Housemaker"] = S{
         2,
         194
+    },
+    ["Bozzetto Hunter"] = S{
+        2
     },
     ["Bozzetto Ifrit"] = S{
         2,
@@ -251,6 +257,9 @@ return {
     ["Bozzetto Songstress"] = S{
         2,
         7
+    },
+    ["Bozzetto Stalwart"] = S{
+        2
     },
     ["Bozzetto Swiftshooter"] = S{
         28
@@ -612,6 +621,9 @@ return {
     },
     ["Rancibus"] = S{
         28
+    },
+    ["Sabotender Dulce"] = S{
+        2
     },
     ["Sarama"] = S{
         2
