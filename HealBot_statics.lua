@@ -184,8 +184,8 @@ debuff_casemap = {['nocturne']='Nocturne',['accuracy down']='Accuracy Down',['ma
 spells_storms = S{'Aurorastorm','Voidstorm','Sandstorm','Windstorm','Rainstorm','Firestorm','Hailstorm','Thunderstorm','Aurorastorm II','Voidstorm II','Sandstorm II','Windstorm II','Rainstorm II','Firestorm II','Hailstorm II','Thunderstorm II'}
 spells_bar_element_self = S{'Barstone','Baraero','Barwater','Barfire','Barblizzard','Barthunder'}
 spells_bar_element_aoe = S{'Barstonra','Baraera','Barwatera','Barfira','Barblizzara','Barthundra'}
-spells_bar_status_self = S{'Barsleep','Barpoison','Barparalyze','Barblind','Barsilence','Barpetrify','Barvirus'}
-spells_bar_status_aoe = S{'Barsleepra','Barpoisonra','Barparalyzra','Barblindra','Barsilencera','Barpetra','Barvira'}
+spells_bar_status_self = S{'Barsleep','Barpoison','Barparalyze','Barblind','Barsilence','Barpetrify','Barvirus','Baramnesia'}
+spells_bar_status_aoe = S{'Barsleepra','Barpoisonra','Barparalyzra','Barblindra','Barsilencera','Barpetra','Barvira','Baramnesra'}
 spells_boost = S{'Boost-AGI','Boost-CHR','Boost-DEX','Boost-INT','Boost-MND','Boost-STR','Boost-VIT'}
 spells_gain = S{'Gain-AGI','Gain-CHR','Gain-DEX','Gain-INT','Gain-MND','Gain-STR','Gain-VIT'}
 spells_haste_flurry = S{'Haste','Flurry','Haste II','Flurry II'}
