@@ -44,6 +44,7 @@ return {
         2
     },
     ["Awoken Ariri Samariri"] = S{
+        2,
         6
     },
     ["Awoken Dendainsonne"] = S{
@@ -526,6 +527,7 @@ return {
         28
     },
     ["Knotted Root"] = S{
+        2,
         194
     },
     ["Kur"] = S{
