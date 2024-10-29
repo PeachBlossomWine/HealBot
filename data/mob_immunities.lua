@@ -437,6 +437,9 @@ return {
     ["Harpimaira"] = S{
         2
     },
+    ["Heliotrope Barrier"] = S{
+        2
+    },
     ["Henwen"] = S{
         7
     },
