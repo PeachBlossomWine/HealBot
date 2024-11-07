@@ -135,10 +135,17 @@ function buffs.getDebuffQueue()
 								end
 							end
 							-- handle ignores
+							-- local ign = buffs.ignored_debuffs[debuff.en]
+							-- if not buffs.perm_ignored_debuffs:contains(tonumber(id)) and not ((ign ~= nil) and ((ign.all == true) or ((ign[targ] ~= nil) and (ign[targ] == true)))) then
+								-- dbq:enqueue('debuff', spell, targ, debuff, ' ('..debuff.en..')')
+							-- end
+							
+							-- handle ignores
 							local ign = buffs.ignored_debuffs[debuff.en]
-							if not buffs.perm_ignored_debuffs:contains(tonumber(id)) and not ((ign ~= nil) and ((ign.all == true) or ((ign[targ] ~= nil) and (ign[targ] == true)))) then
+							if not buffs.perm_ignored_debuffs:contains(tonumber(id)) and (ign == nil or not (ign.all == true or (ign[targ] ~= nil and ign[targ] == true))) then
 								dbq:enqueue('debuff', spell, targ, debuff, ' ('..debuff.en..')')
 							end
+
 						end
 					end
 				else
