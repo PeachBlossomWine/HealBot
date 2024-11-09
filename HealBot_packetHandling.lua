@@ -555,7 +555,7 @@ function registerEffect(ai, tact, actor, target, monitored_ids)
                 local debuff_id = spell_debuff_idmap[spell.id]
 				local cause = res.spells[spell.id]
 				if not (offense.mobs[target.id] and offense.mobs[target.id][debuff_id]) then
-					if not (offense.mobs[target.id] and not S{2,193}:contains(offense.mobs[target.id][debuff_id])) then		--Sleep vs Lullaby handling
+					if not (offense.mobs[target.id] and offense.mobs[target.id][debuff_id] and not S{2,193}:contains(offense.mobs[target.id][debuff_id])) then		--Sleep vs Lullaby handling
 						buffs.register_debuff(target, debuff_id, true, cause)
 					end
 				end

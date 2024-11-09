@@ -191,11 +191,29 @@ function getRemovalPriority(ailment)
 end
 
 
+-- function getDebuffPriority(debuff)
+    -- local ndebuff = utils.normalize_action(debuff, 'buffs')
+    -- local prios = hb.config.priorities
+    -- return prios.debuffs[ndebuff.en] or prios.debuffs[ndebuff.enn] or prios.default
+-- end
+
 function getDebuffPriority(debuff)
     local ndebuff = utils.normalize_action(debuff, 'buffs')
     local prios = hb.config.priorities
-    return prios.debuffs[ndebuff.en] or prios.debuffs[ndebuff.enn] or prios.default
+
+	-- Convert both normalized names to lowercase for consistent lookup
+    local debuff_name_en = ndebuff.en and ndebuff.en:lower() or nil
+    local debuff_name_enn = ndebuff.enn and ndebuff.enn:lower() or nil
+    local priority = prios.debuffs[debuff_name_en] or prios.debuffs[debuff_name_enn] or prios.default
+
+
+    -- Debugging: Show the lowercase normalized name and accessed priority
+    --atcf("getDebuffPriority: Original debuff '%s' '%s' with priority %d", tostring(debuff.en), tostring(ndebuff),  priority)
+
+    return priority
 end
+
+
 
 
 function getDispelPriority(spells)

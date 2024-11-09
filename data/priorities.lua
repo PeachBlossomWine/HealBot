@@ -9,14 +9,14 @@ return {
         ['Reraise'] = 2
     },
     ['debuffs'] = {
-        ['dia'] = 0,
+        ['dia'] = 1,
         ['bio'] = 3,
         ['silence'] = 1,
-        ['distract'] = 2,
-        ['frazzle'] = 3,
+		['evasion down'] = 2,
+		['magic evasion down'] = 0,
         ['addle'] = 4,
         ['gravity'] = 1,
-        ['paralyze'] = 2,
+        ['paralysis'] = 2,
         ['slow'] = 2,
         ['blind'] = 6,
         ['poison'] = 6,
@@ -39,6 +39,7 @@ return {
         ['drown'] = 7,
         ['sleep'] = 0,
         ['repose'] = 0,
+		['bane'] = 0, --abs TP
     },
     ['default'] = 5,
     ['dispel'] = {

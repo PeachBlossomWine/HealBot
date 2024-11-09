@@ -277,10 +277,8 @@ function actions.check_moblist_mob(target_index)
 	return false
 end
 
---[[
-	Builds an action queue for offensive actions.
-    Returns the action deemed most important at the time.
---]]
+
+
 function actions.get_offensive_action(player, partner, battle_target)
 	player = player or windower.ffxi.get_player()
 	local target
@@ -292,33 +290,43 @@ function actions.get_offensive_action(player, partner, battle_target)
     if target == nil or target.hpp == 0 then return nil end
     local action = {}
 
-    --Prioritize debuffs over nukes/ws
+	-- Define Stymie action to be available throughout the function
+    local stymie = lor_res.action_for("Stymie")
+	
+    -- Prioritize debuffs over nukes/ws
     local dbuffq = offense.getDebuffQueue(player, target)
     while not dbuffq:empty() do
         local dbact = dbuffq:pop()
         local_queue_insert(dbact.action.en, target.name)
-        if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) then
-			--Stymie
-			local stymie = lor_res.action_for("Stymie")
-			if offense.stymie.active and player.main_job == "RDM" and healer:can_use(stymie) and (healer:ready_to_use(stymie) or haveBuff(stymie.name)) and os.time() > (offense.stymie.last_used + 600) then
-				offense.stymie.flag = false
-				if dbact.action.en == offense.stymie.spell then
-					healer:take_action({action=stymie}, healer.name)
-					action.db = dbact
-					offense.stymie.attempt = os.time() -- Sets the attempt to cast the spell with Stymie
-				end
-			else
-				action.db = dbact
-			end
-			--Sets 10mins before Stymie can be used again, waits 30sec after Stymie attempts to set this timer.
-			if offense.stymie.active and player.main_job == "RDM" and not healer:ready_to_use(stymie) and not haveBuff(stymie.name) and not offense.stymie.flag and os.time() > (offense.stymie.attempt + 30) then
-				log('timer')
-				offense.stymie.last_used = os.time()
-				offense.stymie.flag = true
-			end
+
+        -- Check if the current debuff matches offense.stymie.spell
+        if offense.stymie.active and dbact.action.en == offense.stymie.spell then
+
+            if player.main_job == "RDM" and healer:can_use(stymie) and (healer:ready_to_use(stymie) or haveBuff(stymie.name)) and os.time() > (offense.stymie.last_used + 600) then
+                -- Only cast offense.stymie.spell if Stymie is ready or active
+                offense.stymie.flag = false
+                healer:take_action({action=stymie}, healer.name)
+                action.db = dbact  -- Queue specified debuff for casting with Stymie
+                offense.stymie.attempt = os.time() -- Set attempt time for Stymie use
+                break  -- Exit loop after setting debuff with Stymie
+            else
+                -- Skip casting the specified debuff if Stymie is not available
+                atcd("Stymie not ready; skipping " .. offense.stymie.spell .. ".")
+            end
+        else
+            -- Process other debuffs normally without requiring Stymie
+            if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) then
+                action.db = dbact
+            end
         end
     end
-    
+
+    -- Update Stymie cooldown timer
+    if offense.stymie.active and player.main_job == "RDM" and not healer:ready_to_use(stymie) and not haveBuff(stymie.name) and not offense.stymie.flag and os.time() > (offense.stymie.attempt + 30) then
+        offense.stymie.last_used = os.time()
+        offense.stymie.flag = true
+    end
+	 
     local_queue_disp()
     if action.db ~= nil then
         return action.db
@@ -356,6 +364,83 @@ function actions.get_offensive_action(player, partner, battle_target)
     atcd('get_offensive_action: no offensive actions to perform')
 	return nil
 end
+	
+
+-- function actions.get_offensive_action(player, partner, battle_target)
+	-- player = player or windower.ffxi.get_player()
+	-- local target
+	-- if battle_target then
+		-- target = windower.ffxi.get_mob_by_target('bt')
+	-- else
+		-- target = (partner and partner.target_index and windower.ffxi.get_mob_by_index(partner.target_index)) or windower.ffxi.get_mob_by_target()
+	-- end
+    -- if target == nil or target.hpp == 0 then return nil end
+    -- local action = {}
+
+    -- --Prioritize debuffs over nukes/ws
+    -- local dbuffq = offense.getDebuffQueue(player, target)
+    -- while not dbuffq:empty() do
+        -- local dbact = dbuffq:pop()
+        -- local_queue_insert(dbact.action.en, target.name)
+        -- if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) then
+			-- --Stymie
+			-- local stymie = lor_res.action_for("Stymie")
+			-- if offense.stymie.active and player.main_job == "RDM" and healer:can_use(stymie) and (healer:ready_to_use(stymie) or haveBuff(stymie.name)) and os.time() > (offense.stymie.last_used + 600) then
+				-- offense.stymie.flag = false
+				-- if dbact.action.en == offense.stymie.spell then
+					-- healer:take_action({action=stymie}, healer.name)
+					-- action.db = dbact
+					-- offense.stymie.attempt = os.time() -- Sets the attempt to cast the spell with Stymie
+				-- end
+			-- else
+				-- action.db = dbact
+			-- end
+			-- --Sets 10mins before Stymie can be used again, waits 30sec after Stymie attempts to set this timer.
+			-- if offense.stymie.active and player.main_job == "RDM" and not healer:ready_to_use(stymie) and not haveBuff(stymie.name) and not offense.stymie.flag and os.time() > (offense.stymie.attempt + 30) then
+				-- log('timer')
+				-- offense.stymie.last_used = os.time()
+				-- offense.stymie.flag = true
+			-- end
+        -- end
+    -- end
+    
+    -- local_queue_disp()
+    -- if action.db ~= nil then
+        -- return action.db
+    -- end
+    
+    -- if (not settings.disable.ws) and (settings.ws ~= nil) and healer:ready_to_use(lor_res.action_for(settings.ws.name)) then
+        -- local sign = settings.ws.sign or '>'
+        -- local hp = settings.ws.hp or 0
+        -- local hp_ok = ((sign == '<') and (target.hpp <= hp)) or ((sign == '>') and (target.hpp >= hp))
+        
+        -- local partner_ok = true
+        -- if (settings.ws.partner ~= nil) then
+            -- local pname = settings.ws.partner.name
+            -- local partner = ffxi.get_party_member(pname)
+            -- if partner ~= nil then
+                -- partner_ok = partner.tp >= settings.ws.partner.tp
+            -- else
+                -- partner_ok = false
+                -- atc(123,'Unable to locate weaponskill partner '..pname)
+            -- end
+        -- end
+        
+        -- if (hp_ok and partner_ok) then
+            -- return {action=lor_res.action_for(settings.ws.name),name='<t>'}
+        -- end
+    -- elseif (not settings.disable.spam) and settings.spam.active and (settings.spam.name ~= nil) then
+        -- local spam_action = lor_res.action_for(settings.spam.name)
+        -- if (target.hpp > 0) and healer:ready_to_use(spam_action) and healer:in_casting_range('<t>') then
+			-- return {action=spam_action,name='<t>'}
+        -- else
+			-- atcd('MP/TP not ok for '..settings.spam.name)
+        -- end
+    -- end
+    
+    -- atcd('get_offensive_action: no offensive actions to perform')
+	-- return nil
+-- end
 
 --Moblist debuff - with separate list if defined.  Otherwise use default debuffs
 function actions.get_offensive_action_list(player, mob_index)
