@@ -513,9 +513,41 @@ end
 function buffs.register_debuff(target, debuff, gain, action)
 
     debuff = utils.normalize_action(debuff, 'buffs')
-    
+	
     if debuff == nil then
         return
+    end
+
+    -- log("DEBUG: Gain: " .. tostring(gain))	
+    -- if debuff and type(debuff) == "table" then
+        -- log("DEBUG: Debuff Table:")
+        -- table.vprint(debuff)
+    -- else
+        -- log("DEBUG: Debuff is not a valid table or is nil")
+    -- end
+
+    -- if action and type(action) == "table" then
+        -- log("DEBUG: Action Table:")
+        -- table.vprint(action)
+    -- else
+        -- log("DEBUG: Action is not a valid table or is nil")
+    -- end
+	
+	light_shot_tracker[target.id] = light_shot_tracker[target.id] or false
+	
+	if debuff and debuff.id and debuff.id == 134 then
+		light_shot_tracker[target.id] = true  -- Allow Light Shot to apply once any form of Dia is detected
+	end
+	
+	-- Check if the action is Light Shot and the debuff is Dia
+    if action and action.name and string.find(action.name, "Light Shot")then
+        -- Prevent reapplication of Light Shot if it has already been applied
+        if not light_shot_tracker[target.id] then
+            return  -- Skip reapplication
+        else
+            -- Mark Light Shot as applied for this target under Dia
+            light_shot_tracker[target.id] = false
+        end
     end
 
 	if action and action.id and res.spells[action.id] then
@@ -557,6 +589,8 @@ function buffs.register_debuff(target, debuff, gain, action)
 		if action then
 			if not(debuff.id == 0 and debuff_tbl[0]) then
 				debuff_tbl[debuff.id] = {landed = os.time(), aura = aura_flag, spell_name = action.name, spell_id = action.id, mob_name = tname, mob_index = tindex}
+				--Do check here for dia to do lightshot.
+				
 				if not debuff_tbl[0] and is_enemy then
 					debuff_tbl[0] = {landed = os.time(), aura = 'no', spell_name = "KO", spell_id = 50000, mob_name = tname, mob_index = tindex}
 				end
@@ -570,6 +604,10 @@ function buffs.register_debuff(target, debuff, gain, action)
         end
         atcd(('Detected %sdebuff: %s %s %s [%s]'):format(msg, debuff.en, rarr, tname, tid))
     else
+		-- Clear the tracker when Dia wears off
+        if debuff and debuff.id and debuff.id == 134 then
+            light_shot_tracker[tid] = false  -- Reset tracking for Light Shot
+        end
         debuff_tbl[debuff.id] = nil
 		local mob_ids = table.keys(offense.mobs)
 		if mob_ids and offense.mobs[tid] and next(offense.mobs[tid]) == nil then

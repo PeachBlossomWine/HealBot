@@ -101,6 +101,39 @@ function offense.maintain_debuff(spell, cancel, mob_debuff_list_flag)
 	end
 end
 
+function offense.maintain_debuff_ja(ja, cancel, mob_debuff_list_flag)
+    local nja = utils.normalize_action(ja, 'job abilities')
+    if not nja then
+        atcfs(123, '[offense.maintain_debuff_ja] Invalid job ability: %s', ja)
+        return
+    end
+    local debuff_id = ja_debuff_idmap[nja.id]
+    if debuff_id == nil then
+        atcfs(123, 'Unable to find debuff for job ability: %s', ja)
+        return
+    end
+    local debuff = res.buffs[debuff_id]
+    if cancel then
+		if mob_debuff_list_flag then
+			offense.moblist.debuffs[debuff.id] = nil
+		else
+			offense.debuffs[debuff.id] = nil
+		end
+    else
+		if mob_debuff_list_flag then
+			offense.moblist.debuffs[debuff.id] = {ja = nja, res = debuff}
+		else
+			offense.debuffs[debuff.id] = {ja = nja, res = debuff}
+		end
+    end
+    local msg = cancel and 'no longer ' or ''
+	if mob_debuff_list_flag then
+		atcf('Will %smaintain debuff on moblist: %s', msg, nja.en)
+	else
+		atcf('Will %smaintain debuff on mobs: %s', msg, nja.en)
+	end
+end
+
 
 function offense.normalized_mob(mob)
     if istable(mob) then
@@ -153,7 +186,19 @@ function offense.getDebuffQueue(player, target, mob_debuff_list_flag)
 			for id,debuff in pairs(offense.debuffs) do
 				if offense.mobs[target.id][id] == nil then
 					if not (offense.immunities[target.name] and offense.immunities[target.name][id]) then
-						dbq:enqueue('debuff_mob', debuff.spell, target.name, debuff.res, (' (%s)'):format(debuff.spell.en))
+						if debuff.ja then
+							-- Check if Light Shot is eligible for reapplication
+                            if debuff.ja.en == "Light Shot" then
+                                -- Skip enqueuing Light Shot if Dia is active and Light Shot has been applied
+                                if light_shot_tracker[target.id] == true then
+                                    dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
+                                end
+                            else
+								dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
+							end
+						else
+							dbq:enqueue('debuff_mob', debuff.spell, target.name, debuff.res, (' (%s)'):format(debuff.spell.en))
+						end
 					end
 				end
 			end
@@ -182,7 +227,6 @@ function offense.getDispelQueue(player, target)
     end
     return dbq:getQueue()
 end
-
 
 return offense
 

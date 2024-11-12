@@ -360,6 +360,22 @@ function processCommand(command,...)
             end
             utils.register_offensive_debuff(args, false)
         end
+	elseif S{'jadebuff', 'jadb'}:contains(command) then
+        local cmd = args[1] and args[1]:lower() 
+        if S{'rm','remove'}:contains(cmd) then
+            utils.register_offensive_debuff(table.slice(args, 2), true)
+        elseif S{'ls','list'}:contains(cmd) then
+			local debuff_print = ''
+			for k,v in pairs(offense.debuffs) do
+				debuff_print = debuff_print..offense.debuffs[k].ja.en..','
+			end
+			atc('Debuffs: '..debuff_print)
+        else
+            if S{'use','set'}:contains(cmd) then
+                table.remove(args, 1)
+            end
+            utils.register_offensive_debuff(args, false, false ,true)
+        end
 	elseif S{'mldebuff', 'mldb'}:contains(command) then
 		local cmd = args[1] and args[1]:lower() 
         if S{'rm','remove'}:contains(cmd) then
@@ -615,7 +631,7 @@ end
 utils.get_player_id = _libs.lor.advutils.scached(_get_player_id)
 
 
-function utils.register_offensive_debuff(args, cancel, mob_debuff_list_flag)
+function utils.register_offensive_debuff(args, cancel, mob_debuff_list_flag, ja_flag)
     local argstr = table.concat(args,' ')
     local snames = argstr:split(',')
     for index,sname in pairs(snames) do
@@ -635,21 +651,40 @@ function utils.register_offensive_debuff(args, cancel, mob_debuff_list_flag)
 					end
 				end
             else
-                local spell_name = utils.formatActionName(sname:trim())
-                local spell = lor_res.action_for(spell_name)
-                if (spell ~= nil) then
-                    if healer:can_use(spell) then
-						if mob_debuff_list_flag then
-							offense.maintain_debuff(spell, cancel, true)
+				if ja_flag then
+					local ja_name = utils.formatActionName(sname:trim())
+					local ja = lor_res.action_for(ja_name)
+					if (ja ~= nil) then
+						if healer:can_use(ja) then
+							if mob_debuff_list_flag then
+								offense.maintain_debuff_ja(ja, cancel, true)
+							else
+								offense.maintain_debuff_ja(ja, cancel)
+							end
 						else
-							offense.maintain_debuff(spell, cancel)
+							atcfs(123,'Error: Unable to use %s', ja.en)
 						end
-                    else
-                        atcfs(123,'Error: Unable to cast %s', spell.en)
-                    end
-                else
-                    atcfs(123,'Error: Invalid spell name: %s', spell_name)
-                end
+					else
+						atcfs(123,'Error: Invalid ja name: %s', ja)
+					end
+					
+				else
+					local spell_name = utils.formatActionName(sname:trim())
+					local spell = lor_res.action_for(spell_name)
+					if (spell ~= nil) then
+						if healer:can_use(spell) then
+							if mob_debuff_list_flag then
+								offense.maintain_debuff(spell, cancel, true)
+							else
+								offense.maintain_debuff(spell, cancel)
+							end
+						else
+							atcfs(123,'Error: Unable to cast %s', spell.en)
+						end
+					else
+						atcfs(123,'Error: Invalid spell name: %s', spell_name)
+					end
+				end
             end
         end
     end
@@ -1175,6 +1210,8 @@ end
 --==============================================================================
 
 function utils.load_configs()
+
+	local player = windower.ffxi.get_player()
     local defaults = {
         textBoxes = {
             actionQueue={x=-125,y=300,font='Arial',size=10,visible=true},
@@ -1215,6 +1252,10 @@ function utils.load_configs()
     hb.config.priorities.dispel =         hb.config.priorities.dispel or {}     --not implemented yet
     hb.config.priorities.default =        hb.config.priorities.default or 5
     
+	--Set job defaults debuffs or buffs
+	if player.main_job == 'COR' then
+		utils.register_offensive_debuff({"Light Shot"}, false, false ,true)
+	end
     --process_mabil_debuffs()
     local msg = hb.configs_loaded and 'Rel' or 'L'
     hb.configs_loaded = true

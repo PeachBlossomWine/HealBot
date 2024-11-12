@@ -362,12 +362,19 @@ function handle_shot(target, shot_id)
                 buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
             end
         end
-	elseif shot_id == 131 and offense.mobs[target.id][134] and not offense.mobs[target.id][134].shot then -- Light
-		buff_id = 134 -- Dia
-		cause = res.spells[offense.mobs[target.id][buff_id].spell_id]
-		cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Light Shot)')}
-		offense.mobs[target.id][buff_id].shot = 1
-		buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+	elseif shot_id == 131 then
+		if offense.mobs[target.id][134] and not offense.mobs[target.id][134].shot then -- Light
+			buff_id = 134 -- Dia
+			cause = res.spells[offense.mobs[target.id][buff_id].spell_id]
+			cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Light Shot)')}
+			offense.mobs[target.id][buff_id].shot = 1
+			buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
+		-- else  -- no Dia
+			-- buff_id = 253
+			-- cause = res.spells[253]
+			-- cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Light Shot)')}
+			-- buffs.register_debuff(target, res.buffs[2], true, cor_upgrade_cause)
+		end
 	elseif shot_id == 132 then -- Dark
 		if offense.mobs[target.id][5] and S{254,276,347,348}:contains(offense.mobs[target.id][5].spell_id) and not offense.mobs[target.id][5].shot then -- Slow
 			buff_id = 5 -- Blind
