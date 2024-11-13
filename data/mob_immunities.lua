@@ -36,6 +36,12 @@ return {
     ["Aurix"] = S{
         6
     },
+    ["Avatar Icon"] = S{
+        2
+    },
+    ["Avatar Idol"] = S{
+        2
+    },
     ["Awoken Andhrimnir"] = S{
         2,
         6
@@ -562,6 +568,9 @@ return {
     ["Marmorkrebs"] = S{
         7
     },
+    ["Marquis Nebiros"] = S{
+        2
+    },
     ["Mboze"] = S{
         7
     },
@@ -670,6 +679,9 @@ return {
         7
     },
     ["Vampyr Jarl"] = S{
+        2
+    },
+    ["Vanguard Dragon"] = S{
         2
     },
     ["Vanquished Einherjar"] = S{
