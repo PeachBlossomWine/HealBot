@@ -550,6 +550,23 @@ function buffs.register_debuff(target, debuff, gain, action)
             light_shot_tracker[target.id] = false
         end
     end
+	
+	ice_shot_tracker[target.id] = ice_shot_tracker[target.id] or false
+	
+	if debuff and debuff.id and debuff.id == 4 then
+		ice_shot_tracker[target.id] = true  -- Allow Light Shot to apply once any form of Dia is detected
+	end
+	
+	
+	if action and action.name and string.find(action.name, "Ice Shot")then
+        -- Prevent reapplication of Ice Shot if it has already been applied
+        if not ice_shot_tracker[target.id] then
+            return  -- Skip reapplication
+        else
+            -- Mark Light Shot as applied for this target under Dia
+            ice_shot_tracker[target.id] = false
+        end
+    end
 
 	if action and action.id and res.spells[action.id] then
 		local overwrites = res.spells[action.id].overwrites or {}
@@ -608,6 +625,9 @@ function buffs.register_debuff(target, debuff, gain, action)
 		-- Clear the tracker when Dia wears off
         if debuff and debuff.id and debuff.id == 134 then
             light_shot_tracker[tid] = false  -- Reset tracking for Light Shot
+        end
+		if debuff and debuff.id and debuff.id == 4 then
+            ice_shot_tracker[tid] = false  -- Reset tracking for Ice Shot
         end
         debuff_tbl[debuff.id] = nil
 		local mob_ids = table.keys(offense.mobs)

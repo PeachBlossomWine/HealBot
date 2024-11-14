@@ -1275,6 +1275,7 @@ function utils.load_configs()
 	--Set job defaults debuffs
 	if player.main_job == 'COR' then
 		utils.register_offensive_debuff({"Light Shot"}, false, false ,true)
+		utils.register_offensive_debuff({"Ice Shot"}, false, false ,true)
 	end
 	utils.auto_apply_bufflist()
     --process_mabil_debuffs()

@@ -193,6 +193,11 @@ function offense.getDebuffQueue(player, target, mob_debuff_list_flag)
                                 if light_shot_tracker[target.id] == true then
                                     dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
                                 end
+							elseif debuff.ja.en == "Ice Shot" then
+								-- Skip enqueuing Light Shot if Dia is active and Light Shot has been applied
+                                if ice_shot_tracker[target.id] == true then
+                                    dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
+                                end
                             else
 								dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
 							end

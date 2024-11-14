@@ -277,7 +277,7 @@ function handle_shot(target, shot_id)
 		end
 	elseif shot_id == 126 then -- Ice
 		if offense.mobs[target.id][4] and S{58,80}:contains(offense.mobs[target.id][4].spell_id) and not offense.mobs[target.id][4].shot then -- Paralysis
-			buff_id = 4
+			buff_id = 4 -- Paralysis
 			cause = res.spells[offense.mobs[target.id][buff_id].spell_id]
 			cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Ice Shot)')}
 			offense.mobs[target.id][buff_id].shot = 1
