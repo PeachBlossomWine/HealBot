@@ -143,7 +143,7 @@ function shouldBuff(bact, bact_target)
         (utils.getPlayerNameFromJob('SCH') and S{'Aurorastorm', 'Voidstorm', 'Firestorm', 'Hailstorm ','Windstorm','Sandstorm','Thunderstorm','Rainstorm'}:contains(bact.action.en) and player.main_job ~= 'SCH') or
         
         -- Skip if WHM is in party and buff is Protect/Shell targeting the player
-        (utils.getPlayerNameFromJob('WHM') and (bact.action.en:match("^Protect") or bact.action.en:match("^Shell")) and bact_target.name == player.name) or
+        (utils.getPlayerNameFromJob('WHM') and (bact.action.en:match("^Protect") or bact.action.en:match("^Shell")) and bact_target.name == player.name and player.main_job ~= 'WHM') or
 
         -- Check the buff status requirement
         (buff_status == "inCombat" and not player.in_combat)
