@@ -24,6 +24,9 @@ return {
         13,
         194
     },
+    ["Angoraq"] = S{
+        2
+    },
     ["Apademak"] = S{
         194
     },
@@ -297,6 +300,12 @@ return {
     ["Bugaboo"] = S{
         2
     },
+    ["Bugafrod"] = S{
+        2
+    },
+    ["Buggesy"] = S{
+        2
+    },
     ["Cep-Kamuy"] = S{
         2
     },
@@ -422,6 +431,9 @@ return {
         10,
         28
     },
+    ["Glutogroc"] = S{
+        2
+    },
     ["Gnarled Rampart"] = S{
         194
     },
@@ -432,6 +444,9 @@ return {
         7
     },
     ["Gorgimera"] = S{
+        2
+    },
+    ["Gredogreq"] = S{
         2
     },
     ["Gulltop"] = S{
@@ -558,11 +573,17 @@ return {
         13,
         194
     },
+    ["Limbolaq"] = S{
+        2
+    },
     ["Lithicthrower Image"] = S{
         2,
         12
     },
     ["Logi"] = S{
+        2
+    },
+    ["Lustilok"] = S{
         2
     },
     ["Marmorkrebs"] = S{
@@ -671,6 +692,9 @@ return {
     ["Tinnin"] = S{
         2
     },
+    ["Trechitrac"] = S{
+        2
+    },
     ["Tunga"] = S{
         2,
         6
@@ -685,6 +709,9 @@ return {
         2
     },
     ["Vanquished Einherjar"] = S{
+        2
+    },
+    ["Viovek"] = S{
         2
     },
     ["Volte Beastmaster"] = S{

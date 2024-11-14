@@ -1,69 +1,58 @@
 return {
-	['rdm/blm'] = {
-		'Haste II',
-		'Refresh III',
-		'Aquaveil',
-		'Protect V',
-		'Shell V',
-		'Phalanx',
-		'Reraise'
-	},
-	['rdm/whm'] = {
-		'Haste II',
-		'Refresh III',
-		'Aquaveil',
-		'Protect V',
-		'Shell V',
-		'Phalanx',
-		'Reraise'
-	},
-	['rdm/sch'] = {
-		'Haste II',
-		'Refresh III',
-		'Aquaveil',
-		'Protect V',
-		'Shell V',
-		'Phalanx',
-	},
-	['geo/rdm'] = {
-        'Haste',
-		'Refresh',
+    ['pld/run'] = {
+        {name = 'Phalanx'},
+        {name = 'Reprisal', status = 'inCombat'},
+        {name = 'Crusade'},
+        {name = 'Enlight II'},
+        {name = 'Protect V'},
+        {name = 'Aquaveil'},
     },
-    ['geo/whm'] = {
-        'Haste',
+    ['pld/blu'] = {
+        {name = 'Phalanx'},
+        {name = 'Reprisal', status = 'inCombat'},
+        {name = 'Crusade'},
+        {name = 'Enlight II'},
+        {name = 'Protect V'},
+        {name = 'Cocoon'},
+    },
+    ['pld/sch'] = {
+        {name = 'Phalanx'},
+        {name = 'Crusade'},
+        {name = 'Stoneskin'},
+    },
+    ['pld'] = {
+        {name = 'Phalanx'},
+        {name = 'Reprisal'},
+        {name = 'Crusade'},
+        {name = 'Enlight II'},
+        {name = 'Protect V'},
     },
     ['whm'] = {
-            'Haste',
-            'Protectra V',
-            'Shellra V',
-            'Reraise IV',
-            'Afflatus Solace',
-			'Auspice'
-        
+        {name = 'Haste'},
+        {name = 'Protectra V'},
+        {name = 'Shellra V'},
+        {name = 'Reraise IV'},
+		{name = 'Aurorastorm'},
     },
-    ['whm/rdm'] = {
-            'Haste',
-            'Refresh',
-            'Protectra V',
-            'Shellra V',
-            'Reraise IV',
-            'Afflatus Solace',
-			'Auspice'
-        
+    -- ['sch'] = {
+        -- {name = 'Protect V'},
+        -- {name = 'Shell V'},
+        -- {name = 'Reraise'},
+    -- },
+	['rdm'] = {
+        {name = 'Refresh III'},
+        {name = 'Haste II'},
+        {name = 'Aurorastorm'},
+        {name = 'Temper II'},
+        {name = 'Phalanx'},
+        {name = 'Shell V'},
+        {name = 'Protect V'},
+        {name = 'Reraise'},
     },
-    ['whm/sch'] = {
-            'Haste',
-            'Light Arts',
-            'Protectra V',
-            'Shellra V',
-            'Reraise IV',
-            'Afflatus Solace',
-			'Aurorastorm'
-        
-    },
-	['sch'] = {
-            'Protect V',
-            'Shell V',
-            'Reraise'
+    ['geo'] = {
+        {name = 'Haste'},
+        {name = 'Refresh'},
+		{name = 'Aurorastorm'},
+		{name = 'Reraise'},
     },
 }

@@ -736,25 +736,45 @@ function utils.register_ws(args)
     end
 end
 
-
 function utils.apply_bufflist(args)
     local mj = windower.ffxi.get_player().main_job
     local sj = windower.ffxi.get_player().sub_job
     local job = ('%s/%s'):format(mj, sj)
     local bl_name = args[1]
-    local bl_target = args[2]
-    if bl_target == nil and bl_name == 'self' then
-        bl_target = 'me'
-    end
+    local bl_target = args[2] or 'me'
+
     local buff_list = table.get_nested_value(hb.config.buff_lists, {job, job:lower(), mj, mj:lower()}, bl_name)
-    
     buff_list = buff_list or hb.config.buff_lists[bl_name]
+    
     if buff_list ~= nil then
-        for _,buff in pairs(buff_list) do
-            buffs.registerNewBuff({bl_target, buff}, true)
+        for _, buff_entry in pairs(buff_list) do
+            if buff_entry.name then
+				local status = buff_entry.status or "Always"
+                buffs.registerNewBuff({bl_target, buff_entry.name}, true, false, status)
+            end
         end
     else
-        atc('Error: Invalid argument specified for BuffList: '..bl_name)
+        atc('Error: Invalid argument specified for BuffList: ' .. bl_name)
+    end
+end
+
+function utils.auto_apply_bufflist()
+    local mj = windower.ffxi.get_player().main_job
+    local sj = windower.ffxi.get_player().sub_job
+    local job = ('%s/%s'):format(mj, sj):lower()
+    local bl_target = 'me'
+
+    local buff_list = hb.config.buff_lists[job] or hb.config.buff_lists[mj:lower()]
+    
+    if buff_list ~= nil then
+        for _, buff_entry in pairs(buff_list) do
+            if buff_entry.name then
+				local status = buff_entry.status or "Always"
+                buffs.registerNewBuff({bl_target, buff_entry.name}, true, false, status)
+            end
+        end
+    else
+        atc('Job has no initial BuffList: ' .. job)
     end
 end
 
@@ -1252,10 +1272,11 @@ function utils.load_configs()
     hb.config.priorities.dispel =         hb.config.priorities.dispel or {}     --not implemented yet
     hb.config.priorities.default =        hb.config.priorities.default or 5
     
-	--Set job defaults debuffs or buffs
+	--Set job defaults debuffs
 	if player.main_job == 'COR' then
 		utils.register_offensive_debuff({"Light Shot"}, false, false ,true)
 	end
+	utils.auto_apply_bufflist()
     --process_mabil_debuffs()
     local msg = hb.configs_loaded and 'Rel' or 'L'
     hb.configs_loaded = true

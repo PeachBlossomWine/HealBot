@@ -49,6 +49,7 @@ function actions.get_defensive_action()
 			end
 		end
 	end
+	--Na and ERASE
 	if (not settings.disable.na) then
 		local dbuffq = buffs.getDebuffQueue()
 		while (not dbuffq:empty()) do
@@ -82,21 +83,22 @@ function actions.get_defensive_action()
 			
 		end
 	end
+	--Buffs
 	if (not settings.disable.buff) then
 		
 		local buffq = buffs.getBuffQueue()
 		while (not buffq:empty()) do
 			local bact = buffq:pop()
+			local bact_target = bact and windower.ffxi.get_mob_by_name(bact.name)
 			
 			if (bact and bact.action and bact.action.en) then
-				bact_target = windower.ffxi.get_mob_by_name(bact.name)
-				if not (buffs.debuffList[bact.name] and buffs.debuffList[bact.name][13] and S{'Haste','Haste II','Flurry','Flurry II'}:contains(bact.action.en)) then
+				if shouldBuff(bact, bact_target) then
 					local_queue_insert(bact.action.en, bact.name)
 				end
 			end
             
-			if (action.buff == nil) and healer:in_casting_range(bact.name) and healer:ready_to_use(bact.action) and not(bact_target.hpp == 0) then
-				if not (buffs.debuffList[bact.name] and buffs.debuffList[bact.name][13] and S{'Haste','Haste II','Flurry','Flurry II'}:contains(bact.action.en)) then
+			if (action.buff == nil) and healer:in_casting_range(bact.name) and healer:ready_to_use(bact.action) and bact_target and bact_target.hpp > 0 then
+				if shouldBuff(bact, bact_target) then
 					action.buff = bact
 				end
 			end
@@ -124,6 +126,28 @@ function actions.get_defensive_action()
 	end
 	utils.check_recovery_item()
 	return nil
+end
+
+function shouldBuff(bact, bact_target)
+    local player = player or windower.ffxi.get_player()
+    local buff_status = bact.msg or "Always" -- Default to "Always" if no status specified
+	
+    return not (
+        -- Skip if buff is already applied and is Haste/Flurry-related
+        (buffs.debuffList[bact.name] and buffs.debuffList[bact.name][13] and S{'Haste', 'Haste II', 'Flurry', 'Flurry II'}:contains(bact.action.en)) or
+        
+        -- Skip if RDM is in party and player is not an RDM for certain buffs
+        (utils.getPlayerNameFromJob('RDM') and S{'Phalanx', 'Haste', 'Refresh', 'Flurry'}:contains(bact.action.en) and player.main_job ~= 'RDM') or
+		
+		-- Skip if SCH is in party and player is not an SCH for certain buffs
+        (utils.getPlayerNameFromJob('SCH') and S{'Aurorastorm', 'Voidstorm', 'Firestorm', 'Hailstorm ','Windstorm','Sandstorm','Thunderstorm','Rainstorm'}:contains(bact.action.en) and player.main_job ~= 'SCH') or
+        
+        -- Skip if WHM is in party and buff is Protect/Shell targeting the player
+        (utils.getPlayerNameFromJob('WHM') and (bact.action.en:match("^Protect") or bact.action.en:match("^Shell")) and bact_target.name == player.name) or
+
+        -- Check the buff status requirement
+        (buff_status == "inCombat" and not player.in_combat)
+    )
 end
 
 

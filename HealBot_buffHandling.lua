@@ -104,7 +104,7 @@ function buffs.getBuffQueue()
             end
             if (info.landed == nil) then
                 if (info.attempted == nil) or ((now - info.attempted) >= 3) then
-                    bq:enqueue('buff', info.action, targ, spell_name, nil)
+                    bq:enqueue('buff', info.action, targ, spell_name, info.status)
                 end
             end
         end
@@ -211,11 +211,12 @@ end
 --==============================================================================
 
 
-function buffs.registerNewBuff(args, use, job_name_flag)
+function buffs.registerNewBuff(args, use, job_name_flag, status)
     local targetName = args[1] and args[1] or ''
     table.remove(args, 1)
     local arg_string = table.concat(args,' ')
     local snames = arg_string:split(',')
+	local status = status or "Always"
 	
 	if job_name_flag then
 		if utils.getPlayerNameFromJob(targetName) then
@@ -229,13 +230,13 @@ function buffs.registerNewBuff(args, use, job_name_flag)
 	
     for index,sname in pairs(snames) do
         if (tostring(index) ~= 'n') then
-            buffs.registerNewBuffName(targetName, sname:trim(), use)
+            buffs.registerNewBuffName(targetName, sname:trim(), use, status)
         end
     end
 end
 
 
-function buffs.registerNewBuffName(targetName, bname, use)
+function buffs.registerNewBuffName(targetName, bname, use, status)
 
     if bname:lower() ~= 'all' then
 		spellName = utils.formatActionName(bname)
@@ -275,6 +276,7 @@ function buffs.registerNewBuffName(targetName, bname, use)
 	if target and action then
 		buffs.buffList[target.name] = buffs.buffList[target.name] or {}
 		buff = buffs.buff_for_action(action)
+		buff.status = status
 	end
     
     if (buff == nil and targetName:lower() ~= 'everyone' and bname:lower() ~= 'all') then
@@ -309,7 +311,7 @@ function buffs.registerNewBuffName(targetName, bname, use)
 			end
 		end
 
-        buffs.buffList[target.name][action.en] = {['action']=action, ['maintain']=true, ['buff']=buff}
+        buffs.buffList[target.name][action.en] = {['action']=action, ['maintain']=true, ['buff']=buff, ['status']=status,}
         if action.type == 'Geomancy' then
             if indi_spell_ids:contains(action.id) then
                 buffs.buffList[target.name][action.en].is_indi = true
@@ -349,7 +351,6 @@ function buffs.registerIgnoreDebuff(args, ignore)
             buffs.registerIgnoreDebuffName(targetName, sname:trim(), ignore)
         end
     end
-
 end
 
 function buffs.registerIgnoreDebuffName(targetName, bname, ignore)
@@ -421,8 +422,8 @@ function buffs.buff_for_action(action)
         end
         action_str = action.en
     end
-    
     if (buff_map[action_str] ~= nil) then
+		
         if isnum(buff_map[action_str]) then
             return res.buffs[buff_map[action_str]]
         else

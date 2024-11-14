@@ -108,6 +108,7 @@ hb._events['job'] = windower.register_event('job change', function()
     hb.active = false
     healer:update_job()
     printStatus()
+	windower.send_command('lua r healbot')
 end)
 
 hb._events['dis'] = windower.register_event('action', handle_dispel_action)
