@@ -743,6 +743,8 @@ function utils.apply_bufflist(args)
     local bl_name = args[1]
     local bl_target = args[2] or 'me'
 
+	local fakeargs = { "me", "all" }
+	buffs.registerNewBuff(fakeargs, false)
     local buff_list = table.get_nested_value(hb.config.buff_lists, {job, job:lower(), mj, mj:lower()}, bl_name)
     buff_list = buff_list or hb.config.buff_lists[bl_name]
     

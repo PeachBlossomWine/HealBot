@@ -22,7 +22,7 @@ return {
     },
     ['pld'] = {
         {name = 'Phalanx'},
-        {name = 'Reprisal'},
+        {name = 'Reprisal', status = 'inCombat'},
         {name = 'Crusade'},
         {name = 'Enlight II'},
         {name = 'Protect V'},
