@@ -633,6 +633,7 @@ function buffs.register_debuff(target, debuff, gain, action)
 		local mob_ids = table.keys(offense.mobs)
 		if mob_ids and offense.mobs[tid] and next(offense.mobs[tid]) == nil then
 			offense.mobs[tid] = nil
+--			offense.weaponskilltracker[tid] = nil   -- NOT SURE IF NEEDED HERE
 		end
         if is_enemy and hb.modes.mob_debug then
             atcd(('Detected %sdebuff: %s wore off %s [%s]'):format(msg, debuff.en, tname, tid))

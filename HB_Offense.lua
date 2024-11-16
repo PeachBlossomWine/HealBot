@@ -4,7 +4,7 @@
     HealBot offense handling functions
 --]]
 --==============================================================================
-
+local lor_res = _libs.lor.resources
 local offense = {
     immunities=lor_settings.load('data/mob_immunities.lua'),
     assist={active = false, engage = false, nolock = false, sametarget = false,},
@@ -14,6 +14,10 @@ local offense = {
     debuffing_active = true,
 	debuffing_battle_target = false,
 	stymie={active = false, spell = '', last_used = 0, flag = false, attempt = 0},
+	
+	--ja
+	job_ability_active = false,
+	weaponskilltracker={},
 }
 
 
@@ -198,8 +202,10 @@ function offense.getDebuffQueue(player, target, mob_debuff_list_flag)
                                 if ice_shot_tracker[target.id] == true then
                                     dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
                                 end
-                            else
-								dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
+                            else -- Other JA's offenseive
+								if canUseJAconditions(debuff.ja.en, target.id) then
+									dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
+								end
 							end
 						else
 							if not (debuff.spell.en == offense.stymie.spell and not offense.stymie.active) then -- Skips stymie spell in debuff list if stymie isn't active.
@@ -214,6 +220,23 @@ function offense.getDebuffQueue(player, target, mob_debuff_list_flag)
     return dbq:getQueue()
 end
 
+function canUseJAconditions(ja_name, tid)
+	if offense.job_ability_active then
+		-- jumps for DRG and /DRG
+		if S{'Jump','High Jump','Super Jump'}:contains(ja_name) then
+			local superJump = lor_res.action_for("Super Jump")
+			if ja_name == 'Super Jump' and healer:ready_to_use(superJump) and offense.weaponskilltracker and offense.weaponskilltracker[tid] and offense.weaponskilltracker[tid].count >= 3 and offense.weaponskilltracker[tid].dmg >= 20000 then
+				offense.weaponskilltracker[tid].count = 0
+				offense.weaponskilltracker[tid].dmg = 0
+				return true
+			end
+			if ja_name ~= 'Super Jump' then
+				return true
+			end
+		end
+	end
+	return false
+end
 
 function offense.getDispelQueue(player, target)
     local dbq = ActionQueue.new()

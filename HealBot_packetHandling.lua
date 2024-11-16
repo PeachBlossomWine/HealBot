@@ -74,6 +74,24 @@ function handle_outgoing_chunk(id, data)
 	end
 end
 
+function handleActionOther(act)
+	if S{185}:contains(act.targets[1].actions[1].message) then -- WS
+		local tid = act.targets[1].id 	--WS target
+        local ws_dmg = act.targets[1].actions[1].param -- WS DMG
+        local actor = act.actor_id 	-- WS initiator
+
+		if packet_player.id == actor then
+			if offense.mobs and offense.mobs[tid] then
+				offense.weaponskilltracker[tid] = offense.weaponskilltracker[tid] or {}
+				offense.weaponskilltracker[tid].count = (offense.weaponskilltracker[tid].count or 0) + 1
+				if ws_dmg > (offense.weaponskilltracker[tid].dmg or 0) then
+					offense.weaponskilltracker[tid].dmg = ws_dmg
+				end
+			end
+		end
+    end
+end
+
 --[[
     Analyze the data contained in incoming packets for useful info.
     :param int id: packet ID
@@ -92,6 +110,7 @@ function handle_incoming_chunk(id, data)
         end
         if id == 0x28 then
             processAction(ai, monitored_ids)
+			handleActionOther(windower.packets.parse_action(data))
         elseif id == 0x29 then
             processMessage(ai, monitored_ids)
         end
@@ -122,7 +141,7 @@ function handle_incoming_chunk(id, data)
 				end
 			end
 		end
-	elseif id == 0x076 then
+	elseif id == 0x076 then -- partybuffs
         for  k = 0, 4 do
             local id = data:unpack('I', k*48+5)
             local new_buffs_list = {}
@@ -165,8 +184,11 @@ end
 
 function processDebuffMobs(mob_id)
     local mob_ids = table.keys(offense.mobs)
-    if mob_ids and offense.mobs[mob_id] then
+    if mob_ids and offense.mobs[mob_id] then -- this clears when mob dies
 		offense.mobs[mob_id] = nil
+		if offense.weaponskilltracker and offense.weaponskilltracker[mob_id] then
+			offense.weaponskilltracker[mob_id] = nil
+		end
     end
 	if offense.dispel.mobs and offense.dispel.mobs[mob_id] then
 		offense.dispel.mobs[mob_id] = nil

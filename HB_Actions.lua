@@ -188,7 +188,7 @@ function actions.take_action(player, partner, targ)
     --Otherwise, there may be an offensive action(Debuffing or engage to attack)
     else             
 		--Targetting or Independant mode.
-        if (targ ~= nil) or hb.modes.independent then
+        if (targ ~= nil) or hb.modes.independent or offense.job_ability_active then
             local self_engaged = (player.status == 1)
             if (targ ~= nil) then
 				local partner_engaged = (partner.status == 1)
@@ -241,7 +241,7 @@ function actions.take_action(player, partner, targ)
 					end
 				end
 			-- Debuff without having assist, either engaged or target locked.
-            elseif (hb.modes.independent and (self_engaged or (player.target_locked and utils.isMonster(player.target_index)))) then
+            elseif ((hb.modes.independent or offense.job_ability_active) and (self_engaged or (player.target_locked and utils.isMonster(player.target_index)))) then
 				if not actions.check_moblist_mob(player.target_index) then
 					healer:take_action(actions.get_offensive_action(player, nil), '<t>')
 				end

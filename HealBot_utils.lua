@@ -110,6 +110,10 @@ function processCommand(command,...)
 			atc('Buffs table: ')
 			table.vprint(buffs.buffList)
 		end
+		if (args[1] and args[1]:lower() == 'buffs') or not args[1] then
+			atc('WS tracker: ')
+			table.vprint(offense.weaponskilltracker)
+		end
     elseif S{'start','on'}:contains(command) then
         hb.activate()
     elseif S{'stop','end','off'}:contains(command) then
@@ -306,6 +310,15 @@ function processCommand(command,...)
             end
             utils.register_spam_action(args)
         end
+	elseif S{'autojamode'}:contains(command) then
+		local cmd = args[1] and args[1]:lower() or (settings.spam.active and 'off' or 'on')
+		if S{'on','true'}:contains(cmd) then
+			offense.job_ability_active = true
+			atc('Auto JA Mode is now on.')
+		elseif S{'off','false'}:contains(cmd) then
+			offense.job_ability_active = false
+			atc('Auto JA Mode is now off.')
+		end
 	elseif S{'stymie'}:contains(command) then
 		if player.main_job == 'RDM' then
 			local cmd = args[1] and args[1]:lower() or (settings.spam.active and 'off' or 'on')
