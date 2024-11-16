@@ -202,7 +202,9 @@ function offense.getDebuffQueue(player, target, mob_debuff_list_flag)
 								dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
 							end
 						else
-							dbq:enqueue('debuff_mob', debuff.spell, target.name, debuff.res, (' (%s)'):format(debuff.spell.en))
+							if not (debuff.spell.en == offense.stymie.spell and not offense.stymie.active) then -- Skips stymie spell in debuff list if stymie isn't active.
+								dbq:enqueue('debuff_mob', debuff.spell, target.name, debuff.res, (' (%s)'):format(debuff.spell.en))
+							end
 						end
 					end
 				end

@@ -302,7 +302,7 @@ function actions.check_moblist_mob(target_index)
 end
 
 
-
+--and (offense.stymie.active and dbact.action.en == offense.stymie.spell)
 function actions.get_offensive_action(player, partner, battle_target)
 	player = player or windower.ffxi.get_player()
 	local target
@@ -340,6 +340,7 @@ function actions.get_offensive_action(player, partner, battle_target)
         else
             -- Process other debuffs normally without requiring Stymie
             if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) then
+			--and not (dbact.action.en == offense.stymie.spell and not offense.stymie.active) then
                 action.db = dbact
             end
         end

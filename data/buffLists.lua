@@ -43,12 +43,17 @@ return {
         {name = 'Refresh III'},
         {name = 'Haste II'},
         {name = 'Aurorastorm'},
-        {name = 'Temper II'},
+        {name = 'Temper II', status = 'inCombat'},
         {name = 'Phalanx'},
         {name = 'Shell V'},
         {name = 'Protect V'},
         {name = 'Reraise'},
     },
+	['brd'] = {
+		{Name = 'Refresh'},
+		{Name = 'Haste'},
+        {Name = 'Reraise'},
+	},
     ['geo'] = {
         {name = 'Haste'},
         {name = 'Refresh'},

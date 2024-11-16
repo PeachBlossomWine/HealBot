@@ -1278,13 +1278,128 @@ function utils.load_configs()
 	if player.main_job == 'COR' then
 		utils.register_offensive_debuff({"Light Shot"}, false, false ,true)
 		utils.register_offensive_debuff({"Ice Shot"}, false, false ,true)
+		offense.debuffing_active = false
 	end
 	utils.auto_apply_bufflist()
     --process_mabil_debuffs()
+	utils.addCustomBuffs() -- Call the function to add custom buffs on healbot startup or during initialization
     local msg = hb.configs_loaded and 'Rel' or 'L'
     hb.configs_loaded = true
     atcc(262, msg..'oaded config files.')
 end
+
+-- Adding custom buffs
+local custom_buffs = {
+    [700] = {id = 700, en = "CustomBuff700", jp = "カスタムバフ700"},
+    [701] = {id = 701, en = "CustomBuff701", jp = "カスタムバフ701"},
+    [702] = {id = 702, en = "CustomBuff702", jp = "カスタムバフ702"},
+    [703] = {id = 703, en = "CustomBuff703", jp = "カスタムバフ703"},
+    [704] = {id = 704, en = "CustomBuff704", jp = "カスタムバフ704"},
+    [705] = {id = 705, en = "CustomBuff705", jp = "カスタムバフ705"},
+    [706] = {id = 706, en = "CustomBuff706", jp = "カスタムバフ706"},
+    [707] = {id = 707, en = "CustomBuff707", jp = "カスタムバフ707"},
+    [708] = {id = 708, en = "CustomBuff708", jp = "カスタムバフ708"},
+    [709] = {id = 709, en = "CustomBuff709", jp = "カスタムバフ709"},
+    [710] = {id = 710, en = "CustomBuff710", jp = "カスタムバフ710"},
+    [711] = {id = 711, en = "CustomBuff711", jp = "カスタムバフ711"},
+    [712] = {id = 712, en = "CustomBuff712", jp = "カスタムバフ712"},
+    [713] = {id = 713, en = "CustomBuff713", jp = "カスタムバフ713"},
+    [714] = {id = 714, en = "CustomBuff714", jp = "カスタムバフ714"},
+    [715] = {id = 715, en = "CustomBuff715", jp = "カスタムバフ715"},
+    [716] = {id = 716, en = "CustomBuff716", jp = "カスタムバフ716"},
+    [717] = {id = 717, en = "CustomBuff717", jp = "カスタムバフ717"},
+    [718] = {id = 718, en = "CustomBuff718", jp = "カスタムバフ718"},
+    [719] = {id = 719, en = "CustomBuff719", jp = "カスタムバフ719"},
+    [720] = {id = 720, en = "CustomBuff720", jp = "カスタムバフ720"},
+    [721] = {id = 721, en = "CustomBuff721", jp = "カスタムバフ721"},
+    [722] = {id = 722, en = "CustomBuff722", jp = "カスタムバフ722"},
+    [723] = {id = 723, en = "CustomBuff723", jp = "カスタムバフ723"},
+    [724] = {id = 724, en = "CustomBuff724", jp = "カスタムバフ724"},
+    [725] = {id = 725, en = "CustomBuff725", jp = "カスタムバフ725"},
+    [726] = {id = 726, en = "CustomBuff726", jp = "カスタムバフ726"},
+    [727] = {id = 727, en = "CustomBuff727", jp = "カスタムバフ727"},
+    [728] = {id = 728, en = "CustomBuff728", jp = "カスタムバフ728"},
+    [729] = {id = 729, en = "CustomBuff729", jp = "カスタムバフ729"},
+    [730] = {id = 730, en = "CustomBuff730", jp = "カスタムバフ730"},
+    [731] = {id = 731, en = "CustomBuff731", jp = "カスタムバフ731"},
+    [732] = {id = 732, en = "CustomBuff732", jp = "カスタムバフ732"},
+    [733] = {id = 733, en = "CustomBuff733", jp = "カスタムバフ733"},
+    [734] = {id = 734, en = "CustomBuff734", jp = "カスタムバフ734"},
+    [735] = {id = 735, en = "CustomBuff735", jp = "カスタムバフ735"},
+    [736] = {id = 736, en = "CustomBuff736", jp = "カスタムバフ736"},
+    [737] = {id = 737, en = "CustomBuff737", jp = "カスタムバフ737"},
+    [738] = {id = 738, en = "CustomBuff738", jp = "カスタムバフ738"},
+    [739] = {id = 739, en = "CustomBuff739", jp = "カスタムバフ739"},
+    [740] = {id = 740, en = "CustomBuff740", jp = "カスタムバフ740"},
+    [741] = {id = 741, en = "CustomBuff741", jp = "カスタムバフ741"},
+    [742] = {id = 742, en = "CustomBuff742", jp = "カスタムバフ742"},
+    [743] = {id = 743, en = "CustomBuff743", jp = "カスタムバフ743"},
+    [744] = {id = 744, en = "CustomBuff744", jp = "カスタムバフ744"},
+    [745] = {id = 745, en = "CustomBuff745", jp = "カスタムバフ745"},
+    [746] = {id = 746, en = "CustomBuff746", jp = "カスタムバフ746"},
+    [747] = {id = 747, en = "CustomBuff747", jp = "カスタムバフ747"},
+    [748] = {id = 748, en = "CustomBuff748", jp = "カスタムバフ748"},
+    [749] = {id = 749, en = "CustomBuff749", jp = "カスタムバフ749"},
+    [750] = {id = 750, en = "CustomBuff750", jp = "カスタムバフ750"},
+    [751] = {id = 751, en = "CustomBuff751", jp = "カスタムバフ751"},
+    [752] = {id = 752, en = "CustomBuff752", jp = "カスタムバフ752"},
+    [753] = {id = 753, en = "CustomBuff753", jp = "カスタムバフ753"},
+    [754] = {id = 754, en = "CustomBuff754", jp = "カスタムバフ754"},
+    [755] = {id = 755, en = "CustomBuff755", jp = "カスタムバフ755"},
+    [756] = {id = 756, en = "CustomBuff756", jp = "カスタムバフ756"},
+    [757] = {id = 757, en = "CustomBuff757", jp = "カスタムバフ757"},
+    [758] = {id = 758, en = "CustomBuff758", jp = "カスタムバフ758"},
+    [759] = {id = 759, en = "CustomBuff759", jp = "カスタムバフ759"},
+    [760] = {id = 760, en = "CustomBuff760", jp = "カスタムバフ760"},
+    [761] = {id = 761, en = "CustomBuff761", jp = "カスタムバフ761"},
+    [762] = {id = 762, en = "CustomBuff762", jp = "カスタムバフ762"},
+    [763] = {id = 763, en = "CustomBuff763", jp = "カスタムバフ763"},
+    [764] = {id = 764, en = "CustomBuff764", jp = "カスタムバフ764"},
+    [765] = {id = 765, en = "CustomBuff765", jp = "カスタムバフ765"},
+    [766] = {id = 766, en = "CustomBuff766", jp = "カスタムバフ766"},
+    [767] = {id = 767, en = "CustomBuff767", jp = "カスタムバフ767"},
+    [768] = {id = 768, en = "CustomBuff768", jp = "カスタムバフ768"},
+    [769] = {id = 769, en = "CustomBuff769", jp = "カスタムバフ769"},
+    [770] = {id = 770, en = "CustomBuff770", jp = "カスタムバフ770"},
+    [771] = {id = 771, en = "CustomBuff771", jp = "カスタムバフ771"},
+    [772] = {id = 772, en = "CustomBuff772", jp = "カスタムバフ772"},
+    [773] = {id = 773, en = "CustomBuff773", jp = "カスタムバフ773"},
+    [774] = {id = 774, en = "CustomBuff774", jp = "カスタムバフ774"},
+    [775] = {id = 775, en = "CustomBuff775", jp = "カスタムバフ775"},
+    [776] = {id = 776, en = "CustomBuff776", jp = "カスタムバフ776"},
+    [777] = {id = 777, en = "CustomBuff777", jp = "カスタムバフ777"},
+    [778] = {id = 778, en = "CustomBuff778", jp = "カスタムバフ778"},
+    [779] = {id = 779, en = "CustomBuff779", jp = "カスタムバフ779"},
+    [780] = {id = 780, en = "CustomBuff780", jp = "カスタムバフ780"},
+    [781] = {id = 781, en = "CustomBuff781", jp = "カスタムバフ781"},
+    [782] = {id = 782, en = "CustomBuff782", jp = "カスタムバフ782"},
+    [783] = {id = 783, en = "CustomBuff783", jp = "カスタムバフ783"},
+    [784] = {id = 784, en = "CustomBuff784", jp = "カスタムバフ784"},
+    [785] = {id = 785, en = "CustomBuff785", jp = "カスタムバフ785"},
+    [786] = {id = 786, en = "CustomBuff786", jp = "カスタムバフ786"},
+    [787] = {id = 787, en = "CustomBuff787", jp = "カスタムバフ787"},
+    [788] = {id = 788, en = "CustomBuff788", jp = "カスタムバフ788"},
+    [789] = {id = 789, en = "CustomBuff789", jp = "カスタムバフ789"},
+    [790] = {id = 790, en = "CustomBuff790", jp = "カスタムバフ790"},
+    [791] = {id = 791, en = "CustomBuff791", jp = "カスタムバフ791"},
+    [792] = {id = 792, en = "CustomBuff792", jp = "カスタムバフ792"},
+    [793] = {id = 793, en = "CustomBuff793", jp = "カスタムバフ793"},
+    [794] = {id = 794, en = "CustomBuff794", jp = "カスタムバフ794"},
+    [795] = {id = 795, en = "CustomBuff795", jp = "カスタムバフ795"},
+    [796] = {id = 796, en = "CustomBuff796", jp = "カスタムバフ796"},
+    [797] = {id = 797, en = "CustomBuff797", jp = "カスタムバフ797"},
+    [798] = {id = 798, en = "CustomBuff798", jp = "カスタムバフ798"},
+    [799] = {id = 799, en = "CustomBuff799", jp = "カスタムバフ799"},
+    [800] = {id = 800, en = "CustomBuff800", jp = "カスタムバフ800"},
+}
+
+-- Function to add custom buffs to the existing buffs table
+function utils.addCustomBuffs()
+    for id, buff in pairs(custom_buffs) do
+        res.buffs[id] = buff
+    end
+end
+
 
 
 function process_mabil_debuffs()
