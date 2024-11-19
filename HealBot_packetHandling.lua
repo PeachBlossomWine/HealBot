@@ -171,12 +171,12 @@ function handle_incoming_chunk(id, data)
 		end
 	elseif id == 0x00B then 
 		if hb.zone_begin and not settings.follow.target then
-			log('0x00B: packet for zone NOW.')
+			--log('0x00B: packet for zone NOW.')
 			local response = { method='POST', pk='follow_ids', follow_name = packet_player.name, orig_zone = windower.ffxi.get_info().zone }
 			local ipc_req = serialua.encode(response)
 			windower.send_ipc_message(ipc_req)
 		else
-			log('0x00B: Unset zone run.')
+			--log('0x00B: Unset zone run.')
 			hb.should_attempt_to_cross_zone_line = false
 		end
     end

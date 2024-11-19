@@ -429,9 +429,9 @@ function hb.process_ipc(msg)
 					end
 				end
 			elseif loaded.pk == 'follow_ids' then	-- For follow to zoneline
-				log('IPC: for follow only received.')
+				--log('IPC: for follow only received.')
 				if settings.follow.target and settings.follow.target == loaded.follow_name and settings.follow.active and loaded.orig_zone == windower.ffxi.get_info().zone then
-					log('IPC: To set follow run to zone flag.')
+					--log('IPC: To set follow run to zone flag.')
 					hb.should_attempt_to_cross_zone_line = true
 				end			
             else
