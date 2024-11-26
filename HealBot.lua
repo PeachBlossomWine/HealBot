@@ -207,20 +207,24 @@ end)
 
 
 function haveBuff(...)
-    local args = S{...}:map(string.lower)
-    local player = windower.ffxi.get_player()
-    if (player ~= nil) and (player.buffs ~= nil) then
-        for _,bid in pairs(player.buffs) do
-            local buff = res.buffs[bid]
-            if args:contains(buff.en:lower()) then
-                return true
-            end
-        end
-    end
-	
-    return false
+	local args = S{...}:map(string.lower)
+	local player = windower.ffxi.get_player()
+	local buff_count = 0
+	if (player ~= nil) and (player.buffs ~= nil) then
+		for _,bid in pairs(player.buffs) do
+			local buff = res.buffs[bid]
+			if args:contains(buff.en:lower()) then
+				buff_count = buff_count +1
+			end
+		end
+		if buff_count > 0 then
+			return buff_count
+		else
+			return false
+		end
+	end
+	return false
 end
-
 
 
 function hb.activate()

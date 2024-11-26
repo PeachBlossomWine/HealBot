@@ -13,7 +13,15 @@ local offense = {
 	dispel={active = true, mobs={}, ignored=S{},},
     debuffing_active = true,
 	debuffing_battle_target = false,
-	stymie={active = false, spell = '', last_used = 0, flag = false, attempt = 0},
+	stymie={active = false, spell = ''},
+	sabo={active = false, spell = ''},
+	marcato={active = false, spell = ''},
+	ja_prespell = {
+        stymie = {active = false, spell = ''},
+        sabo = {active = false, spell = ''},
+        marcato = {active = false, spell = ''},
+        -- Add more job abilities here as needed
+    },
 	
 	--ja
 	job_ability_active = false,
@@ -173,6 +181,8 @@ function offense.registerMob(mob, forget)
     end
 end
 
+local stymie = lor_res.action_for("Stymie")
+local marcato = lor_res.action_for("Marcato")
 
 function offense.getDebuffQueue(player, target, mob_debuff_list_flag)
     local dbq = ActionQueue.new()
@@ -208,9 +218,7 @@ function offense.getDebuffQueue(player, target, mob_debuff_list_flag)
 								end
 							end
 						else
-							if not (debuff.spell.en == offense.stymie.spell and not offense.stymie.active) then -- Skips stymie spell in debuff list if stymie isn't active.
-								dbq:enqueue('debuff_mob', debuff.spell, target.name, debuff.res, (' (%s)'):format(debuff.spell.en))
-							end
+							dbq:enqueue('debuff_mob', debuff.spell, target.name, debuff.res, (' (%s)'):format(debuff.spell.en))
 						end
 					end
 				end

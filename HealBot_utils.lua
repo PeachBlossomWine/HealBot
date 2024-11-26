@@ -319,28 +319,16 @@ function processCommand(command,...)
 			offense.job_ability_active = false
 			atc('Auto JA Mode is now off.')
 		end
+		
 	elseif S{'stymie'}:contains(command) then
-		if player.main_job == 'RDM' then
-			local cmd = args[1] and args[1]:lower() or (settings.spam.active and 'off' or 'on')
-			if S{'on','true'}:contains(cmd) then
-				offense.stymie.active = true
-				if (offense.stymie.spell ~= '') then
-					atc('Stymie is now on. Action: '..offense.stymie.spell)
-				else
-					atc('Stymie is now on. To set a spell to use: //hb stymie use <action>')
-				end
-			elseif S{'off','false'}:contains(cmd) then
-				offense.stymie.active = false
-				atc('Stymie is now off.')
-			else
-				if S{'use','set'}:contains(cmd) then
-					table.remove(args, 1)
-				end
-				utils.register_stymie(args)
-			end
-		else
-			atc('Error: Not RDM main job')
-		end
+		utils.handle_ja_command(command, 'stymie', 'RDM', function(args) utils.register_ja(args, 'stymie') end, args)
+
+	elseif S{'sabo'}:contains(command) then
+		utils.handle_ja_command(command, 'sabo', 'RDM', function(args) utils.register_ja(args, 'sabo') end, args)
+
+	elseif S{'marcato'}:contains(command) then
+		utils.handle_ja_command(command, 'marcato', 'BRD', function(args) utils.register_ja(args, 'marcato') end, args)
+
     elseif S{'debuff', 'db'}:contains(command) then
         local cmd = args[1] and args[1]:lower() or (offense.debuffing_active and 'off' or 'on')
         if S{'on','true'}:contains(cmd) then
@@ -703,22 +691,50 @@ function utils.register_offensive_debuff(args, cancel, mob_debuff_list_flag, ja_
     end
 end
 
-function utils.register_stymie(args)
-    local argstr = table.concat(args,' ')
-    local action_name = utils.formatActionName(argstr)
-    local action = lor_res.action_for(action_name)
-    if (action ~= nil) then
-        if healer:can_use(action) then
-            offense.stymie.spell = action.en
-			offense.maintain_debuff(action, false)
-            atc('Will now use Stymie with spell: ', offense.stymie.spell)
+function utils.handle_ja_command(command, ja_name, job_required, register_function, args)
+	local player = windower.ffxi.get_player()
+    if player.main_job == job_required then
+        local cmd = args[1] and args[1]:lower() or (offense.ja_prespell[ja_name].active and 'off' or 'on')
+        
+        if S{'on', 'true'}:contains(cmd) then
+            offense.ja_prespell[ja_name].active = true
+            if offense.ja_prespell[ja_name].spell ~= '' then
+                atc(ja_name:capitalize() .. ' is now on. Action: ' .. offense.ja_prespell[ja_name].spell)
+            else
+                atc(ja_name:capitalize() .. ' is now on. To set a spell to use: //hb ' .. ja_name .. ' use <action>')
+            end
+        elseif S{'off', 'false'}:contains(cmd) then
+            offense.ja_prespell[ja_name].active = false
+            atc(ja_name:capitalize() .. ' is now off.')
         else
-            atc(123,'Error: Unable to cast: ', action.en)
+            if S{'use', 'set'}:contains(cmd) then
+                table.remove(args, 1)
+            end
+            register_function(args)
         end
     else
-        atc(123,'Error: Invalid action name: ', action_name)
+        atc('Error: Not ' .. job_required .. ' main job')
     end
 end
+
+function utils.register_ja(args, ja_name)
+    local argstr = table.concat(args, ' ')
+    local action_name = utils.formatActionName(argstr)
+    local action = lor_res.action_for(action_name)
+
+    if action ~= nil then
+        if healer:can_use(action) then
+            offense.ja_prespell[ja_name].spell = action.en
+            offense.maintain_debuff(action, false)
+            atc('Will now use ' .. ja_name:capitalize() .. ' with spell: ' .. offense.ja_prespell[ja_name].spell)
+        else
+            atc(123, 'Error: Unable to cast: ' .. action.en)
+        end
+    else
+        atc(123, 'Error: Invalid action name: ' .. action_name)
+    end
+end
+
 
 function utils.register_spam_action(args)
     local argstr = table.concat(args,' ')
