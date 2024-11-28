@@ -809,6 +809,26 @@ function utils.auto_apply_bufflist()
     end
 end
 
+function utils.auto_apply_autojalist()
+    local mj = windower.ffxi.get_player().main_job
+    local sj = windower.ffxi.get_player().sub_job
+    local job = ('%s/%s'):format(mj, sj):lower()
+    local bl_target = 'me'
+
+    local ja_list = hb.config.auto_ja_lists[job] or hb.config.auto_ja_lists[mj:lower()] or hb.config.auto_ja_lists[sj:lower()]
+    
+    if ja_list ~= nil then
+        for _, debuff_entry in pairs(ja_list) do
+            if debuff_entry.name then
+				local status = debuff_entry.status or "Always"
+				utils.register_offensive_debuff({debuff_entry.name}, false, false, true)
+            end
+        end
+    else
+        atc('Job has no initial JAList: ' .. job)
+    end
+end
+
 
 function utils.posCommand(boxName, args)
     if (args[1] == nil) or (args[2] == nil) then return false end
@@ -1292,6 +1312,7 @@ function utils.load_configs()
         aliases = config.load('../shortcuts/data/aliases.xml'),
         mabil_debuffs = lor_settings.load('data/mabil_debuffs.lua'),
         buff_lists = lor_settings.load('data/buffLists.lua', buff_lists_defaults),
+		auto_ja_lists = lor_settings.load('data/autoJaLists.lua'),
         priorities = lor_settings.load('data/priorities.lua'),
         cure_potency = lor_settings.load('data/cure_potency.lua', cure_potency_defaults)
     }
@@ -1303,6 +1324,8 @@ function utils.load_configs()
     hb.config.priorities.dispel =         hb.config.priorities.dispel or {}     --not implemented yet
     hb.config.priorities.default =        hb.config.priorities.default or 5
     
+	utils.addCustomBuffs() -- Call the function to add custom buffs on healbot startup or during initialization
+	
 	--Set job defaults debuffs
 	if player.main_job == 'COR' then
 		utils.register_offensive_debuff({"Light Shot"}, false, false ,true)
@@ -1310,8 +1333,9 @@ function utils.load_configs()
 		offense.debuffing_active = false
 	end
 	utils.auto_apply_bufflist()
+	utils.auto_apply_autojalist()
     --process_mabil_debuffs()
-	utils.addCustomBuffs() -- Call the function to add custom buffs on healbot startup or during initialization
+	
     local msg = hb.configs_loaded and 'Rel' or 'L'
     hb.configs_loaded = true
     atcc(262, msg..'oaded config files.')
