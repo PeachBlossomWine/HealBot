@@ -140,9 +140,9 @@ function offense.maintain_debuff_ja(ja, cancel, mob_debuff_list_flag)
     end
     local msg = cancel and 'no longer ' or ''
 	if mob_debuff_list_flag then
-		atcf('Will %smaintain debuff on moblist: %s', msg, nja.en)
+		atcf('Will %smaintain JA on moblist: %s', msg, nja.en)
 	else
-		atcf('Will %smaintain debuff on mobs: %s', msg, nja.en)
+		atcf('Will %smaintain JA on mobs: %s', msg, nja.en)
 	end
 end
 

@@ -9,11 +9,11 @@ return {
         ['Reraise'] = 2
     },
     ['debuffs'] = {
-        ['dia'] = 1,
+        ['dia'] = 0,
         ['bio'] = 3,
         ['silence'] = 1,
 		['evasion down'] = 2,
-		['magic evasion down'] = 0,
+		['magic evasion down'] = 1,
         ['addle'] = 4,
         ['gravity'] = 1,
         ['paralysis'] = 2,
@@ -40,6 +40,9 @@ return {
         ['sleep'] = 0,
         ['repose'] = 0,
 		['bane'] = 0, --abs TP
+		['elegy'] = 1,
+		['threnody'] = 0,
+		['requiem'] = 2,
     },
     ['default'] = 5,
     ['dispel'] = {

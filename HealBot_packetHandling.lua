@@ -69,7 +69,6 @@ end
 
 function handle_outgoing_chunk(id, data)
 	if id == 0x05E and not settings.follow.target then
-		--log('0x05E: packet for request zone.')
 		hb.zone_begin = true
 	end
 end

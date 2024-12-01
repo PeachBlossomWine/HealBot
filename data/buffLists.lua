@@ -19,6 +19,7 @@ return {
         {name = 'Phalanx'},
         {name = 'Crusade'},
         {name = 'Stoneskin'},
+		{name = 'Protect V'},
     },
     ['pld'] = {
         {name = 'Phalanx'},
@@ -43,11 +44,12 @@ return {
         {name = 'Refresh III'},
         {name = 'Haste II'},
         {name = 'Aurorastorm'},
-        {name = 'Temper II', status = 'inCombat'},
+        --{name = 'Temper II', status = 'inCombat'},
         {name = 'Phalanx'},
         {name = 'Shell V'},
         {name = 'Protect V'},
         {name = 'Reraise'},
+		{name = 'Saboteur', status = 'inCombat'},
     },
 	['brd'] = {
 		{Name = 'Refresh'},

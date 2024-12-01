@@ -352,23 +352,36 @@ function actions.get_offensive_action(player, partner, battle_target)
 					action.db = dbact
 				end
 			end
-		elseif player.main_job == "RDM" and offense.ja_prespell.stymie.active and healer:can_use(stymie) and healer:can_use(sabo)
-		and ((healer:ready_to_use(sabo) or haveBuff(sabo.name)) and (healer:ready_to_use(stymie) or haveBuff(stymie.name)))
+		elseif player.main_job == "RDM" and offense.ja_prespell.stymie.active and healer:can_use(stymie)
+		and (healer:ready_to_use(stymie) or haveBuff(stymie.name))
 		then
 			if dbact.action.en == offense.ja_prespell.stymie.spell then
-				if not haveBuff(sabo.name) then
-					healer:take_action({action = sabo}, healer.name)
-				end
-
 				if not haveBuff(stymie.name) then
 					healer:take_action({action = stymie}, healer.name)
 				end
-				if haveBuff(sabo.name) and haveBuff(stymie.name) then
+				if haveBuff(stymie.name) then
 					action.db = dbact
 					break
 				end
 				break
 			end
+		-- elseif player.main_job == "RDM" and offense.ja_prespell.stymie.active and healer:can_use(stymie) and healer:can_use(sabo)
+		-- and ((healer:ready_to_use(sabo) or haveBuff(sabo.name)) and (healer:ready_to_use(stymie) or haveBuff(stymie.name)))
+		-- then
+			-- if dbact.action.en == offense.ja_prespell.stymie.spell then
+				-- if not haveBuff(sabo.name) then
+					-- healer:take_action({action = sabo}, healer.name)
+				-- end
+
+				-- if not haveBuff(stymie.name) then
+					-- healer:take_action({action = stymie}, healer.name)
+				-- end
+				-- if haveBuff(sabo.name) and haveBuff(stymie.name) then
+					-- action.db = dbact
+					-- break
+				-- end
+				-- break
+			-- end
         else -- Other non pre JA debuffs
             if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) 
 			and not actions.jaSpell(dbact)
