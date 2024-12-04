@@ -13,7 +13,7 @@ return {
         ['bio'] = 3,
         ['silence'] = 1,
 		['evasion down'] = 2,
-		['magic evasion down'] = 1,
+		['magic evasion down'] = -1,
         ['addle'] = 4,
         ['gravity'] = 1,
         ['paralysis'] = 2,
@@ -41,7 +41,7 @@ return {
         ['repose'] = 0,
 		['bane'] = 0, --abs TP
 		['elegy'] = 1,
-		['threnody'] = 0,
+		['threnody'] = -1,
 		['requiem'] = 2,
     },
     ['default'] = 5,
