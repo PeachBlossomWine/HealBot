@@ -176,6 +176,10 @@ function actions.take_action(player, partner, targ)
             end
         end
         healer:take_action(action)
+		--Debuffs with BATTLE TARGET <BT>, has same priority as healing or buffing - will alternate.
+		if offense.debuffing_battle_target and (windower.ffxi.get_mob_by_target('bt') or false) and next(offense.debuffs) then
+			healer:take_action(actions.get_offensive_action(player, nil, true), '<bt>')
+		end
 		--Debuffs with moblist specified, has same priority as healing or buffing - will alternate.
 		if offense.moblist.active and offense.moblist.mobs then
 			actions.build_mob_debuff_list(player, offense.moblist.mobs)
