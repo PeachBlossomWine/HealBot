@@ -110,9 +110,13 @@ function processCommand(command,...)
 			atc('Buffs table: ')
 			table.vprint(buffs.buffList)
 		end
-		if (args[1] and args[1]:lower() == 'buffs') or not args[1] then
+		if (args[1] and args[1]:lower() == 'ws') or not args[1] then
 			atc('WS tracker: ')
 			table.vprint(offense.weaponskilltracker)
+		end
+		if (args[1] and args[1]:lower() == 'moblist') or not args[1] then
+			atc('moblist: ')
+			table.vprint(offense.moblist.mobs)
 		end
     elseif S{'start','on'}:contains(command) then
         hb.activate()
