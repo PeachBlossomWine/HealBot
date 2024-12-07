@@ -118,6 +118,10 @@ function processCommand(command,...)
 			atc('moblist: ')
 			table.vprint(offense.moblist.mobs)
 		end
+		if (args[1] and args[1]:lower() == 'moblistdebuff') or not args[1] then
+			atc('moblist: ')
+			table.vprint(offense.moblist.debuffs)
+		end
     elseif S{'start','on'}:contains(command) then
         hb.activate()
     elseif S{'stop','end','off'}:contains(command) then
@@ -397,6 +401,22 @@ function processCommand(command,...)
             end
             utils.register_offensive_debuff(args, false, true)
         end
+	elseif S{'mljadebuff', 'mljadb'}:contains(command) then
+		local cmd = args[1] and args[1]:lower() 
+        if S{'rm','remove'}:contains(cmd) then
+            utils.register_offensive_debuff(table.slice(args, 2), true, true, true)
+        elseif S{'ls','list'}:contains(cmd) then
+            local debuff_print = ''
+			for k,v in pairs(offense.moblist.debuffs) do
+				debuff_print = debuff_print..offense.moblist.debuffs[k].spell.en..','
+			end
+			atc('Debuffs for Moblist: '..debuff_print)
+        else
+            if S{'use','set'}:contains(cmd) then
+                table.remove(args, 1)
+            end
+            utils.register_offensive_debuff(args, false, true, true)
+        end
     elseif command == 'mincure' then
         if not validate(args, 1, 'Error: No argument specified for minCure') then return end
         local val = tonumber(args[1])
@@ -643,7 +663,7 @@ function utils.register_offensive_debuff(args, cancel, mob_debuff_list_flag, ja_
         if (tostring(index) ~= 'n') then
             if sname:lower() == 'all' and cancel then
 				if mob_debuff_list_flag then
-				atcf(123,'Removing all debuffs from moblist debuff list.')
+					atcf(123,'Removing all debuffs from moblist debuff list.')
 					for k,v in pairs(offense.moblist.debuffs) do
 						atcf('Removing debuff: ' ..offense.moblist.debuffs[k].spell.enn)
 						offense.moblist.debuffs[k] = nil

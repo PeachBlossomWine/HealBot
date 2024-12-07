@@ -192,7 +192,26 @@ function offense.getDebuffQueue(player, target, mob_debuff_list_flag)
 			for id,debuff in pairs(offense.moblist.debuffs) do
 				if offense.mobs[target.id][id] == nil then
 					if not (offense.immunities[target.name] and offense.immunities[target.name][id]) then
-						dbq:enqueue('debuff_mob', debuff.spell, target.name, debuff.res, (' (%s)'):format(debuff.spell.en))
+						if debuff.ja then
+							-- Check if Light Shot is eligible for reapplication
+                            if debuff.ja.en == "Light Shot" then
+                                -- Skip enqueuing Light Shot if Dia is active and Light Shot has been applied
+                                if light_shot_tracker[target.id] == true then
+                                    dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
+                                end
+							elseif debuff.ja.en == "Ice Shot" then
+								-- Skip enqueuing Light Shot if Dia is active and Light Shot has been applied
+                                if ice_shot_tracker[target.id] == true then
+                                    dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
+                                end
+                            else -- Other JA's offenseive
+								if canUseJAconditions(debuff.ja.en, target.id) then
+									dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
+								end
+							end
+						else
+							dbq:enqueue('debuff_mob', debuff.spell, target.name, debuff.res, (' (%s)'):format(debuff.spell.en))
+						end
 					end
 				end
 			end
