@@ -182,6 +182,7 @@ function handle_incoming_chunk(id, data)
 end
 
 function processDebuffMobs(mob_id)
+	
     local mob_ids = table.keys(offense.mobs)
     if mob_ids and offense.mobs[mob_id] then -- this clears when mob dies
 		offense.mobs[mob_id] = nil
@@ -189,13 +190,13 @@ function processDebuffMobs(mob_id)
 			offense.weaponskilltracker[mob_id] = nil
 		end
     end
-	if light_shot_tracker[mob_id] then
+	if light_shot_tracker[mob_id] ~= nil then
 		light_shot_tracker[mob_id] = nil
 	end
-	if ice_shot_tracker[mob_id] then
+	if ice_shot_tracker[mob_id] ~= nil then
 		ice_shot_tracker[mob_id] = nil
 	end
-	if earth_shot_tracker[mob_id] then
+	if earth_shot_tracker[mob_id] ~= nil then
 		earth_shot_tracker[mob_id] = nil
 	end
 	if offense.dispel.mobs and offense.dispel.mobs[mob_id] then
