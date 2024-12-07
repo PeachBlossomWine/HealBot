@@ -518,7 +518,7 @@ function buffs.register_debuff(target, debuff, gain, action)
         return
     end
 
-	light_shot_tracker[target.id] = light_shot_tracker[target.id] or false
+	--light_shot_tracker[target.id] = light_shot_tracker[target.id] or false
 	
 	if debuff and debuff.id and debuff.id == 134 then
 		light_shot_tracker[target.id] = true  -- Allow Light Shot to apply once any form of Dia is detected
@@ -535,10 +535,10 @@ function buffs.register_debuff(target, debuff, gain, action)
         end
     end
 	
-	ice_shot_tracker[target.id] = ice_shot_tracker[target.id] or false
+	--ice_shot_tracker[target.id] = ice_shot_tracker[target.id] or false
 	
 	if debuff and debuff.id and debuff.id == 4 then
-		ice_shot_tracker[target.id] = true  -- Allow Light Shot to apply once any form of Dia is detected
+		ice_shot_tracker[target.id] = true  -- Allow Light Shot to apply once any form of Paralyze is detected
 	end
 	
 	
@@ -547,8 +547,25 @@ function buffs.register_debuff(target, debuff, gain, action)
         if not ice_shot_tracker[target.id] then
             return  -- Skip reapplication
         else
-            -- Mark Light Shot as applied for this target under Dia
+            -- Mark Ice Shot as applied for this target under Paralyze
             ice_shot_tracker[target.id] = false
+        end
+    end
+	
+	--earth_shot_tracker[target.id] = earth_shot_tracker[target.id] or false
+	
+	if debuff and debuff.id and debuff.id == 13 then
+		earth_shot_tracker[target.id] = true  -- Allow Light Shot to apply once any form of Slow is detected
+	end
+	
+	
+	if action and action.name and string.find(action.name, "Earth Shot")then
+        -- Prevent reapplication of Earth Shot if it has already been applied
+        if not earth_shot_tracker[target.id] then
+            return  -- Skip reapplication
+        else
+            -- Mark Earth Shot as applied for this target under Slow
+            earth_shot_tracker[target.id] = false
         end
     end
 
@@ -607,18 +624,19 @@ function buffs.register_debuff(target, debuff, gain, action)
         atcd(('Detected %sdebuff: %s %s %s [%s]'):format(msg, debuff.en, rarr, tname, tid))
     else
 		-- Clear the tracker when Dia wears off
-        if debuff and debuff.id and debuff.id == 134 then
+        if debuff and debuff.id and debuff.id == 134 and light_shot_tracker[tid] then
             light_shot_tracker[tid] = false  -- Reset tracking for Light Shot
         end
-		if debuff and debuff.id and debuff.id == 4 then
+		if debuff and debuff.id and debuff.id == 4 and ice_shot_tracker[tid] then
             ice_shot_tracker[tid] = false  -- Reset tracking for Ice Shot
+        end
+		if debuff and debuff.id and debuff.id == 13 and earth_shot_tracker[tid] then
+            earth_shot_tracker[tid] = false  -- Reset tracking for Ice Shot
         end
         debuff_tbl[debuff.id] = nil
 		local mob_ids = table.keys(offense.mobs)
 		if mob_ids and offense.mobs[tid] and next(offense.mobs[tid]) == nil then
 			offense.mobs[tid] = nil
-			ice_shot_tracker[tid] = false
-			light_shot_tracker[tid] = false 
 		end
         if is_enemy and hb.modes.mob_debug then
             atcd(('Detected %sdebuff: %s wore off %s [%s]'):format(msg, debuff.en, tname, tid))

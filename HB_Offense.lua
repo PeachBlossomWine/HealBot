@@ -204,6 +204,11 @@ function offense.getDebuffQueue(player, target, mob_debuff_list_flag)
                                 if ice_shot_tracker[target.id] == true then
                                     dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
                                 end
+							elseif debuff.ja.en == "Earth Shot" then
+								-- Skip enqueuing Light Shot if Dia is active and Light Shot has been applied
+                                if earth_shot_tracker[target.id] == true then
+                                    dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
+                                end
                             else -- Other JA's offenseive
 								if canUseJAconditions(debuff.ja.en, target.id) then
 									dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
@@ -229,6 +234,11 @@ function offense.getDebuffQueue(player, target, mob_debuff_list_flag)
 							elseif debuff.ja.en == "Ice Shot" then
 								-- Skip enqueuing Light Shot if Dia is active and Light Shot has been applied
                                 if ice_shot_tracker[target.id] == true then
+                                    dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
+                                end
+							elseif debuff.ja.en == "Earth Shot" then
+								-- Skip enqueuing Light Shot if Dia is active and Light Shot has been applied
+                                if earth_shot_tracker[target.id] == true then
                                     dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
                                 end
                             else -- Other JA's offenseive

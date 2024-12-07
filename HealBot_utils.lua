@@ -119,8 +119,14 @@ function processCommand(command,...)
 			table.vprint(offense.moblist.mobs)
 		end
 		if (args[1] and args[1]:lower() == 'moblistdebuff') or not args[1] then
-			atc('moblist: ')
+			atc('moblist debuffs: ')
 			table.vprint(offense.moblist.debuffs)
+		end
+		if (args[1] and args[1]:lower() == 'shots') or not args[1] then
+			atc('corsair shots: ')
+			table.vprint(light_shot_tracker)
+			table.vprint(ice_shot_tracker)
+			table.vprint(earth_shot_tracker)						
 		end
     elseif S{'start','on'}:contains(command) then
         hb.activate()
@@ -1354,6 +1360,7 @@ function utils.load_configs()
 	if player.main_job == 'COR' then
 		utils.register_offensive_debuff({"Light Shot"}, false, false ,true)
 		utils.register_offensive_debuff({"Ice Shot"}, false, false ,true)
+		utils.register_offensive_debuff({"Earth Shot"}, false, false ,true)
 		offense.debuffing_active = false
 	end
 	utils.auto_apply_bufflist()

@@ -189,6 +189,15 @@ function processDebuffMobs(mob_id)
 			offense.weaponskilltracker[mob_id] = nil
 		end
     end
+	if light_shot_tracker[mob_id] then
+		light_shot_tracker[mob_id] = nil
+	end
+	if ice_shot_tracker[mob_id] then
+		ice_shot_tracker[mob_id] = nil
+	end
+	if earth_shot_tracker[mob_id] then
+		earth_shot_tracker[mob_id] = nil
+	end
 	if offense.dispel.mobs and offense.dispel.mobs[mob_id] then
 		offense.dispel.mobs[mob_id] = nil
 	end
