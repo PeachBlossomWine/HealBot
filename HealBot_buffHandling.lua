@@ -518,21 +518,6 @@ function buffs.register_debuff(target, debuff, gain, action)
         return
     end
 
-    -- log("DEBUG: Gain: " .. tostring(gain))	
-    -- if debuff and type(debuff) == "table" then
-        -- log("DEBUG: Debuff Table:")
-        -- table.vprint(debuff)
-    -- else
-        -- log("DEBUG: Debuff is not a valid table or is nil")
-    -- end
-
-    -- if action and type(action) == "table" then
-        -- log("DEBUG: Action Table:")
-        -- table.vprint(action)
-    -- else
-        -- log("DEBUG: Action is not a valid table or is nil")
-    -- end
-	
 	light_shot_tracker[target.id] = light_shot_tracker[target.id] or false
 	
 	if debuff and debuff.id and debuff.id == 134 then
@@ -632,6 +617,8 @@ function buffs.register_debuff(target, debuff, gain, action)
 		local mob_ids = table.keys(offense.mobs)
 		if mob_ids and offense.mobs[tid] and next(offense.mobs[tid]) == nil then
 			offense.mobs[tid] = nil
+			ice_shot_tracker[tid] = false
+			light_shot_tracker[tid] = false 
 		end
         if is_enemy and hb.modes.mob_debug then
             atcd(('Detected %sdebuff: %s wore off %s [%s]'):format(msg, debuff.en, tname, tid))
