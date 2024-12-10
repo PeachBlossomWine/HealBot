@@ -340,7 +340,7 @@ function handle_shot(target, shot_id)
 			buffs.register_debuff(target, res.buffs[buff_id], true, cor_upgrade_cause)
 		end
 	elseif shot_id == 128 then -- Earth
-		if offense.mobs[target.id][13] and S{56,344,345}:contains(offense.mobs[target.id][13].spell_id) and not offense.mobs[target.id][13].shot then -- Slow
+		if offense.mobs[target.id][13] and S{56,79,344,345}:contains(offense.mobs[target.id][13].spell_id) and not offense.mobs[target.id][13].shot then -- Slow
 			buff_id = 13
 			cause = res.spells[offense.mobs[target.id][buff_id].spell_id]
 			cor_upgrade_cause = {name=string.format("%s %s", cause.name, ' (Earth Shot)')}

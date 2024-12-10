@@ -200,12 +200,12 @@ function offense.getDebuffQueue(player, target, mob_debuff_list_flag)
                                     dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
                                 end
 							elseif debuff.ja.en == "Ice Shot" then
-								-- Skip enqueuing Light Shot if Dia is active and Light Shot has been applied
+								-- Skip enqueuing Light Shot if Paralyze is active and Ice Shot has been applied
                                 if ice_shot_tracker[target.id] == true then
                                     dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
                                 end
 							elseif debuff.ja.en == "Earth Shot" then
-								-- Skip enqueuing Light Shot if Dia is active and Light Shot has been applied
+								-- Skip enqueuing Light Shot if Slow is active and Earth Shot has been applied
                                 if earth_shot_tracker[target.id] == true then
                                     dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
                                 end
@@ -232,12 +232,12 @@ function offense.getDebuffQueue(player, target, mob_debuff_list_flag)
                                     dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
                                 end
 							elseif debuff.ja.en == "Ice Shot" then
-								-- Skip enqueuing Light Shot if Dia is active and Light Shot has been applied
+								-- Skip enqueuing Light Shot if Paralyze is active and Ice Shot has been applied
                                 if ice_shot_tracker[target.id] == true then
                                     dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
                                 end
 							elseif debuff.ja.en == "Earth Shot" then
-								-- Skip enqueuing Light Shot if Dia is active and Light Shot has been applied
+								-- Skip enqueuing Light Shot if Slow is active and Earth Shot has been applied
                                 if earth_shot_tracker[target.id] == true then
                                     dbq:enqueue('debuff_mob', debuff.ja, target.name, debuff.res, (' (%s)'):format(debuff.ja.en))
                                 end

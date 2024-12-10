@@ -631,7 +631,7 @@ function buffs.register_debuff(target, debuff, gain, action)
             ice_shot_tracker[tid] = false  -- Reset tracking for Ice Shot
         end
 		if debuff and debuff.id and debuff.id == 13 and earth_shot_tracker[tid] then
-            earth_shot_tracker[tid] = false  -- Reset tracking for Ice Shot
+            earth_shot_tracker[tid] = false  -- Reset tracking for Earth Shot
         end
         debuff_tbl[debuff.id] = nil
 		local mob_ids = table.keys(offense.mobs)
