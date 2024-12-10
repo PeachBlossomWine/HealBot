@@ -135,7 +135,7 @@ function shouldBuff(bact, bact_target)
     return not (
         -- Skip if buff is already applied and is Haste/Flurry-related
         (buffs.debuffList[bact.name] and buffs.debuffList[bact.name][13] and S{'Haste', 'Haste II', 'Flurry', 'Flurry II'}:contains(bact.action.en)) or
-        
+    
         -- Skip if RDM is in party and player is not an RDM for certain buffs
         (utils.getPlayerNameFromJob('RDM') and S{'Phalanx', 'Haste', 'Refresh', 'Flurry'}:contains(bact.action.en) and player.main_job ~= 'RDM') or
 		

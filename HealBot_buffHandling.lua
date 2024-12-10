@@ -305,6 +305,9 @@ function buffs.registerNewBuffName(targetName, bname, use, status)
 					elseif spells_haste_flurry:contains(opposing_spell) and spells_haste_flurry:contains(action.en) and opposing_spell ~= action.en then
 						atc('Removing opposing spell buff: '..opposing_spell)
 						buffs.buffList[target.name][opposing_spell] = nil
+					elseif spells_phalanx:contains(opposing_spell) and spells_phalanx:contains(action.en) and opposing_spell ~= action.en then
+						atc('Removing opposing Phalanx buff: '..opposing_spell)
+						buffs.buffList[target.name][opposing_spell] = nil
 					end
 				end
 			end

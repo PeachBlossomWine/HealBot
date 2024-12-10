@@ -194,6 +194,7 @@ spells_bar_status_aoe = S{'Barsleepra','Barpoisonra','Barparalyzra','Barblindra'
 spells_boost = S{'Boost-AGI','Boost-CHR','Boost-DEX','Boost-INT','Boost-MND','Boost-STR','Boost-VIT'}
 spells_gain = S{'Gain-AGI','Gain-CHR','Gain-DEX','Gain-INT','Gain-MND','Gain-STR','Gain-VIT'}
 spells_haste_flurry = S{'Haste','Flurry','Haste II','Flurry II'}
+spells_phalanx = S{'Phalanx','Phalanx II'}
 
 buffs_opposing = spells_storms:union(spells_bar_element_self):union(spells_bar_element_aoe):union(spells_bar_status_self):union(spells_bar_status_aoe):union(spells_boost):union(spells_gain):union(spells_haste_flurry)
 
