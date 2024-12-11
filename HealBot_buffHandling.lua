@@ -425,7 +425,6 @@ function buffs.buff_for_action(action)
         action_str = action.en
     end
     if (buff_map[action_str] ~= nil) then
-		
         if isnum(buff_map[action_str]) then
             return res.buffs[buff_map[action_str]]
         else
