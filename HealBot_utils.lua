@@ -325,7 +325,7 @@ function processCommand(command,...)
             utils.register_spam_action(args)
         end
 	elseif S{'autojamode'}:contains(command) then
-		local cmd = args[1] and args[1]:lower() or (settings.spam.active and 'off' or 'on')
+		local cmd = args[1] and args[1]:lower() or (offense.job_ability_active and 'off' or 'on')
 		if S{'on','true'}:contains(cmd) then
 			offense.job_ability_active = true
 			atc('Auto JA Mode is now on.')
@@ -441,6 +441,24 @@ function processCommand(command,...)
         else
             atc('Error: Invalid argument specified for minCuraga')
         end
+	elseif command == 'overcure' then
+		local cmd = args[1] and args[1]:lower() or (settings.healing.force_higher_cure and 'off' or 'on')
+		if S{'on','true'}:contains(cmd) then
+			settings.healing.force_higher_cure = true
+			atc('Cure tier +1 override is now on.')
+		elseif S{'off','false'}:contains(cmd) then
+			settings.healing.force_higher_cure = false
+			atc('Cure tier +1 override is now off.')
+		end
+    elseif command == 'overcuraga' then
+        local cmd = args[1] and args[1]:lower() or (settings.healing.force_higher_curaga  and 'off' or 'on')
+		if S{'on','true'}:contains(cmd) then
+			settings.healing.force_higher_curaga  = true
+			atc('Curaga tier +1 override is now on.')
+		elseif S{'off','false'}:contains(cmd) then
+			settings.healing.force_higher_curaga  = false
+			atc('Curaga tier +1 override is now off.')
+		end
     elseif command == 'minwaltz' then
         if not validate(args, 1, 'Error: No argument specified for minWaltz') then return end
         local val = tonumber(args[1])

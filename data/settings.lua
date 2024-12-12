@@ -3,7 +3,7 @@ return {
         ['curaga'] = false
     },
     ['healing'] = {
-        ['curaga_min_targets'] = 3,
+        ['curaga_min_targets'] = 2,
         ['min'] = {
             ['curaga'] = 2,
             ['cure'] = 3,
@@ -20,6 +20,8 @@ return {
 			['blue'] = 3,
 			['bluega'] = 3,
 		},
+		['force_higher_cure'] = false,
+		['force_higher_curaga'] = false,
     },
     ['ignoreTrusts'] = false,
     ['spam'] = {

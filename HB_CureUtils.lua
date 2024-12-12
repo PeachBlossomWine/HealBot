@@ -60,11 +60,11 @@ end
 
 
 function cu.getDangerLevel(hpp)
-    if (hpp <= 20) then
+    if (hpp <= 30) then
         return 3
-    elseif (hpp <= 40) then
+    elseif (hpp <= 50) then
         return 2
-    elseif (hpp <= 60) then
+    elseif (hpp <= 70) then
         return 1
     end
     return 0
@@ -259,6 +259,32 @@ function cu.get_cure_tier_for_hp(hp_missing, cure_type)
     return tier
 end
 
+-- function cu.get_cure_tier_for_hp(hp_missing, cure_type)
+    -- local tier = settings.healing.max[cure_type]
+    -- local min_tier = settings.healing.min[cure_type]
+    -- local force_higher = cure_type:startswith('curaga') and settings.healing.force_higher_curaga or settings.healing.force_higher_cure
+
+    -- while tier > 1 do
+        -- local potency = cu[cure_type][tier].hp
+        -- local pdelta = potency - cu[cure_type][tier - 1].hp
+        -- local threshold = potency - (pdelta * 0.5)
+        
+        -- -- Adjust logic if force_higher is enabled
+        -- if force_higher and tier == min_tier + 1 then
+            -- -- Use higher tier cure but behave as if it's min_tier
+            -- return tier -- Use this tier
+        -- end
+
+        -- if hp_missing >= threshold then
+            -- break
+        -- end
+        -- tier = tier - 1
+    -- end
+
+    -- -- Ensure the tier meets the min requirement
+    -- return (tier >= min_tier) and tier or nil
+-- end
+
 
 --[[
     Returns resource info for the chosen cure/waltz tier
@@ -297,6 +323,58 @@ function cu.get_usable_cure(orig_tier, cure_type)
     end
     return nil
 end
+
+-- function cu.get_usable_cure(orig_tier, cure_type)
+    -- if orig_tier < settings.healing.min[cure_type] then return nil end
+
+    -- local player = windower.ffxi.get_player()
+    -- local mult = cu.get_multiplier(cure_type)
+    -- local _p, recasts
+
+    -- if cure_type:startswith('waltz') then
+        -- _p = 'tp'
+        -- recasts = windower.ffxi.get_ability_recasts()
+    -- else -- it starts with 'cur'
+        -- _p = 'mp'
+        -- recasts = windower.ffxi.get_spell_recasts()
+    -- end
+
+    -- local tier = orig_tier
+    -- local force_higher = cure_type:startswith('curaga') and settings.healing.force_higher_curaga or settings.healing.force_higher_cure
+
+    -- while (cu[cure_type][tier] and tier > 1) do
+        -- local action = cu[cure_type][tier].res
+        -- local rctime = recasts[action.recast_id] or 0 -- Cooldown remaining for current tier
+        -- local mod_cost = action[_p .. '_cost'] * mult -- Modified cost in MP/TP
+
+        -- -- Handle BlueMagic-specific checks
+        -- if action.type == "BlueMagic" then
+            -- if (player.main_job_id == 16 and table.contains(windower.ffxi.get_mjob_data().spells, action.id)) or
+               -- (player.sub_job_id == 16 and table.contains(windower.ffxi.get_sjob_data().spells, action.id)) then
+                -- if (mod_cost <= player.vitals[_p]) and (rctime == 0) then
+                    -- if force_higher and tier == settings.healing.min[cure_type] + 1 then
+                        -- return action -- Use higher-tier action
+                    -- end
+                    -- return action
+                -- end
+            -- end
+        -- else
+            -- -- Handle non-BlueMagic cures
+            -- if (mod_cost <= player.vitals[_p]) and (rctime == 0) then
+                -- if force_higher and tier == settings.healing.min[cure_type] + 1 then
+                    -- return action -- Use higher-tier action
+                -- end
+                -- return action
+            -- end
+        -- end
+
+        -- tier = tier - 1
+    -- end
+
+    -- return nil
+-- end
+
+
 
 
 --[[
