@@ -386,12 +386,15 @@ end
 
 function buffs.getAction(actionName, target)
     local me = windower.ffxi.get_player()
+	local actionNameLower = actionName:lower()
     local action = nil
-    local spell = res.spells:with('en', actionName)
+    
+	local spell = res.spells:with('lower_en', actionNameLower)
+	
     if (spell ~= nil) and healer:can_use(spell) then
         action = spell
     elseif (target ~= nil) and (target.id == me.id) then
-        local abil = res.job_abilities:with('en', actionName)
+		local abil = res.job_abilities:with('lower_en', actionNameLower)
         if (abil ~= nil) and healer:can_use(abil) then
             action = abil
         end

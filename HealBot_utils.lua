@@ -1355,7 +1355,7 @@ function utils.load_configs()
     hb.config.priorities.default =        hb.config.priorities.default or 5
     
 	utils.addCustomBuffs() -- Call the function to add custom buffs on healbot startup or during initialization
-	
+	utils.preprocess_resources()
 	--Set job defaults debuffs
 	if player.main_job == 'COR' then
 		utils.register_offensive_debuff({"Light Shot"}, false, false ,true)
@@ -1484,6 +1484,22 @@ local custom_buffs = {
 function utils.addCustomBuffs()
     for id, buff in pairs(custom_buffs) do
         res.buffs[id] = buff
+    end
+end
+
+function utils.preprocess_resources()
+    -- Add a `lower_en` field to each spell for case-insensitive matching
+    for _, spell in pairs(res.spells) do
+        if spell.en then
+            spell.lower_en = spell.en:lower()
+        end
+    end
+
+    -- Add a `lower_en` field to each job ability for case-insensitive matching
+    for _, ability in pairs(res.job_abilities) do
+        if ability.en then
+            ability.lower_en = ability.en:lower()
+        end
     end
 end
 

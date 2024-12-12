@@ -270,6 +270,11 @@ function canUseJAconditions(ja_name, tid)
 			if ja_name ~= 'Super Jump' then
 				return true
 			end
+		else
+			local jobAbility = lor_res.action_for(ja_name)
+			if healer:ready_to_use(jobAbility) then
+				return true
+			end
 		end
 	end
 	return false
