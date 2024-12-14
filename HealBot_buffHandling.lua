@@ -386,7 +386,7 @@ end
 
 function buffs.getAction(actionName, target)
     local me = windower.ffxi.get_player()
-	local actionNameLower = actionName:lower()
+	local actionNameLower = actionName and actionName:lower()
     local action = nil
     
 	local spell = res.spells:with('lower_en', actionNameLower)
