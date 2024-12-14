@@ -280,9 +280,7 @@ function cu.get_cure_tier_for_hp(hp_missing, cure_type)
         end
         tier = tier - 1
     end
-
-    -- Ensure the tier meets the min requirement
-    return (tier >= min_tier) and tier or nil
+	return tier
 end
 
 
@@ -367,10 +365,8 @@ function cu.get_usable_cure(orig_tier, cure_type)
                 return action
             end
         end
-
         tier = tier - 1
     end
-
     return nil
 end
 
