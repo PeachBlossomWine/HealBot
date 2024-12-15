@@ -262,24 +262,26 @@ end
 function cu.get_cure_tier_for_hp(hp_missing, cure_type)
     local tier = settings.healing.max[cure_type]
     local min_tier = settings.healing.min[cure_type]
-    local force_higher = cure_type:startswith('curaga') and settings.healing.force_higher_curaga or settings.healing.force_higher_cure
-
+    local force_higher = false
+	if cure_type:startswith('curaga') then
+		force_higher = settings.healing.force_higher_curaga
+	elseif cure_type:startswith('cure') then
+		force_higher = settings.healing.force_higher_cure
+	end
     while tier > 1 do
         local potency = cu[cure_type][tier].hp
         local pdelta = potency - cu[cure_type][tier - 1].hp
         local threshold = potency - (pdelta * 0.5)
-        
-        -- Adjust logic if force_higher is enabled
-        if force_higher and tier == min_tier + 1 then
-            -- Use higher tier cure but behave as if it's min_tier
-            return tier -- Use this tier
-        end
-
         if hp_missing >= threshold then
             break
         end
         tier = tier - 1
     end
+	 
+	if force_higher then
+		tier = tier + 1 -- Promote to the next tier
+	end
+
 	return tier
 end
 
@@ -350,18 +352,12 @@ function cu.get_usable_cure(orig_tier, cure_type)
             if (player.main_job_id == 16 and table.contains(windower.ffxi.get_mjob_data().spells, action.id)) or
                (player.sub_job_id == 16 and table.contains(windower.ffxi.get_sjob_data().spells, action.id)) then
                 if (mod_cost <= player.vitals[_p]) and (rctime == 0) then
-                    if force_higher and tier == settings.healing.min[cure_type] + 1 then
-                        return action -- Use higher-tier action
-                    end
                     return action
                 end
             end
         else
             -- Handle non-BlueMagic cures
             if (mod_cost <= player.vitals[_p]) and (rctime == 0) then
-                if force_higher and tier == settings.healing.min[cure_type] + 1 then
-                    return action -- Use higher-tier action
-                end
                 return action
             end
         end
