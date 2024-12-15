@@ -72,6 +72,18 @@ function processCommand(command,...)
     command = command and command:lower() or 'help'
     local args = map(windower.convert_auto_trans, {...})
 	local player = windower.ffxi.get_player()
+	
+	local fourth_param = nil
+	local argswithforth = {unpack(args)}
+    if #argswithforth > 0 then
+		-- Remove and capture the last argument from the copied table
+		fourth_param = table.remove(argswithforth)
+
+		-- Validate the fourth_param
+		if not S{'always', 'incombat'}:contains(fourth_param:lower()) then
+			fourth_param = nil
+		end
+	end
     
     if S{'reload','unload'}:contains(command) then
 		windower.send_command(('lua %s %s'):format(command, 'healbot'))
@@ -531,9 +543,17 @@ function processCommand(command,...)
             atc(('Debuffs detected for %s were reset.'):format(rtmsg))
         end
     elseif command == 'buff' then
-        buffs.registerNewBuff(args, true)
+		if fourth_param then
+			buffs.registerNewBuff(argswithforth, true, false, fourth_param)
+		else
+			buffs.registerNewBuff(args, true)
+		end
 	elseif command == 'buffjob' then
-	    buffs.registerNewBuff(args, true, true)
+		if fourth_param then
+			buffs.registerNewBuff(argswithforth, true, true, fourth_param)
+		else
+			buffs.registerNewBuff(args, true, true)
+		end
     elseif S{'cancelbuff','nobuff'}:contains(command) then
         buffs.registerNewBuff(args, false)
 	elseif S{'cancelbuffjob','nobuffjob'}:contains(command) then
@@ -828,7 +848,7 @@ function utils.apply_bufflist(args)
     if buff_list ~= nil then
         for _, buff_entry in pairs(buff_list) do
             if buff_entry.name then
-				local status = buff_entry.status or "Always"
+				local status = buff_entry.status or "always"
                 buffs.registerNewBuff({bl_target, buff_entry.name}, true, false, status)
             end
         end
@@ -848,7 +868,7 @@ function utils.auto_apply_bufflist()
     if buff_list ~= nil then
         for _, buff_entry in pairs(buff_list) do
             if buff_entry.name then
-				local status = buff_entry.status or "Always"
+				local status = buff_entry.status or "always"
                 buffs.registerNewBuff({bl_target, buff_entry.name}, true, false, status)
             end
         end
@@ -868,7 +888,7 @@ function utils.auto_apply_autojalist()
     if ja_list ~= nil then
         for _, debuff_entry in pairs(ja_list) do
             if debuff_entry.name then
-				local status = debuff_entry.status or "Always"
+				local status = debuff_entry.status or "always"
 				utils.register_offensive_debuff({debuff_entry.name}, false, false, true)
             end
         end

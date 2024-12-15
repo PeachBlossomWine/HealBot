@@ -130,7 +130,7 @@ end
 
 function shouldBuff(bact, bact_target)
     local player = player or windower.ffxi.get_player()
-    local buff_status = bact.msg or "Always" -- Default to "Always" if no status specified
+    local buff_status = bact.msg or "always" -- Default to "Always" if no status specified
 	
     return not (
         -- Skip if buff is already applied and is Haste/Flurry-related
@@ -146,7 +146,7 @@ function shouldBuff(bact, bact_target)
         (utils.getPlayerNameFromJob('WHM') and (bact.action.en:match("^Protect") or bact.action.en:match("^Shell")) and bact_target.name == player.name and player.main_job ~= 'WHM') or
 
         -- Check the buff status requirement
-        (buff_status == "inCombat" and not player.in_combat)
+        (buff_status:lower() == "incombat" and not player.in_combat)
     )
 end
 

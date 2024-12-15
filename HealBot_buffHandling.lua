@@ -215,7 +215,7 @@ function buffs.registerNewBuff(args, use, job_name_flag, status)
     table.remove(args, 1)
     local arg_string = table.concat(args,' ')
     local snames = arg_string:split(',')
-	local status = status or "Always"
+	local status = status or "always"
 	
 	if job_name_flag then
 		if utils.getPlayerNameFromJob(targetName) then
@@ -321,7 +321,11 @@ function buffs.registerNewBuffName(targetName, bname, use, status)
                 buffs.buffList[target.name][action.en].is_geo = true
             end
         end
-        atc('Will maintain buff: '..action.en..' '..rarr..' '..target.name)
+		if status ~= 'always' then
+			atc('Will maintain buff: '..action.en..' '..rarr..' '..target.name..' - '..status)
+		else
+			atc('Will maintain buff: '..action.en..' '..rarr..' '..target.name)
+		end
     else
 		if targetName:lower() == 'everyone' then
 			atc('Will no longer maintain any buffs on all players except self.')
