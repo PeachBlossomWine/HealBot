@@ -51,18 +51,15 @@ return {
         {name = 'Reraise'},
 		{name = 'Saboteur', status = 'inCombat'},
 		{name = 'Last Resort', status = 'inCombat'},
-		{name = 'Souleater', status = 'inCombat'},
     },
 	['brd'] = {
 		{Name = 'Refresh'},
 		{Name = 'Haste'},
         {Name = 'Reraise'},
 		{name = 'Last Resort', status = 'inCombat'},
-		{name = 'Souleater', status = 'inCombat'},
 	},
 	['cor'] = {
 		{name = 'Last Resort', status = 'inCombat'},
-		{name = 'Souleater', status = 'inCombat'},
 	},
     ['geo'] = {
         {name = 'Haste'},
@@ -70,6 +67,5 @@ return {
 		{name = 'Aurorastorm'},
 		{name = 'Reraise'},
 		{name = 'Last Resort', status = 'inCombat'},
-		{name = 'Souleater', status = 'inCombat'},
     },
 }
