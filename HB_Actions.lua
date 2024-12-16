@@ -295,7 +295,8 @@ end
 
 function actions.check_moblist_mob(target_index)
 	if not offense.moblist.mobs then return false end
-	local target_name = windower.ffxi.get_mob_by_index(target_index).name
+--	local target_name = windower.ffxi.get_mob_by_index(target_index).name
+	local target_name = windower.ffxi.get_mob_by_index(target_index or 0) and windower.ffxi.get_mob_by_index(target_index).name or "Unknown"
 	
 	for mob_name,_ in pairs(offense.moblist.mobs) do
 		if target_name == mob_name then
