@@ -295,7 +295,6 @@ end
 
 function actions.check_moblist_mob(target_index)
 	if not offense.moblist.mobs then return false end
---	local target_name = windower.ffxi.get_mob_by_index(target_index).name
 	local target_name = windower.ffxi.get_mob_by_index(target_index or 0) and windower.ffxi.get_mob_by_index(target_index).name or "Unknown"
 	
 	for mob_name,_ in pairs(offense.moblist.mobs) do
@@ -326,21 +325,24 @@ function actions.get_offensive_action(player, partner, battle_target)
         local dbact = dbuffq:pop()
         local_queue_insert(dbact.action.en, target.name)
 
-		if player.main_job == "BRD" and offense.ja_prespell.marcato.active and healer:can_use(marcato) 
-		and (healer:ready_to_use(marcato) or haveBuff(marcato.name))
-		then
-			if dbact.action.en == offense.ja_prespell.marcato.spell then
-				if not haveBuff(marcato.name) then
-					healer:take_action({action=marcato}, healer.name)
+		if player.main_job == "BRD" and dbact.action.en == offense.ja_prespell.marcato.spell and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) then
+			if offense.ja_prespell.marcato.active then
+				-- If Marcato is ready and buff isn't active, use Marcato first
+				if healer:ready_to_use(marcato) and not haveBuff(marcato.name) then
+					healer:take_action({action = marcato}, healer.name)
 				end
-				if haveBuff(marcato.name) then
+				-- If Marcato buff is active or not needed, proceed to use the spell
+				if haveBuff(marcato.name) or not healer:ready_to_use(marcato) then
 					action.db = dbact
 					break
 				end
+			else
+				-- If Marcato is not active, use the spell regardless
+				action.db = dbact
 				break
 			end
-		elseif player.main_job == "RDM" and offense.ja_prespell.stymie.active and healer:can_use(stymie)
-		and (healer:ready_to_use(stymie) or haveBuff(stymie.name))
+		elseif player.main_job == "RDM" and offense.ja_prespell.stymie.active and healer:can_use(stymie) and healer:in_casting_range(target)
+		and (healer:ready_to_use(stymie) or haveBuff(stymie.name)) and healer:ready_to_use(dbact.action)
 		then
 			if dbact.action.en == offense.ja_prespell.stymie.spell then
 				if not haveBuff(stymie.name) then
@@ -422,22 +424,24 @@ function actions.get_offensive_action_list(player, mob_index)
         local dbact = dbuffq:pop()
         local_queue_insert(dbact.action.en, target.name)
 		
-		
-		if player.main_job == "BRD" and offense.ja_prespell.marcato.active and healer:can_use(marcato) 
-		and (healer:ready_to_use(marcato) or haveBuff(marcato.name))
-		then
-			if dbact.action.en == offense.ja_prespell.marcato.spell then
-				if not haveBuff(marcato.name) then
-					healer:take_action({action=marcato}, healer.name)
+		if player.main_job == "BRD" and dbact.action.en == offense.ja_prespell.marcato.spell and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) then
+			if offense.ja_prespell.marcato.active then
+				-- If Marcato is ready and buff isn't active, use Marcato first
+				if healer:ready_to_use(marcato) and not haveBuff(marcato.name) then
+					healer:take_action({action = marcato}, healer.name)
 				end
-				if haveBuff(marcato.name) then
+				-- If Marcato buff is active or not needed, proceed to use the spell
+				if haveBuff(marcato.name) or not healer:ready_to_use(marcato) then
 					action.db = dbact
 					break
 				end
+			else
+				-- If Marcato is not active, use the spell regardless
+				action.db = dbact
 				break
 			end
-		elseif player.main_job == "RDM" and offense.ja_prespell.stymie.active and healer:can_use(stymie)
-		and (healer:ready_to_use(stymie) or haveBuff(stymie.name))
+		elseif player.main_job == "RDM" and offense.ja_prespell.stymie.active and healer:can_use(stymie) and healer:in_casting_range(target)
+		and (healer:ready_to_use(stymie) or haveBuff(stymie.name)) and healer:ready_to_use(dbact.action)
 		then
 			if dbact.action.en == offense.ja_prespell.stymie.spell then
 				if not haveBuff(stymie.name) then
