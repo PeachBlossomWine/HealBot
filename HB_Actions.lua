@@ -308,7 +308,6 @@ end
 
 local stymie = lor_res.action_for("Stymie")
 local marcato = lor_res.action_for("Marcato")
-local sabo = lor_res.action_for("Saboteur")
 
 function actions.get_offensive_action(player, partner, battle_target)
 	player = player or windower.ffxi.get_player()
@@ -340,23 +339,6 @@ function actions.get_offensive_action(player, partner, battle_target)
 				end
 				break
 			end
-		elseif player.main_job == "RDM" and offense.ja_prespell.sabo.active and healer:can_use(sabo)
-		and (healer:ready_to_use(sabo) or haveBuff(sabo.name)) 
-		then
-			if dbact.action.en == offense.ja_prespell.sabo.spell then
-				if not haveBuff(sabo.name) then
-					healer:take_action({action=sabo}, healer.name)
-				end
-				if haveBuff(sabo.name) then
-					action.db = dbact
-					break
-				end
-				break
-			else
-				if haveBuff(sabo.name) then
-					action.db = dbact
-				end
-			end
 		elseif player.main_job == "RDM" and offense.ja_prespell.stymie.active and healer:can_use(stymie)
 		and (healer:ready_to_use(stymie) or haveBuff(stymie.name))
 		then
@@ -370,23 +352,6 @@ function actions.get_offensive_action(player, partner, battle_target)
 				end
 				break
 			end
-		-- elseif player.main_job == "RDM" and offense.ja_prespell.stymie.active and healer:can_use(stymie) and healer:can_use(sabo)
-		-- and ((healer:ready_to_use(sabo) or haveBuff(sabo.name)) and (healer:ready_to_use(stymie) or haveBuff(stymie.name)))
-		-- then
-			-- if dbact.action.en == offense.ja_prespell.stymie.spell then
-				-- if not haveBuff(sabo.name) then
-					-- healer:take_action({action = sabo}, healer.name)
-				-- end
-
-				-- if not haveBuff(stymie.name) then
-					-- healer:take_action({action = stymie}, healer.name)
-				-- end
-				-- if haveBuff(sabo.name) and haveBuff(stymie.name) then
-					-- action.db = dbact
-					-- break
-				-- end
-				-- break
-			-- end
         else -- Other non pre JA debuffs
             if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) 
 			and not actions.jaSpell(dbact)
@@ -435,18 +400,6 @@ function actions.get_offensive_action(player, partner, battle_target)
 	return nil
 end
 
--- function actions.jaSpell(spell)
-	-- if (offense.ja_prespell.stymie.active and offense.ja_prespell.stymie.spell == spell.action.en) or 
-	-- (offense.ja_prespell.sabo.active and offense.ja_prespell.sabo.spell == spell.action.en) or 
-	-- (offense.ja_prespell.marcato.active and offense.ja_prespell.marcato.spell == spell.action.en) 
-	-- then
-		-- return true
-	-- else
-		-- return false
-	-- end
-
--- end
-
 function actions.jaSpell(spell)
     for _, ja in pairs(offense.ja_prespell) do
         if ja.active and ja.spell == spell.action.en then
@@ -468,9 +421,41 @@ function actions.get_offensive_action_list(player, mob_index)
     while not dbuffq:empty() do
         local dbact = dbuffq:pop()
         local_queue_insert(dbact.action.en, target.name)
-        if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) then
-            action.db = dbact
-        end
+		
+		
+		if player.main_job == "BRD" and offense.ja_prespell.marcato.active and healer:can_use(marcato) 
+		and (healer:ready_to_use(marcato) or haveBuff(marcato.name))
+		then
+			if dbact.action.en == offense.ja_prespell.marcato.spell then
+				if not haveBuff(marcato.name) then
+					healer:take_action({action=marcato}, healer.name)
+				end
+				if haveBuff(marcato.name) then
+					action.db = dbact
+					break
+				end
+				break
+			end
+		elseif player.main_job == "RDM" and offense.ja_prespell.stymie.active and healer:can_use(stymie)
+		and (healer:ready_to_use(stymie) or haveBuff(stymie.name))
+		then
+			if dbact.action.en == offense.ja_prespell.stymie.spell then
+				if not haveBuff(stymie.name) then
+					healer:take_action({action = stymie}, healer.name)
+				end
+				if haveBuff(stymie.name) then
+					action.db = dbact
+					break
+				end
+				break
+			end
+		else -- Other non pre JA debuffs
+			if (action.db == nil) and healer:in_casting_range(target) and healer:ready_to_use(dbact.action) 
+			and not actions.jaSpell(dbact)
+			then
+                action.db = dbact
+            end
+		end
     end
     
     local_queue_disp()
