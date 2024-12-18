@@ -1518,6 +1518,10 @@ local custom_buffs = {
 	[801] = {id = 801, en = "Random Deal", jp = "カスタムバフ801"},
 	[802] = {id = 802, en = "Wild Card", jp = "カスタムバフ802"},
 	[803] = {id = 803, en = "Mantra", jp = "カスタムバフ803"},
+	[900] = {id = 803, en = "Aspir", jp = "カスタムバフ900"},
+	[901] = {id = 803, en = "Aspir II", jp = "カスタムバフ901"},
+	[902] = {id = 803, en = "Aspir III", jp = "カスタムバフ902"},
+	[903] = {id = 803, en = "Absorb-TP", jp = "カスタムバフ903"},
 }
 
 -- Function to add custom buffs to the existing buffs table
