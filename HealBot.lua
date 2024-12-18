@@ -277,6 +277,8 @@ local function _getMonitoredPlayers()
     local pt = windower.ffxi.get_party()
     local my_zone = pt.p0.zone
     local targets = S{}
+    local player_name = windower.ffxi.get_player().name -- Get the local player's name
+
     for p = 1, #pt_keys do
         for m = 1, pt[pt_keys[p]] do
             local pt_member = pt[pm_keys[p][m]]
@@ -287,22 +289,37 @@ local function _getMonitoredPlayers()
             end
         end
     end
-    for extraName,_ in pairs(hb.extraWatchList) do
+    for extraName, _ in pairs(hb.extraWatchList) do
         hb.addPlayer(targets, windower.ffxi.get_mob_by_name(extraName))
     end
 
-	local display_targets = S{}
-	for k,v in pairs(targets) do
-		if v.mob ~= nil then
-			display_targets:add(string.format("%-10s - %3s", v.name, get_registry(v.mob.id)))
-		end
-	end
-	
-    hb.txts.montoredBox:text(getPrintable(display_targets, true))
+    local display_targets = {}
+    for k, v in pairs(targets) do
+        if v.mob ~= nil then
+            table.insert(display_targets, string.format("%-10s - %3s", v.name, get_registry(v.mob.id)))
+        end
+    end
+
+    -- Sort the targets dynamically
+    table.sort(display_targets, function(a, b)
+        -- Prioritize the local player, then sort alphabetically
+        if a:find(player_name) then
+            return true
+        elseif b:find(player_name) then
+            return false
+        else
+            return a < b
+        end
+    end)
+
+    -- Update the text box
+    hb.txts.montoredBox:text(table.concat(display_targets, '\n'))
     hb.txts.montoredBox:visible(settings.textBoxes.montoredBox.visible)
     return targets
 end
+
 hb.getMonitoredPlayers = _libs.lor.advutils.tcached(1, _getMonitoredPlayers)
+hb.getMonitoredPlayersDirect = _getMonitoredPlayers
 
 
 local function _getMonitoredIds()
@@ -399,6 +416,16 @@ function hb.process_ipc(msg)
                 }
                 local encoded = serialua.encode(response)
                 windower.send_ipc_message(encoded)
+			elseif loaded.pk == 'job_registry' then
+				local player = windower.ffxi.get_player()
+				local response = {
+					method = 'POST',
+					pk = 'job_registry',
+					id = player.id,
+					job_id = player.main_job_id,
+					job_name = res.jobs[player.main_job_id].ens
+				}
+				windower.send_ipc_message(serialua.encode(response))
             else
                 atcfs(123, 'Invalid pk for GET request: %s', loaded.pk)
             end
@@ -437,7 +464,18 @@ function hb.process_ipc(msg)
 				if settings.follow.target and settings.follow.target == loaded.follow_name and settings.follow.active and loaded.orig_zone == windower.ffxi.get_info().zone then
 					--log('IPC: To set follow run to zone flag.')
 					hb.should_attempt_to_cross_zone_line = true
-				end			
+				end	
+			elseif loaded.pk == 'job_registry' then
+				-- Received a job registry update
+				if loaded.id and loaded.job_id and loaded.job_name then
+					-- Update the job registry
+					hb.job_registry = hb.job_registry or {}
+					hb.job_registry[loaded.id] = loaded.job_name
+					hb.getMonitoredPlayersDirect()
+					atcd('Updated job registry: ID=%s, Job=%s', loaded.id, loaded.job_name)
+				else
+					atcfs(123, 'Invalid job_registry POST message: %s', msg)
+				end
             else
                 atcfs(123, 'Invalid pk for POST message: %s', loaded.pk)
             end

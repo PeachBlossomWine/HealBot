@@ -13,17 +13,56 @@ local get_action_info = _libs.lor.packets.get_action_info
 local parse_char_update = _libs.lor.packets.parse_char_update
 local packet_player = windower.ffxi.get_player()
 
+function send_job_registry_update()
+    local player = windower.ffxi.get_player()
+    if not player then return end
+	
+	-- Update your own registry locally
+    hb.job_registry = hb.job_registry or {}
+    hb.job_registry[player.id] = res.jobs[player.main_job_id].ens
+
+    local message = {
+        method = 'POST',
+        pk = 'job_registry',
+        id = player.id,
+        job_id = player.main_job_id,
+        job_name = player.main_job
+    }
+    local encoded = serialua.encode(message)
+    windower.send_ipc_message(encoded)
+end
+
+function request_job_registry()
+	local player = windower.ffxi.get_player()
+	-- Update your own registry locally
+    hb.job_registry = hb.job_registry or {}
+    hb.job_registry[player.id] = res.jobs[player.main_job_id].ens
+	
+    local message = {
+        method = 'GET',
+        pk = 'job_registry'
+    }
+    windower.send_ipc_message(serialua.encode(message))
+end
+
+
 -- Credit to partyhints
 function set_registry(id, job_id)
     if not id then return false end
-    hb.job_registry[id] = hb.job_registry[id] or 'NON'
-    job_id = job_id or 0
-    if res.jobs[job_id].ens == 'NON' and hb.job_registry[id] and not S{'NON', 'UNK'}:contains(hb.job_registry[id]) then 
-        return false
+
+    -- Ensure the registry table exists
+    hb.job_registry = hb.job_registry or {}
+
+    -- Only update if the job is not already set
+    if not hb.job_registry[id] or hb.job_registry[id] == 'NON' or hb.job_registry[id] == 'UNK' then
+        job_id = job_id or 0
+        hb.job_registry[id] = res.jobs[job_id] and res.jobs[job_id].ens or 'UNK'
+        return true
     end
-    hb.job_registry[id] = res.jobs[job_id].ens
-    return true
+
+    return false -- No update needed
 end
+
 
 -- Credit to partyhints
 function get_registry(id)

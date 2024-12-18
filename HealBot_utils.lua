@@ -1404,10 +1404,12 @@ function utils.load_configs()
 	utils.auto_apply_bufflist()
 	utils.auto_apply_autojalist()
     --process_mabil_debuffs()
+	request_job_registry()
 	
     local msg = hb.configs_loaded and 'Rel' or 'L'
     hb.configs_loaded = true
     atcc(262, msg..'oaded config files.')
+	hb.getMonitoredPlayersDirect()
 end
 
 -- Adding custom buffs
