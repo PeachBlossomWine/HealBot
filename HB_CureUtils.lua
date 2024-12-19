@@ -180,7 +180,7 @@ function cu.pick_best_curaga_possibility()
     for _,name in pairs(coverage[best_target]) do
         min_hpp = min(min_hpp, members[name].hpp)
     end
-    min_hpp = min_hpp * 0.7 --add extra weight
+    min_hpp = min_hpp * 0.9 --add extra weight **Modified to 0.9 from 0.7 to encourage curaga more**
     local target = {name=best_target, missing=w_missing, hpp=min_hpp}
 	if settings.healing.modega == 'bluega' then
 		target = {name=windower.ffxi.get_player().name, missing=w_missing, hpp=min_hpp}
@@ -340,7 +340,6 @@ function cu.get_usable_cure(orig_tier, cure_type)
     end
 
     local tier = orig_tier
-    local force_higher = cure_type:startswith('curaga') and settings.healing.force_higher_curaga or settings.healing.force_higher_cure
 
     while (cu[cure_type][tier] and tier > 1) do
         local action = cu[cure_type][tier].res
