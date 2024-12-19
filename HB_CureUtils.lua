@@ -60,11 +60,11 @@ end
 
 
 function cu.getDangerLevel(hpp)
-    if (hpp <= 30) then
+    if (hpp <= 20) then
         return 3
-    elseif (hpp <= 50) then
+    elseif (hpp <= 40) then
         return 2
-    elseif (hpp <= 70) then
+    elseif (hpp <= 60) then
         return 1
     end
     return 0
