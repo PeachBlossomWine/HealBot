@@ -963,7 +963,7 @@ function disableCommand(cmd, disable)
             end
         end
         settings.disable.all_cure = disable
-        atc('Curing'..msg)
+        atc('All Curing'..msg)
     elseif S{'curaga'}:contains(cmd) then
         settings.disable.curaga = disable
         atc('Curaga use'..msg)

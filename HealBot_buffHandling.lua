@@ -259,7 +259,7 @@ function buffs.registerNewBuffName(targetName, bname, use, status)
 	
 	-- Song override, no check targets.
     if target and action and not ffxi.target_is_valid(action, target) and targetName:lower() ~= 'everyone' and bname:lower() ~= 'all' then
-		if not (spells_songBuffs:contains(res.spells:with('en', spellName).id)) then
+		if spellName and not (spells_songBuffs:contains(res.spells:with('en', spellName).id)) then
 			atc(target.name..' is an invalid target for '..action.en)
 			return
 		else
