@@ -32,8 +32,7 @@ function actions.get_defensive_action()
 	local action = {}
 	local player = player or windower.ffxi.get_player()
 	
-	--if (not settings.disable.cure) then
-	if (not settings.disable.all_cure) then
+	if (not settings.disable.cure) then
 		local cureq = CureUtils.get_cure_queue()
 		while (not cureq:empty()) do
 			local cact = cureq:pop()

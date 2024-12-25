@@ -127,6 +127,7 @@ function cu.get_weighted_curaga_hp(members_info, names)
     return missing / c, hp / c
 end
 
+
 function cu.pick_best_curaga_possibility()
     local too_few = settings.healing.curaga_min_targets
     local members = cu.injured_pt_members()
@@ -179,7 +180,7 @@ function cu.pick_best_curaga_possibility()
     for _,name in pairs(coverage[best_target]) do
         min_hpp = min(min_hpp, members[name].hpp)
     end
-    min_hpp = min_hpp * 0.7 --add extra weight
+    min_hpp = min_hpp * 0.9 --add extra weight **Modified to 0.9 from 0.7 to encourage curaga more**
     local target = {name=best_target, missing=w_missing, hpp=min_hpp}
 	if settings.healing.modega == 'bluega' then
 		target = {name=windower.ffxi.get_player().name, missing=w_missing, hpp=min_hpp}
@@ -213,7 +214,6 @@ function cu.get_cure_queue()
     return cq:getQueue()
 end
 
-
 --[[
     Determines the MP/TP multiplier in effect for the given cure_type based on job and active buffs.
 --]]
@@ -245,6 +245,20 @@ end
     Determines the tier of cure_type to use for the given amount of missing HP.
     Whether or not to accept this tier, based on settings.healing.min[cure_type], is handled elsewhere.
 --]]
+-- function cu.get_cure_tier_for_hp(hp_missing, cure_type)
+    -- local tier = settings.healing.max[cure_type]
+    -- while tier > 1 do
+        -- local potency = cu[cure_type][tier].hp
+        -- local pdelta = potency - cu[cure_type][tier-1].hp
+        -- local threshold = potency - (pdelta * 0.5)
+        -- if hp_missing >= threshold then
+            -- break
+        -- end
+        -- tier = tier - 1
+    -- end
+    -- return tier
+-- end
+
 function cu.get_cure_tier_for_hp(hp_missing, cure_type)
     local tier = settings.healing.max[cure_type]
     local min_tier = settings.healing.min[cure_type]
@@ -271,9 +285,45 @@ function cu.get_cure_tier_for_hp(hp_missing, cure_type)
 	return tier
 end
 
+
 --[[
     Returns resource info for the chosen cure/waltz tier
 --]]
+-- function cu.get_usable_cure(orig_tier, cure_type)
+    -- if orig_tier < settings.healing.min[cure_type] then return nil end
+    
+    -- local player = windower.ffxi.get_player()
+    -- local mult = cu.get_multiplier(cure_type)
+    -- local _p, recasts
+    -- if cure_type:startswith('waltz') then
+        -- _p = 'tp'
+        -- recasts = windower.ffxi.get_ability_recasts()
+    -- else --it starts with 'cur'
+        -- _p = 'mp'
+        -- recasts = windower.ffxi.get_spell_recasts()
+    -- end
+    
+	-- local tier = orig_tier
+	-- local check_action = cu[cure_type][tier].res
+    -- while (check_action.type == "BlueMagic" and tier >= 1) or tier > 1 do
+        -- local action = cu[cure_type][tier].res
+        -- local rctime = recasts[action.recast_id] or 0               --Cooldown remaining for current tier
+        -- local mod_cost = action[_p..'_cost'] * mult                 --Modified cost of current tier in MP/TP
+        -- if (mod_cost <= player.vitals[_p]) and (rctime == 0) then   --Sufficient MP/TP and cooldown is ready
+			-- if action.type == "BlueMagic" then
+				-- if (player.main_job_id == 16 and table.contains(windower.ffxi.get_mjob_data().spells,action.id))
+				-- or (player.sub_job_id == 16 and table.contains(windower.ffxi.get_sjob_data().spells,action.id)) then
+					-- return action
+				-- end
+			-- else
+				-- return action
+			-- end
+        -- end
+        -- tier = tier - 1
+    -- end
+    -- return nil
+-- end
+
 function cu.get_usable_cure(orig_tier, cure_type)
     if orig_tier < settings.healing.min[cure_type] then return nil end
 
@@ -290,7 +340,6 @@ function cu.get_usable_cure(orig_tier, cure_type)
     end
 
     local tier = orig_tier
-    local force_higher = cure_type:startswith('curaga') and settings.healing.force_higher_curaga or settings.healing.force_higher_cure
 
     while (cu[cure_type][tier] and tier > 1) do
         local action = cu[cure_type][tier].res
@@ -315,6 +364,9 @@ function cu.get_usable_cure(orig_tier, cure_type)
     end
     return nil
 end
+
+
+
 
 --[[
     Returns the tier of the highest usable spell of type cure_type
