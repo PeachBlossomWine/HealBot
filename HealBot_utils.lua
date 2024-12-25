@@ -954,7 +954,7 @@ end
 
 function disableCommand(cmd, disable)
     local msg = ' is now '..(disable and 'disabled.' or 're-enabled.')
-    if S{'cure','cures','curing','all_cure'}:contains(cmd) then
+    if S{'cure','cures','curing','allcure'}:contains(cmd) then
         if (not disable) then
             if (settings.maxCureTier == 0) then
                 settings.disable.all_cure = true
