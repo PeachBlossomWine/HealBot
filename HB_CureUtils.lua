@@ -131,87 +131,89 @@ function cu.pick_best_curaga_possibility()
     local too_few = settings.healing.curaga_min_targets
     local members = cu.injured_pt_members()
     local member_count = sizeof(members)
+    local proximity_threshold = 10  -- Distance in yalms
+
+    -- Return nil if not enough injured members
     if member_count < too_few then return nil end
-    local best = {}
-    local coverage, distances = LT(), LT()
+
+    local best_group = nil
+    local best_group_count = 0
+
+    -- Evaluate all possible curaga groups
     for memberA, a in pairs(members) do
-        if a then
-            coverage[memberA] = LT{memberA}
-            distances[memberA] = LT()
-            for memberB, b in pairs(members) do
-                if b then
-					if memberA ~= memberB then
-                        local dist = a.pos and a.pos:getDistance(b.pos)
-                        distances[memberA]:insert(dist)
-                        if dist and dist < 10 then
-                            coverage[memberA]:insert(memberB)
-                        end
-                    end
+        local group = {a}  -- Start group with the current member
+        for memberB, b in pairs(members) do
+            if memberA ~= memberB then
+                local dist = a.pos and a.pos:getDistance(b.pos)
+                if dist and dist < proximity_threshold then
+                    table.insert(group, b)
                 end
             end
-            local furthest = distances[memberA]:max()
-            local avg_dist = distances[memberA]:sum() / distances[memberA]:size()
-            local farA = {memberA, furthest}
-            local avgA = {memberA, avg_dist}
-            local covA = {memberA, coverage[memberA]}
-            best.far = best.far or farA
-            best.far = (furthest < best.far[2]) and farA or best.far
-            best.avg = best.avg or avgA
-            best.avg = (avg_dist < best.avg[2]) and avgA or best.avg
-            best.cov = best.cov or covA
-            best.cov = (coverage[memberA]:size() > best.cov[2]:size()) and covA or best.cov
-            if furthest < 10 then break end    --Everyone is close enough
+        end
+
+        -- Select the best group based on size
+        if #group >= too_few and #group > best_group_count then
+            best_group = group
+            best_group_count = #group
         end
     end
-    if best.cov[2]:size() < too_few then return nil end
-    local best_cov_count = best.cov[2]:size()
-    local best_target
-    if coverage[best.far[1]]:size() == best_cov_count then
-        best_target = best.far[1]
-    elseif coverage[best.avg[1]]:size() == best_cov_count then
-        best_target = best.avg[1]
-    else
-        best_target = best.cov[1]
+
+    -- Determine the lowest HP character in the best group
+    if best_group then
+        local lowest_hp_member = best_group[1]  -- Initialize with the first member
+        for _, member in ipairs(best_group) do
+            if member.hpp < lowest_hp_member.hpp then
+                lowest_hp_member = member  -- Update to the member with the lowest HP
+            end
+        end
+
+        -- Calculate the weighted missing HP and determine the curaga tier
+        local w_missing, w_hpp = cu.get_weighted_curaga_hp(members, best_group)
+        local tier = cu.get_cure_tier_for_hp(w_missing, settings.healing.modega)
+
+        return cu.get_usable_cure(tier, settings.healing.modega), {name = lowest_hp_member.name, missing = w_missing, hpp = w_hpp}
     end
-    local w_missing, w_hpp = cu.get_weighted_curaga_hp(members, coverage[best_target])
-    local tier = cu.get_cure_tier_for_hp(w_missing, settings.healing.modega)
-    local min_hpp = 100
-    for _,name in pairs(coverage[best_target]) do
-        min_hpp = min(min_hpp, members[name].hpp)
-    end
-    min_hpp = min_hpp * 0.9 --add extra weight **Modified to 0.9 from 0.7 to encourage curaga more**
-    local target = {name=best_target, missing=w_missing, hpp=min_hpp}
-	if settings.healing.modega == 'bluega' then
-		target = {name=windower.ffxi.get_player().name, missing=w_missing, hpp=min_hpp}
-		return cu.get_usable_cure(tier, settings.healing.modega), target
-	else
-		return cu.get_usable_cure(tier, settings.healing.modega), target
-	end
+
+    return nil
 end
 
 
 function cu.get_cure_queue()
     local cq = ActionQueue.new()
     local hp_table = cu.get_missing_hps()
-    for name,p in pairs(hp_table) do
-        if p.hpp < 95 then
-            local tier = cu.get_cure_tier_for_hp(p.missing, settings.healing.mode)
-            if tier >= settings.healing.min[settings.healing.mode] then
-                local spell = cu.get_usable_cure(tier, settings.healing.mode)
-                if spell ~= nil then
-                    cq:enqueue('cure', spell, name, p.hpp, (' (%s)'):format(p.missing))
+    local curaga_spell, curaga_target = nil, nil
+    local members_in_curaga = {}
+
+    -- Step 1: Evaluate and queue Curaga first
+    if (not settings.disable.curaga) and (settings.healing.max[settings.healing.modega] > 0) then
+        curaga_spell, curaga_target = cu.pick_best_curaga_possibility()
+        if curaga_spell ~= nil then
+            cq:enqueue('curaga', curaga_spell, curaga_target.name, curaga_target.hpp, (' (%s)'):format(curaga_target.missing))
+            -- Record members covered by Curaga
+            for _, member in pairs(cu.injured_pt_members()) do
+                local dist = curaga_target.pos and curaga_target.pos:getDistance(member.pos)
+                if dist and dist <= 10 then  -- Use the Curaga's effect radius
+                    members_in_curaga[member.name] = true
                 end
             end
         end
     end
-    if (not settings.disable.curaga) and (settings.healing.max[settings.healing.modega] > 0) then
-        local spell, p = cu.pick_best_curaga_possibility()
-        if spell ~= nil then
-            cq:enqueue('cure', spell, p.name, p.hpp, (' (%s)'):format(p.missing))
+
+    -- Step 2: Process single-target cures, skipping members covered by Curaga
+    for name, p in pairs(hp_table) do
+        if p.hpp < 95 and not members_in_curaga[name] then  -- Skip if member is covered by Curaga
+            local tier = cu.get_cure_tier_for_hp(p.missing, settings.healing.mode)
+            local spell = cu.get_usable_cure(tier, settings.healing.mode)
+            if spell ~= nil then
+                cq:enqueue('cure', spell, name, p.hpp, (' (%s)'):format(p.missing))
+            end
         end
     end
+
     return cq:getQueue()
 end
+
+
 
 
 --[[
