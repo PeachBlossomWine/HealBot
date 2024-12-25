@@ -242,9 +242,10 @@ function hb.activate()
 				settings.healing.mode = 'blue'
                 settings.healing.modega = 'bluega'
             else
+				atc('Disabling cures/curagas/na - no job/sub job available')
                 disableCommand('cure', true)
 				disableCommand('curaga', true)
-				-- disableCommand('na', true)
+				disableCommand('na', true)
             end
         else
             settings.healing.mode = 'cure'
