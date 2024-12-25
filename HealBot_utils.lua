@@ -453,6 +453,15 @@ function processCommand(command,...)
         else
             atc('Error: Invalid argument specified for minCuraga')
         end
+	elseif command == 'mintargets' then
+		if not validate(args, 1, 'Error: No argument specified for minTargets') then return end
+        local val = tonumber(args[1])
+        if (val ~= nil) and (1 <= val) and (val <= 6) then
+            settings.healing.curaga_min_targets = val
+            atc('Minimum TARGETS for curaga tier set to '..val)
+        else
+            atc('Error: Invalid argument specified for minTargets')
+        end
 	-- elseif command == 'overcure' then
 		-- local cmd = args[1] and args[1]:lower() or (settings.healing.force_higher_cure and 'off' or 'on')
 		-- if S{'on','true'}:contains(cmd) then
@@ -954,16 +963,19 @@ end
 
 function disableCommand(cmd, disable)
     local msg = ' is now '..(disable and 'disabled.' or 're-enabled.')
-    if S{'cure','cures','curing'}:contains(cmd) then
+    if S{'allcure','healing'}:contains(cmd) then
         if (not disable) then
             if (settings.maxCureTier == 0) then
-                settings.disable.cure = true
-                atc(123,'Error: Unable to enable curing because you have no Cure spells available.')
+                settings.disable.all_cure = true
+                atc(123,'Error: Unable to enable all curing because you have no Cure spells available.')
                 return
             end
         end
-        settings.disable.cure = disable
-        atc('Curing'..msg)
+        settings.disable.all_cure = disable
+        atc('ALL CURES/HEALING'..msg)
+	elseif S{'cure'}:contains(cmd) then
+	    settings.disable.cure = true
+		atc('Cure use'..msg)
     elseif S{'curaga'}:contains(cmd) then
         settings.disable.curaga = disable
         atc('Curaga use'..msg)

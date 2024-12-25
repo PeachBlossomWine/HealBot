@@ -1,6 +1,8 @@
 return {
     ['disable'] = {
-        ['curaga'] = false
+        ['curaga'] = false,
+		['cure'] = false,
+		['all_cure'] = false,
     },
     ['healing'] = {
         ['curaga_min_targets'] = 2,
