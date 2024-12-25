@@ -127,7 +127,6 @@ function cu.get_weighted_curaga_hp(members_info, names)
     return missing / c, hp / c
 end
 
----original----
 function cu.pick_best_curaga_possibility()
     local too_few = settings.healing.curaga_min_targets
     local members = cu.injured_pt_members()
@@ -190,103 +189,7 @@ function cu.pick_best_curaga_possibility()
 	end
 end
 
---modded #1---
--- function cu.pick_best_curaga_possibility()
-    -- local too_few = settings.healing.curaga_min_targets
-    -- local members = cu.injured_pt_members()
-    -- local member_count = sizeof(members)
 
-    -- -- If there are fewer members than the minimum required for curaga
-    -- if member_count < too_few then return nil end
-
-    -- -- Initialize variables
-    -- local best = {}
-    -- local coverage, distances = LT(), LT()
-
-    -- -- Iterate over each member
-    -- for memberA, a in pairs(members) do
-        -- if a then
-            -- coverage[memberA] = LT{memberA}
-            -- distances[memberA] = LT()
-
-            -- for memberB, b in pairs(members) do
-                -- if b and memberA ~= memberB then
-                    -- local dist = a.pos and a.pos:getDistance(b.pos)
-                    -- distances[memberA]:insert(dist)
-                    -- if dist and (too_few > 1 and dist < 10 or too_few == 1) then
-                        -- coverage[memberA]:insert(memberB)
-                    -- end
-                -- end
-            -- end
-
-            -- -- Handle edge cases for single target
-            -- local furthest = distances[memberA]:max() or 0
-            -- local avg_dist = distances[memberA]:sum() / (distances[memberA]:size() > 0 and distances[memberA]:size() or 1)
-
-            -- local farA = {memberA, furthest}
-            -- local avgA = {memberA, avg_dist}
-            -- local covA = {memberA, coverage[memberA]}
-
-            -- -- Determine the best candidates
-            -- best.far = best.far or farA
-            -- best.far = (furthest < best.far[2]) and farA or best.far
-            -- best.avg = best.avg or avgA
-            -- best.avg = (avg_dist < best.avg[2]) and avgA or best.avg
-            -- best.cov = best.cov or covA
-            -- best.cov = (coverage[memberA]:size() > best.cov[2]:size()) and covA or best.cov
-
-            -- if furthest < 10 and too_few > 1 then break end -- Everyone is close enough for min targets > 1
-        -- end
-    -- end
-
-    -- -- If the best coverage has fewer than the required targets
-    -- if best.cov[2]:size() < too_few then
-        -- -- Handle single target cases by falling back to single-target logic
-        -- local only_target = next(members)
-        -- if only_target then
-            -- local missing = members[only_target].missing
-            -- local hpp = members[only_target].hpp
-            -- local tier = cu.get_cure_tier_for_hp(missing, settings.healing.modega)
-            -- return cu.get_usable_cure(tier, settings.healing.modega), {name = only_target, missing = missing, hpp = hpp}
-        -- end
-        -- return nil
-    -- end
-
-    -- -- Calculate weighted curaga HP
-    -- local best_cov_count = best.cov[2]:size()
-    -- local best_target
-
-    -- if coverage[best.far[1]]:size() == best_cov_count then
-        -- best_target = best.far[1]
-    -- elseif coverage[best.avg[1]]:size() == best_cov_count then
-        -- best_target = best.avg[1]
-    -- else
-        -- best_target = best.cov[1]
-    -- end
-
-    -- local w_missing, w_hpp = cu.get_weighted_curaga_hp(members, coverage[best_target])
-    -- local tier = cu.get_cure_tier_for_hp(w_missing, settings.healing.modega)
-
-    -- -- Add extra weight to encourage curaga more
-    -- local min_hpp = 100
-    -- for _, name in pairs(coverage[best_target]) do
-        -- min_hpp = min(min_hpp, members[name].hpp)
-    -- end
-    -- min_hpp = min_hpp * 0.90
-
-    -- -- Determine the target
-    -- local target = {name = best_target, missing = w_missing, hpp = min_hpp}
-
-    -- if settings.healing.modega == 'bluega' then
-        -- target = {name = windower.ffxi.get_player().name, missing = w_missing, hpp = min_hpp}
-    -- end
-
-    -- return cu.get_usable_cure(tier, settings.healing.modega), target
--- end
-
------------
--- ORIGINAL
------------
 function cu.get_cure_queue()
     local cq = ActionQueue.new()
     local hp_table = cu.get_missing_hps()
@@ -309,34 +212,6 @@ function cu.get_cure_queue()
     end
     return cq:getQueue()
 end
-
----- MODDED #1
--- function cu.get_cure_queue()
-    -- local cq = ActionQueue.new()
-    -- local hp_table = cu.get_missing_hps()
-	
-		-- for name,p in pairs(hp_table) do
-			-- if p.hpp < 95 then
-				-- if (not settings.disable.cure) then
-					-- local tier = cu.get_cure_tier_for_hp(p.missing, settings.healing.mode)
-					-- if tier >= settings.healing.min[settings.healing.mode] then
-						-- local spell = cu.get_usable_cure(tier, settings.healing.mode)
-						-- if spell ~= nil then
-							-- cq:enqueue('cure', spell, name, p.hpp, (' (%s)'):format(p.missing))
-						-- end
-					-- end
-				-- end
-			-- end
-		-- end
-		-- if (not settings.disable.curaga) and (settings.healing.max[settings.healing.modega] > 0) then
-			-- local spell, p = cu.pick_best_curaga_possibility()
-			-- if spell ~= nil then
-				-- cq:enqueue('cure', spell, p.name, p.hpp, (' (%s)'):format(p.missing))
-			-- end
-		-- end			
-    
-    -- return cq:getQueue()
--- end
 
 
 --[[
@@ -372,7 +247,8 @@ end
 --]]
 function cu.get_cure_tier_for_hp(hp_missing, cure_type)
     local tier = settings.healing.max[cure_type]
-    while tier > 1 do
+	local min_tier = settings.healing.min[cure_type] or 1 
+    while tier > min_tier do
         local potency = cu[cure_type][tier].hp
         local pdelta = potency - cu[cure_type][tier-1].hp
         local threshold = potency - (pdelta * 0.5)
@@ -381,14 +257,15 @@ function cu.get_cure_tier_for_hp(hp_missing, cure_type)
         end
         tier = tier - 1
     end
-    return tier
+    return (tier >= min_tier) and tier or min_tier
 end
 
 --[[
     Returns resource info for the chosen cure/waltz tier
 --]]
 function cu.get_usable_cure(orig_tier, cure_type)
-    if orig_tier < settings.healing.min[cure_type] then return nil end
+	local min_tier = settings.healing.min[cure_type] or 1
+    if orig_tier < min_tier then return nil end
     
     local player = windower.ffxi.get_player()
     local mult = cu.get_multiplier(cure_type)
