@@ -957,12 +957,12 @@ function disableCommand(cmd, disable)
     if S{'cure','cures','curing','all_cure'}:contains(cmd) then
         if (not disable) then
             if (settings.maxCureTier == 0) then
-                settings.disable.cure = true
+                settings.disable.all_cure = true
                 atc(123,'Error: Unable to enable curing because you have no Cure spells available.')
                 return
             end
         end
-        settings.disable.cure = disable
+        settings.disable.all_cure = disable
         atc('Curing'..msg)
     elseif S{'curaga'}:contains(cmd) then
         settings.disable.curaga = disable
