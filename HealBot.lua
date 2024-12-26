@@ -244,7 +244,7 @@ function hb.activate()
             else
                 disableCommand('cure', true)
 				disableCommand('curaga', true)
-				-- disableCommand('na', true)
+				disableCommand('na', true)
             end
         else
             settings.healing.mode = 'cure'
