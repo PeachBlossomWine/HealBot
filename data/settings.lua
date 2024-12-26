@@ -22,8 +22,6 @@ return {
 			['blue'] = 3,
 			['bluega'] = 3,
 		},
-		['force_higher_cure'] = false,
-		['force_higher_curaga'] = false,
     },
     ['ignoreTrusts'] = false,
     ['spam'] = {
