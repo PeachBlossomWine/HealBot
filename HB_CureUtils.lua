@@ -94,7 +94,7 @@ function cu.injured_pt_members()
     local party_members = ffxi.party_member_names()
     local injured = {}
     for _,trg in pairs(hb.getMonitoredPlayers()) do
-        if trg.hpp < 95 and party_members:contains(trg.name) then
+        if trg.hpp < 90 and party_members:contains(trg.name) then
             local _hp = trg.hp or 1500   --Guesstimate if no value available
             local _missing
             if trg.hp ~= nil then
@@ -243,13 +243,29 @@ end
     Determines the tier of cure_type to use for the given amount of missing HP.
     Whether or not to accept this tier, based on settings.healing.min[cure_type], is handled elsewhere.
 --]]
+-- function cu.get_cure_tier_for_hp(hp_missing, cure_type)
+    -- local tier = settings.healing.max[cure_type]
+    -- while tier > 1 do
+        -- local potency = cu[cure_type][tier].hp
+        -- local pdelta = potency - cu[cure_type][tier-1].hp
+        -- local threshold = potency - (pdelta * 0.5)
+        -- if hp_missing >= threshold then
+            -- break
+        -- end
+        -- tier = tier - 1
+    -- end
+    -- return tier
+-- end
+
+--test
 function cu.get_cure_tier_for_hp(hp_missing, cure_type)
     local tier = settings.healing.max[cure_type]
+    local overcure_offset = 1  -- Adjust this value to increase overcuring level
     while tier > 1 do
         local potency = cu[cure_type][tier].hp
         local pdelta = potency - cu[cure_type][tier-1].hp
         local threshold = potency - (pdelta * 0.5)
-        if hp_missing >= threshold then
+        if (hp_missing + overcure_offset * pdelta) >= threshold then
             break
         end
         tier = tier - 1
