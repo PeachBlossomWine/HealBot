@@ -260,7 +260,11 @@ end
 --test
 function cu.get_cure_tier_for_hp(hp_missing, cure_type)
     local tier = settings.healing.max[cure_type]
-    local overcure_offset = 1  -- Adjust this value to increase overcuring level
+	local p = windower.ffxi.get_player()
+    local overcure_offset = 0  -- Adjust this value to increase overcuring level
+	if p.main_job == 'WHM' then
+		overcure_offset = 1
+	end
     while tier > 1 do
         local potency = cu[cure_type][tier].hp
         local pdelta = potency - cu[cure_type][tier-1].hp
