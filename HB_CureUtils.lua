@@ -243,39 +243,39 @@ end
     Determines the tier of cure_type to use for the given amount of missing HP.
     Whether or not to accept this tier, based on settings.healing.min[cure_type], is handled elsewhere.
 --]]
--- function cu.get_cure_tier_for_hp(hp_missing, cure_type)
-    -- local tier = settings.healing.max[cure_type]
-    -- while tier > 1 do
-        -- local potency = cu[cure_type][tier].hp
-        -- local pdelta = potency - cu[cure_type][tier-1].hp
-        -- local threshold = potency - (pdelta * 0.5)
-        -- if hp_missing >= threshold then
-            -- break
-        -- end
-        -- tier = tier - 1
-    -- end
-    -- return tier
--- end
-
---test
 function cu.get_cure_tier_for_hp(hp_missing, cure_type)
     local tier = settings.healing.max[cure_type]
-	local p = windower.ffxi.get_player()
-    local overcure_offset = 0  -- Adjust this value to increase overcuring level
-	if p.main_job == 'WHM' then
-		overcure_offset = 1
-	end
     while tier > 1 do
         local potency = cu[cure_type][tier].hp
         local pdelta = potency - cu[cure_type][tier-1].hp
         local threshold = potency - (pdelta * 0.5)
-        if (hp_missing + overcure_offset * pdelta) >= threshold then
+        if hp_missing >= threshold then
             break
         end
         tier = tier - 1
     end
     return tier
 end
+
+--test
+-- function cu.get_cure_tier_for_hp(hp_missing, cure_type)
+    -- local tier = settings.healing.max[cure_type]
+	-- local p = windower.ffxi.get_player()
+    -- local overcure_offset = 0  -- Adjust this value to increase overcuring level
+	-- -- if p.main_job == 'WHM' then
+		-- -- overcure_offset = 1
+	-- -- end
+    -- while tier > 1 do
+        -- local potency = cu[cure_type][tier].hp
+        -- local pdelta = potency - cu[cure_type][tier-1].hp
+        -- local threshold = potency - (pdelta * 0.5)
+        -- if (hp_missing + overcure_offset * pdelta) >= threshold then
+            -- break
+        -- end
+        -- tier = tier - 1
+    -- end
+    -- return tier
+-- end
 
 
 --[[
