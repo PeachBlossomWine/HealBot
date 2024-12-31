@@ -245,6 +245,10 @@ end
 --]]
 function cu.get_cure_tier_for_hp(hp_missing, cure_type)
     local tier = settings.healing.max[cure_type]
+	local p = windower.ffxi.get_player()
+	if p.main_job == 'WHM' then
+		hp_missing = hp_missing * 1.3
+	end
     while tier > 1 do
         local potency = cu[cure_type][tier].hp
         local pdelta = potency - cu[cure_type][tier-1].hp
@@ -256,26 +260,6 @@ function cu.get_cure_tier_for_hp(hp_missing, cure_type)
     end
     return tier
 end
-
---test
--- function cu.get_cure_tier_for_hp(hp_missing, cure_type)
-    -- local tier = settings.healing.max[cure_type]
-	-- local p = windower.ffxi.get_player()
-    -- local overcure_offset = 0  -- Adjust this value to increase overcuring level
-	-- -- if p.main_job == 'WHM' then
-		-- -- overcure_offset = 1
-	-- -- end
-    -- while tier > 1 do
-        -- local potency = cu[cure_type][tier].hp
-        -- local pdelta = potency - cu[cure_type][tier-1].hp
-        -- local threshold = potency - (pdelta * 0.5)
-        -- if (hp_missing + overcure_offset * pdelta) >= threshold then
-            -- break
-        -- end
-        -- tier = tier - 1
-    -- end
-    -- return tier
--- end
 
 
 --[[
