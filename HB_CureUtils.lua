@@ -245,10 +245,10 @@ end
 --]]
 function cu.get_cure_tier_for_hp(hp_missing, cure_type)
     local tier = settings.healing.max[cure_type]
-	local p = windower.ffxi.get_player()
-	if p.main_job == 'WHM' then
-		hp_missing = hp_missing * 1.3
-	end
+	-- local p = windower.ffxi.get_player()
+	-- if p.main_job == 'WHM' then
+		-- hp_missing = hp_missing * 1.3
+	-- end
     while tier > 1 do
         local potency = cu[cure_type][tier].hp
         local pdelta = potency - cu[cure_type][tier-1].hp
