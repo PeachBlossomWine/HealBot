@@ -26,6 +26,8 @@ function ActionQueue:enqueue(actionType, action, name, secondary, msg)
     local pprio = getPlayerPriority[name]
     if is_cure and actionType == 'curaga' then
 		pprio = 1	-- Force curaga to be higher priority.
+	elseif is_cure and actionType == 'cure' then
+        pprio = pprio + 1 -- Deprioritize single cures
     end
     local qable = {['type']=actionType,['action']=action,['name']=name,[secLabel]=secondary,['msg']=msg,['prio']=pprio}
     if self.queue:empty() then

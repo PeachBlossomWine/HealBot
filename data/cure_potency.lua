@@ -41,14 +41,31 @@ return {
 			2000	--1918[Unbuffed]	2274
 		},
 		['cure'] = {
-			130,	--145[Unbuffed]		145
-			300,	--277[Unbuffed]		327
-			630, 	--600[Unbuffed]		709
-			1120, 	--1093[Unbuffed]	1296
-			1430, 	--1324[Unbuffed]	1569
-			1850,	--1704[Unbuffed]	2019
+			95,		--145[Unbuffed]		145
+			220,	--277[Unbuffed]		327
+			485, 	--600[Unbuffed]		709
+			890, 	--1093[Unbuffed]	1296
+			1120, 	--1324[Unbuffed]	1569
+			1500,	--1704[Unbuffed]	2019
 		}
     },
+	-- ['WHM'] = {
+		-- ['curaga'] = {
+			-- 220,	--211[Unbuffed]		277
+			-- 460,	--400[Unbuffed]		533
+			-- 900,	--780[Unbuffed]		1003
+			-- 1500,	--1374[Unbuffed]	1628
+			-- 2000	--1918[Unbuffed]	2274
+		-- },
+		-- ['cure'] = {
+			-- 130,	--145[Unbuffed]		145
+			-- 300,	--277[Unbuffed]		327
+			-- 630, 	--600[Unbuffed]		709
+			-- 1120, 	--1093[Unbuffed]	1296
+			-- 1430, 	--1324[Unbuffed]	1569
+			-- 1850,	--1704[Unbuffed]	2019
+		-- }
+    -- },
     ['RUN'] = {
 		['curaga'] = {
 			315,
