@@ -193,7 +193,7 @@ function cu.get_cure_queue()
     local cq = ActionQueue.new()
     local hp_table = cu.get_missing_hps()
     for name,p in pairs(hp_table) do
-        if p.hpp < 95 then
+        if p.hpp < 90 then
             local tier = cu.get_cure_tier_for_hp(p.missing, settings.healing.mode)
             if tier >= settings.healing.min[settings.healing.mode] then
                 local spell = cu.get_usable_cure(tier, settings.healing.mode)
