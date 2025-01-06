@@ -1500,6 +1500,7 @@ local custom_buffs = {
 	[801] = {id = 801, en = "Random Deal", jp = "カスタムバフ801"},
 	[802] = {id = 802, en = "Wild Card", jp = "カスタムバフ802"},
 	[803] = {id = 803, en = "Mantra", jp = "カスタムバフ803"},
+	[804] = {id = 804, en = "Benediction", jp = "カスタムバフ804"},
 	[900] = {id = 900, en = "Aspir", jp = "カスタムバフ900"},
 	[901] = {id = 901, en = "Aspir II", jp = "カスタムバフ901"},
 	[902] = {id = 902, en = "Aspir III", jp = "カスタムバフ902"},
