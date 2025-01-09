@@ -140,8 +140,14 @@ hb._events['render'] = windower.register_event('prerender', function()
 				if (targ ~= nil) and (player.target_index == partner.target_index) then
 					if offense.assist.engage and (partner.status == 1) then
 						if healer:dist_from(targ.id) > (2.2 + targ.model_size) then
-							if not player.target_locked then
+							local target = windower.ffxi.get_mob_by_target('t')
+							if not player.target_locked and target and utils.isMonsterByIndexNoHP(target.index) then
 								healer:send_cmd('input /lockon')
+								atcc(262, 'Running - UNLOCKED-> Relocking.')
+							elseif windower.ffxi.get_player().target_locked and target and not utils.isMonsterByIndexNoHP(target.index) then
+								atcc(262, 'Running - LOCKED ONTO SOMETHING ELSE-> Unlocking.')
+								healer:send_cmd('input /lockon')
+								healer:send_cmd('setkey escape down; wait 0.05; setkey escape up;')
 							end
 							should_move = true
 							healer:move_towards(targ.id)

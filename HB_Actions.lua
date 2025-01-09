@@ -200,9 +200,28 @@ function actions.take_action(player, partner, targ)
 					if offense.assist.engage and partner_engaged and (not self_engaged) then
 						healer:send_cmd('input /attack on')
 						return true
-					elseif offense.assist.engage and partner_engaged and self_engaged and (not player.target_locked) then
-						healer:send_cmd('input /lockon')
-						return true
+					elseif offense.assist.engage and partner_engaged and self_engaged then --and (not player.target_locked) then
+						local target = windower.ffxi.get_mob_by_target('t')
+						if not player.target_locked then  -- not locked
+							if target and utils.isMonsterByIndexNoHP(target.index) then  -- actual target and is monster
+								atcc(262,'Engaged - UNLOCKED-> Relocking.')
+								healer:send_cmd('input /lockon')
+							elseif target and not (utils.isMonsterByIndexNoHP(target.index)) then
+								atcc(262,'Engaged - UNLOCKED-> PC Target.')
+								healer:send_cmd('input /attack off')
+							elseif not target then
+								atcc(262,'Engaged - UNLOCKED-> No target.')
+								healer:send_cmd('input /attack off')
+							end
+						else -- locked on to something
+							if not target then -- no target
+								atcc(262,'Engaged - LOCKED ON-> No target.')
+								healer:send_cmd('input /attack off')
+							elseif target and not (utils.isMonsterByIndexNoHP(target.index)) then
+								atcc(262,'Engaged - LOCKED ON-> PC Target.')
+								healer:send_cmd('input /attack off')
+							end
+						end
 					--Debuff actions with lock on target
 					else
 						if not actions.check_moblist_mob(player.target_index) then

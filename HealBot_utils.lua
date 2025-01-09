@@ -1095,6 +1095,14 @@ function utils.NotDead()
     return false
 end
 
+function utils.isMonsterByIndexNoHP(index)
+	local mob_in_question = windower.ffxi.get_mob_by_index(index)
+	if mob_in_question and mob_in_question.is_npc and mob_in_question.spawn_type == 16 and mob_in_question.valid_target then
+		return true
+    else
+        return false
+	end
+end
 
 function utils.isMonsterByTarget()
 	local mob_in_question = windower.ffxi.get_mob_by_target('t')
