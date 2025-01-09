@@ -599,6 +599,15 @@ function processCommand(command,...)
             watchall = false
             atc(123,'Watch all parties set to false.')
         end
+	elseif S{'gaze'}:contains(command) then
+		local cmd = args[1] and args[1]:lower() or (hb.gaze and 'off' or 'on')
+        if S{'on','true'}:contains(cmd) then
+            hb.gaze = true
+            atc('Auto point at mob is ON.')
+        elseif S{'off','false'}:contains(cmd) then
+            hb.gaze = false
+            atc('Auto point at mob is OFF.')
+		end
 	elseif S{'showdebuff'}:contains(command) then
 		local cmd = args[1] and args[1]:lower() or (hb.showdebuff and 'off' or 'on')
         if S{'on','true'}:contains(cmd) then
@@ -1076,6 +1085,24 @@ function healer_has_buffs(buffs)
         end
     end
     return false
+end
+
+function utils.NotDead()
+    local player = windower.ffxi.get_player()
+    if player.status ~= 2 and player.status ~= 3 then
+       return true
+    end
+    return false
+end
+
+
+function utils.isMonsterByTarget()
+	local mob_in_question = windower.ffxi.get_mob_by_target('t')
+	if mob_in_question and mob_in_question.is_npc and mob_in_question.spawn_type == 16 and mob_in_question.valid_target and mob_in_question.hpp > 0 then
+		return true
+    else
+        return false
+	end
 end
 
 function utils.isMonster(mob_index)

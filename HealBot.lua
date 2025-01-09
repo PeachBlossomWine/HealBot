@@ -16,7 +16,7 @@ hb = {
     active = false, configs_loaded = false, partyMemberInfo = {}, ignoreList = S{}, extraWatchList = S{}, job_registry= T{},
     modes = {['showPacketInfo'] = false, ['debug'] = false, ['mob_debug'] = false, ['independent'] = false},
     _events = {}, txts = {}, config = {}, showdebuff = true, ipc_mob_debuffs = T{}, autoRecoverMPMode = false, autoRecoverHPMode = false,
-	zone_begin = false, should_attempt_to_cross_zone_line = false,
+	zone_begin = false, should_attempt_to_cross_zone_line = false, gaze = true,
 }
 healer = T{}
 settings = {}
@@ -202,6 +202,9 @@ hb._events['render'] = windower.register_event('prerender', function()
 			utils.check_debuffs_timer()
 			last_render = os.clock()
 		end
+		if hb.active and hb.gaze and player.in_combat and utils.isMonsterByTarget() and utils.NotDead() then
+			windower.ffxi.turn((getAngle()+180):radian()) --gets angle to the target
+		end
     end
 end)
 
@@ -224,6 +227,15 @@ function haveBuff(...)
 		end
 	end
 	return false
+end
+
+function getAngle(index)
+    local P = windower.ffxi.get_mob_by_target('me') --get player
+    local M = index and windower.ffxi.get_mob_by_id(index) or windower.ffxi.get_mob_by_target('t') --get target
+    local delta = {Y = (P.y - M.y),X = (P.x - M.x)} --subtracts target pos from player pos
+    local angleInDegrees = (math.atan2( delta.Y, delta.X) * 180 / math.pi)*-1 
+    local mult = 10^0
+    return math.floor(angleInDegrees * mult + 0.5) / mult
 end
 
 
