@@ -657,6 +657,8 @@ function processCommand(command,...)
         end
     elseif command == 'status' then
         printStatus()
+	elseif command == 'jobupdate' then
+		request_job_registry()
     elseif command == 'info' then
         if not _libs.lor.exec then
             atc(3,'Unable to parse info.  Windower/addons/libs/lor/lor_exec.lua was unable to be loaded.')

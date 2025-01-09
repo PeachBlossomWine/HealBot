@@ -26,10 +26,9 @@ function send_job_registry_update()
         pk = 'job_registry',
         id = player.id,
         job_id = player.main_job_id,
-        job_name = player.main_job
+        job_name = player.main_job,
     }
-    local encoded = serialua.encode(message)
-    windower.send_ipc_message(encoded)
+    windower.send_ipc_message(serialua.encode(message))
 end
 
 function request_job_registry()
@@ -40,7 +39,8 @@ function request_job_registry()
 	
     local message = {
         method = 'GET',
-        pk = 'job_registry'
+        pk = 'job_registry',
+		registry = hb.job_registry,
     }
     windower.send_ipc_message(serialua.encode(message))
 end

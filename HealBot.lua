@@ -108,7 +108,7 @@ hb._events['job'] = windower.register_event('job change', function()
     hb.active = false
     healer:update_job()
     printStatus()
-	windower.send_command('lua r healbot')
+	--windower.send_command('lua r healbot')
 end)
 
 hb._events['dis'] = windower.register_event('action', handle_dispel_action)
@@ -423,9 +423,11 @@ function hb.process_ipc(msg)
 					method = 'POST',
 					pk = 'job_registry',
 					id = player.id,
-					job_id = player.main_job_id,
-					job_name = res.jobs[player.main_job_id].ens
+					job_name = player.main_job,
+					registry = loaded.registry,
 				}
+				hb.job_registry = hb.job_registry or {}
+				hb.job_registry[player.id] = player.main_job
 				windower.send_ipc_message(serialua.encode(response))
             else
                 atcfs(123, 'Invalid pk for GET request: %s', loaded.pk)
@@ -468,14 +470,17 @@ function hb.process_ipc(msg)
 				end	
 			elseif loaded.pk == 'job_registry' then
 				-- Received a job registry update
-				if loaded.id and loaded.job_id and loaded.job_name then
+				if loaded.id and loaded.job_name then
 					-- Update the job registry
 					hb.job_registry = hb.job_registry or {}
+					for id, job_name in pairs(loaded.registry) do
+						hb.job_registry[id] = job_name
+					end
 					hb.job_registry[loaded.id] = loaded.job_name
 					hb.getMonitoredPlayersDirect()
-					atcd('Updated job registry: ID=%s, Job=%s', loaded.id, loaded.job_name)
+					atcd('Updated job registry: ID='..loaded.id..' Job='..loaded.job_name)
 				else
-					atcfs(123, 'Invalid job_registry POST message: %s', msg)
+					atcd(123, 'Invalid job_registry POST message: %s', msg)
 				end
             else
                 atcfs(123, 'Invalid pk for POST message: %s', loaded.pk)
