@@ -217,7 +217,7 @@ function processCommand(command,...)
 				show_moblist_names = show_moblist_names..'['..k..']'
 			end
 			atc('Debuff Mob List: '..show_moblist_names)
-		elseif cmd == 'clear' or cmd == 'reset' then
+		elseif cmd == 'clear' then
 			offense.moblist.mobs:clear()
 			atc('Debuff Mob List cleared')
 		else
@@ -490,40 +490,7 @@ function processCommand(command,...)
             atc('Error: Invalid argument specified for minBluega')
         end
     elseif command == 'reset' then
-        if not validate(args, 1, 'Error: No argument specified for reset') then return end
-        local rcmd = args[1]:lower()
-        local b,d = false,false
-        if S{'all','both'}:contains(rcmd) then
-            b,d = true,true
-        elseif (rcmd == 'buffs') then
-            b = true
-        elseif (rcmd == 'debuffs') then
-            d = true
-        else
-            atc('Error: Invalid argument specified for reset: '..arg[1])
-            return
-        end
-        
-        local resetTarget
-        if (args[2] ~= nil) and (args[3] ~= nil) and (args[2]:lower() == 'on') then
-            local pname = utils.getPlayerName(args[3])
-            if (pname ~= nil) then
-                resetTarget = pname
-            else
-                atc(123,'Error: Invalid name provided as a reset target: '..tostring(args[3]))
-                return
-            end
-        end
-        resetTarget = resetTarget or 'ALL' 
-        local rtmsg = resetTarget or 'all monitored players'
-        if b then
-            buffs.resetBuffTimers(resetTarget)
-            atc(('Buff timers for %s were reset.'):format(rtmsg))
-        end
-        if d then
-            buffs.resetDebuffTimers(resetTarget)
-            atc(('Debuffs detected for %s were reset.'):format(rtmsg))
-        end
+		utils.reset_to_defaults()
     elseif command == 'buff' then
 		if fourth_param then
 			buffs.registerNewBuff(argswithforth, true, false, fourth_param)
@@ -681,6 +648,18 @@ function processCommand(command,...)
         atc('Error: Unknown command')
     end
 end
+
+function utils.reset_to_defaults()
+	-- hb.reset()
+	-- offense.reset()
+	-- buffs.reset()
+	-- buffs.resetBuffTimers('ALL')
+    -- buffs.resetDebuffTimers('ALL')
+	-- utils.load_configs()
+	-- CureUtils.init_cure_potencies()
+	-- log('reset')
+end
+
 
 
 local function _get_player_id(player_name)

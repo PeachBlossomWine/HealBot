@@ -22,6 +22,19 @@ local ffxi = _libs.lor.ffxi
 --          Local Player Buff Checking
 --==============================================================================
 
+function buffs.reset()
+	buffs = {
+		debuffList = {},
+		buffList = {},
+		ignored_debuffs = {},
+		gaol_auras = S{146,147,148,149,167,174,175,404}, -- [DOWN] Acc,Atk,Eva,Def,M. Def.,M. Acc.,M. Atk.,M. Eva. 
+		perm_ignored_debuffs = S{137,138,139,140,141,142,540,557,558,559,560,561,562,563,564,565,566,567}, -- Stats down [not STR] / Geomancy effects
+		action_buff_map = lor_settings.load('data/action_buff_map.lua'),
+		auras = {},
+		dispel_table = {}
+	}   
+end
+
 function buffs.checkOwnBuffs()
     local player = windower.ffxi.get_player()
     if player ~= nil then

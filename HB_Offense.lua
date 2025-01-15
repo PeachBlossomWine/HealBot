@@ -28,6 +28,29 @@ local offense = {
 	weaponskilltracker={},
 }
 
+function offense.reset()
+	-- Reset offense
+    offense = {
+        immunities = lor_settings.load('data/mob_immunities.lua'),
+        assist = {active = false, engage = false, nolock = false, sametarget = false,},
+        moblist = {active = false, mobs = S{}, debuffs = {},},
+        debuffs = {}, ignored = {}, mobs = {}, 
+        dispel = {active = true, mobs = {}, ignored = S{},},
+        debuffing_active = true,
+        debuffing_battle_target = false,
+        stymie = {active = false, spell = ''},
+        sabo = {active = false, spell = ''},
+        marcato = {active = false, spell = ''},
+        ja_prespell = {
+            stymie = {active = false, spell = ''},
+            sabo = {active = false, spell = ''},
+            marcato = {active = false, spell = ''},
+        },
+        job_ability_active = false,
+        weaponskilltracker = {},
+    }
+
+end
 
 function offense.register_assistee(assistee_name, job_name_flag)
 	if job_name_flag then

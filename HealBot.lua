@@ -53,6 +53,14 @@ do -- Setup Bags.
     __bags.usable = T(getBagType('Everywhere', false))
 end
 
+function hb.reset()
+    hb.ignoreList = S{}
+	hb.extraWatchList = S{}
+	hb.ipc_mob_debuffs = T{}
+	hb.autoRecoverMPMode = false
+	hb.autoRecoverHPMode = false
+    settings = {}    
+end
 
 hb._events['load'] = windower.register_event('load', function()
     if not _libs.lor then
