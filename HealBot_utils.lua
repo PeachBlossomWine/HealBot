@@ -16,7 +16,7 @@ local debuffs_lists = L()
 function utils.normalize_str(str)
     return str:lower():gsub(' ', '_'):gsub('%.', '')
 end
-
+math.randomseed(os.time() + os.clock() * 1000)
 
 function utils.normalize_action(action, action_type)
     if istable(action) then return action end
@@ -1423,12 +1423,19 @@ function utils.load_configs()
 	utils.auto_apply_bufflist()
 	utils.auto_apply_autojalist()
     --process_mabil_debuffs()
-	request_job_registry()
+	utils.schedule_request_job_registry()
 	
     local msg = hb.configs_loaded and 'Rel' or 'L'
     hb.configs_loaded = true
     atcc(262, msg..'oaded config files.')
 	hb.getMonitoredPlayersDirect()
+end
+
+function utils.schedule_request_job_registry()
+    local delay = math.random(1, 3) -- Random delay between 1 and 3 seconds
+    coroutine.schedule(function()
+        request_job_registry()
+    end, delay)
 end
 
 -- Adding custom buffs
