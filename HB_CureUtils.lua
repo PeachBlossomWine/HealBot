@@ -185,53 +185,15 @@ function cu.pick_best_curaga_possibility()
 	if settings.healing.modega == 'bluega' then
 		target = {name=windower.ffxi.get_player().name, missing=w_missing, hpp=min_hpp}
 	end
-	return cu.get_usable_cure(tier, settings.healing.modega), target
-end
-
-
-function cu.get_cure_queue()
-    local cq = ActionQueue.new()
-    local hp_table = cu.get_missing_hps()
-    for name,p in pairs(hp_table) do
-        if p.hpp < 90 then
-            local tier = cu.get_cure_tier_for_hp(p.missing, settings.healing.mode)
-            if tier >= settings.healing.min[settings.healing.mode] then
-                local spell = cu.get_usable_cure(tier, settings.healing.mode)
-                if spell ~= nil then
-                    cq:enqueue('cure', spell, name, p.hpp, (' (%s)'):format(p.missing))
-                end
-            end
-        end
-    end
-    if (not settings.disable.curaga) and (settings.healing.max[settings.healing.modega] > 0) then
-        local spell, p = cu.pick_best_curaga_possibility()
-        if spell ~= nil then
-            cq:enqueue('cure', spell, p.name, p.hpp, (' (%s)'):format(p.missing))
-        end
-    end
-    return cq:getQueue()
+	return cu.get_usable_cure(tier, settings.healing.modega), target, members
 end
 
 
 -- function cu.get_cure_queue()
     -- local cq = ActionQueue.new()
     -- local hp_table = cu.get_missing_hps()
-    -- local curaga_spell, curaga_target = nil, nil
-
-    -- -- Prioritize Curaga if multiple members are injured
-    -- if (not settings.disable.curaga) and (settings.healing.max[settings.healing.modega] > 0) then
-        -- curaga_spell, curaga_target = cu.pick_best_curaga_possibility()
-    -- end
-
-    -- -- If Curaga is valid, add it to the queue and skip single cures
-    -- if curaga_spell and curaga_target then
-        -- cq:enqueue('cure', curaga_spell, curaga_target.name, curaga_target.hpp, (' (%s)'):format(curaga_target.missing))
-        -- return cq:getQueue()
-    -- end
-
-    -- -- Default to single cures if no valid Curaga is found
-    -- for name, p in pairs(hp_table) do
-        -- if p.hpp < 95 then
+    -- for name,p in pairs(hp_table) do
+        -- if p.hpp < 90 then
             -- local tier = cu.get_cure_tier_for_hp(p.missing, settings.healing.mode)
             -- if tier >= settings.healing.min[settings.healing.mode] then
                 -- local spell = cu.get_usable_cure(tier, settings.healing.mode)
@@ -241,10 +203,42 @@ end
             -- end
         -- end
     -- end
-
+    -- if (not settings.disable.curaga) and (settings.healing.max[settings.healing.modega] > 0) then
+        -- local spell, p = cu.pick_best_curaga_possibility()
+        -- if spell ~= nil then
+            -- cq:enqueue('cure', spell, p.name, p.hpp, (' (%s)'):format(p.missing))
+        -- end
+    -- end
     -- return cq:getQueue()
 -- end
 
+-- Modified to exclude curaga members from getting single cures because redundant and stupid.
+function cu.get_cure_queue()
+    local cq = ActionQueue.new()
+    local hp_table = cu.get_missing_hps()
+	local curagaTarget
+	local curagaMembers
+    if (not settings.disable.curaga) and (settings.healing.max[settings.healing.modega] > 0) then
+        local spell, p, cmembers = cu.pick_best_curaga_possibility()
+        if spell ~= nil then
+			curagaTarget = p.name
+			curagaMembers = cmembers
+            cq:enqueue('cure', spell, p.name, p.hpp, (' (%s)'):format(p.missing))
+        end
+    end
+	for name,p in pairs(hp_table) do
+        if p.hpp < 90 then
+            local tier = cu.get_cure_tier_for_hp(p.missing, settings.healing.mode)
+            if tier >= settings.healing.min[settings.healing.mode] then
+                local spell = cu.get_usable_cure(tier, settings.healing.mode)
+                if spell ~= nil and ((curagaMembers and not curagaMembers[name]) or not curagaMembers) then
+                    cq:enqueue('cure', spell, name, p.hpp, (' (%s)'):format(p.missing))
+                end
+            end
+        end
+    end
+    return cq:getQueue()
+end
 
 --[[
     Determines the MP/TP multiplier in effect for the given cure_type based on job and active buffs.
