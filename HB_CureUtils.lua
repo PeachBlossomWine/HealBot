@@ -112,6 +112,19 @@ function cu.injured_pt_members()
     return injured
 end
 
+function cu.get_lowest_curaga_hp(members_info, names)
+    local min_missing = math.huge  -- Start with a large number
+    local name_set = S(names)
+
+    for name, minfo in pairs(members_info) do
+        if name_set:contains(name) then
+            min_missing = math.min(min_missing, minfo.missing)
+        end
+    end
+
+    return min_missing  -- Returns the lowest missing HP
+end
+
 
 function cu.get_weighted_curaga_hp(members_info, names)
     local hp, missing, c = 0, 0, 0
@@ -174,7 +187,8 @@ function cu.pick_best_curaga_possibility()
     else
         best_target = best.cov[1]
     end
-    local w_missing, w_hpp = cu.get_weighted_curaga_hp(members, coverage[best_target])
+    --local w_missing, w_hpp = cu.get_weighted_curaga_hp(members, coverage[best_target])
+	local w_missing = cu.get_lowest_curaga_hp(members, coverage[best_target])
     local tier = cu.get_cure_tier_for_hp(w_missing, settings.healing.modega)
     local min_hpp = 100
     for _,name in pairs(coverage[best_target]) do
@@ -223,7 +237,7 @@ function cu.get_cure_queue()
         if spell ~= nil then
 			curagaTarget = p.name
 			curagaMembers = cmembers
-            cq:enqueue('cure', spell, p.name, p.hpp, (' (%s)'):format(p.missing))
+            cq:enqueue(settings.healing.modega, spell, p.name, p.hpp, (' (%s)'):format(p.missing))
         end
     end
 	for name,p in pairs(hp_table) do
@@ -273,10 +287,6 @@ end
 --]]
 function cu.get_cure_tier_for_hp(hp_missing, cure_type)
     local tier = settings.healing.max[cure_type]
-	-- local p = windower.ffxi.get_player()
-	-- if p.main_job == 'WHM' then
-		-- hp_missing = hp_missing * 1.3
-	-- end
     while tier > 1 do
         local potency = cu[cure_type][tier].hp
         local pdelta = potency - cu[cure_type][tier-1].hp
