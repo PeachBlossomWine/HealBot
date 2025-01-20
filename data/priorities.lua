@@ -43,6 +43,7 @@ return {
 		['elegy'] = 2,
 		['threnody'] = 0,
 		['requiem'] = 3,
+		['aspir'] = 2,
     },
     ['default'] = 5,
     ['dispel'] = {

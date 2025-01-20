@@ -34,17 +34,17 @@ return {
     },
 	['WHM'] = {
 		['curaga'] = {
-			220,	--211[Unbuffed]		277
-			460,	--400[Unbuffed]		533
-			900,	--780[Unbuffed]		1003
-			1500,	--1374[Unbuffed]	1628
-			2000	--1918[Unbuffed]	2274
+			155,	--211[Unbuffed]		277
+			310,	--400[Unbuffed]		533
+			590,	--780[Unbuffed]		1003
+			1020,	--1374[Unbuffed]	1628
+			1590	--1918[Unbuffed]	2274
 		},
 		['cure'] = {
 			95,		--145[Unbuffed]		145
 			220,	--277[Unbuffed]		327
-			485, 	--600[Unbuffed]		709
-			890, 	--1093[Unbuffed]	1296
+			550, 	--600[Unbuffed]		709
+			860, 	--1093[Unbuffed]	1296
 			1120, 	--1324[Unbuffed]	1569
 			1500,	--1704[Unbuffed]	2019
 		}
@@ -95,8 +95,8 @@ return {
 			1005,
 		},
 		['cure'] = {
-			215,	--201[Min] 	--210[Org]	--261[Self]
-			390,	--336[Min]	--370[Org]	--436[Self]
+			190,	--201[Min] 	--210[Org]	--261[Self]
+			300,	--336[Min]	--370[Org]	--436[Self]
 			700, 	--666[Min] 	--735[Org]  --868[Self]
 			1300, 	--1170[Min] --1400[Org]	--1532[Self]
 		}

@@ -94,7 +94,7 @@ function cu.injured_pt_members()
     local party_members = ffxi.party_member_names()
     local injured = {}
     for _,trg in pairs(hb.getMonitoredPlayers()) do
-        if trg.hpp < 90 and party_members:contains(trg.name) then
+        if trg.hpp < 85 and party_members:contains(trg.name) then
             local _hp = trg.hp or 1500   --Guesstimate if no value available
             local _missing
             if trg.hp ~= nil then
@@ -194,7 +194,7 @@ function cu.pick_best_curaga_possibility()
     for _,name in pairs(coverage[best_target]) do
         min_hpp = min(min_hpp, members[name].hpp)
     end
-    min_hpp = min_hpp * 0.7
+    min_hpp = min_hpp * 0.5
     local target = {name=best_target, missing=w_missing, hpp=min_hpp}
 	if settings.healing.modega == 'bluega' then
 		target = {name=windower.ffxi.get_player().name, missing=w_missing, hpp=min_hpp}
@@ -241,7 +241,7 @@ function cu.get_cure_queue()
         end
     end
 	for name,p in pairs(hp_table) do
-        if p.hpp < 90 then
+        if p.hpp < 80 then
             local tier = cu.get_cure_tier_for_hp(p.missing, settings.healing.mode)
             if tier >= settings.healing.min[settings.healing.mode] then
                 local spell = cu.get_usable_cure(tier, settings.healing.mode)
@@ -290,7 +290,7 @@ function cu.get_cure_tier_for_hp(hp_missing, cure_type)
     while tier > 1 do
         local potency = cu[cure_type][tier].hp
         local pdelta = potency - cu[cure_type][tier-1].hp
-        local threshold = potency - (pdelta * 0.5)
+		local threshold = potency - (pdelta * 0.8)
         if hp_missing >= threshold then
             break
         end
