@@ -1398,6 +1398,8 @@ function utils.load_configs()
 		utils.register_offensive_debuff({"Ice Shot"}, false, false ,true)
 		utils.register_offensive_debuff({"Earth Shot"}, false, false ,true)
 		offense.debuffing_active = false
+	elseif player.main_job == 'DNC' then
+		healing.minwaltz = 2
 	end
 	utils.auto_apply_bufflist()
 	utils.auto_apply_autojalist()

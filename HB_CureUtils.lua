@@ -50,13 +50,22 @@ cu.bluega = {
 }
 
 function cu.init_cure_potencies()
-	local potency_table = (hb.config.cure_potency[healer.name] and hb.config.cure_potency[healer.name][healer.main_job]) or hb.config.cure_potency[healer.main_job] or hb.config.cure_potency.default
-    for spell_group,_ in pairs(potency_table) do
-        for spell_tier,_ in pairs(cu[spell_group]) do
-            cu[spell_group][spell_tier].hp = potency_table[spell_group][spell_tier]
+    local potency_table = (hb.config.cure_potency[healer.name] and hb.config.cure_potency[healer.name][healer.main_job]) 
+                          or hb.config.cure_potency[healer.main_job] 
+                          or hb.config.cure_potency.default
+
+    for spell_group, spells in pairs(potency_table) do
+        -- Skip min_thresholds because it's not a spell group
+        if spell_group ~= 'min_thresholds' then  
+            for spell_tier, potency in pairs(spells) do
+                if cu[spell_group] and cu[spell_group][spell_tier] then
+                    cu[spell_group][spell_tier].hp = potency  -- Assign correct potency
+                end
+            end
         end
     end
 end
+
 
 
 function cu.getDangerLevel(hpp)
@@ -113,16 +122,16 @@ function cu.injured_pt_members()
 end
 
 function cu.get_lowest_curaga_hp(members_info, names)
-    local min_missing = math.huge  -- Start with a large number
+    local max_missing = 0  -- Start with the lowest possible value
     local name_set = S(names)
 
     for name, minfo in pairs(members_info) do
         if name_set:contains(name) then
-            min_missing = math.min(min_missing, minfo.missing)
+            max_missing = math.max(max_missing, minfo.missing)  -- Get the highest missing HP
         end
     end
 
-    return min_missing  -- Returns the lowest missing HP
+    return max_missing  -- Returns the highest missing HP
 end
 
 
@@ -187,7 +196,6 @@ function cu.pick_best_curaga_possibility()
     else
         best_target = best.cov[1]
     end
-    --local w_missing, w_hpp = cu.get_weighted_curaga_hp(members, coverage[best_target])
 	local w_missing = cu.get_lowest_curaga_hp(members, coverage[best_target])
     local tier = cu.get_cure_tier_for_hp(w_missing, settings.healing.modega)
     local min_hpp = 100
@@ -285,19 +293,56 @@ end
     Determines the tier of cure_type to use for the given amount of missing HP.
     Whether or not to accept this tier, based on settings.healing.min[cure_type], is handled elsewhere.
 --]]
+-- function cu.get_cure_tier_for_hp(hp_missing, cure_type)
+    -- local tier = settings.healing.max[cure_type]
+    -- while tier > 1 do
+        -- local potency = cu[cure_type][tier].hp
+        -- local pdelta = potency - cu[cure_type][tier-1].hp
+		-- local threshold = potency - (pdelta * 0.8)
+        -- if hp_missing >= threshold then
+            -- break
+        -- end
+        -- tier = tier - 1
+    -- end
+    -- return tier
+-- end
+
 function cu.get_cure_tier_for_hp(hp_missing, cure_type)
-    local tier = settings.healing.max[cure_type]
-    while tier > 1 do
+    local max_tier = settings.healing.max[cure_type]
+    local min_tier = settings.healing.min[cure_type]
+    local main_job = healer.main_job
+    local thresholds = hb.config.cure_potency[main_job] and hb.config.cure_potency[main_job]['min_thresholds'][cure_type]
+                    or hb.config.cure_potency.default['min_thresholds'][cure_type]  -- Fallback to default
+
+    local tier = max_tier
+
+    while tier >= min_tier do
         local potency = cu[cure_type][tier].hp
-        local pdelta = potency - cu[cure_type][tier-1].hp
-		local threshold = potency - (pdelta * 0.8)
-        if hp_missing >= threshold then
-            break
+
+        if tier == min_tier then
+            if main_job == 'WHM' or main_job == 'PLD' or main_job == 'DNC' then
+                -- WHM and PLD use the adjusted (average * 0.85) threshold
+                local min_threshold = ((thresholds[tier] + (thresholds[tier-1] or thresholds[tier])) / 2) * 0.85
+                if hp_missing >= min_threshold then
+                    return tier
+                end
+            else
+                -- Other jobs use the raw threshold value without averaging or scaling
+                if hp_missing >= thresholds[tier] then
+                    return tier
+                end
+            end
+        else
+            -- Standard potency check for higher tiers
+            if hp_missing >= potency then
+                return tier
+            end
         end
-        tier = tier - 1
+        tier = tier - 1  -- Move to the next lower tier
     end
-    return tier
+    return min_tier  -- Ensure we never go below min_tier
 end
+
 
 
 --[[
@@ -319,7 +364,7 @@ function cu.get_usable_cure(orig_tier, cure_type)
     
 	local tier = orig_tier
 	local check_action = cu[cure_type][tier].res
-    while (check_action.type == "BlueMagic" and tier >= 1) or tier > 1 do
+    while ((check_action.type == "BlueMagic" or cure_type:startswith('waltzga')) and tier >= 1) or tier > 1 do
         local action = cu[cure_type][tier].res
         local rctime = recasts[action.recast_id] or 0               --Cooldown remaining for current tier
         local mod_cost = action[_p..'_cost'] * mult                 --Modified cost of current tier in MP/TP
