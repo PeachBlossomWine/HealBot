@@ -104,7 +104,7 @@ function cu.injured_pt_members()
     local injured = {}
     for _,trg in pairs(hb.getMonitoredPlayers()) do
         if trg.hpp < 85 and party_members:contains(trg.name) then
-            local _hp = trg.hp or 1500   --Guesstimate if no value available
+            local _hp = trg.hp or 2200   --Guesstimate if no value available
             local _missing
             if trg.hp ~= nil then
                 _missing = math.ceil(((_hp/(trg.hpp/100))) - _hp)
@@ -210,30 +210,6 @@ function cu.pick_best_curaga_possibility()
 	return cu.get_usable_cure(tier, settings.healing.modega), target, members
 end
 
-
--- function cu.get_cure_queue()
-    -- local cq = ActionQueue.new()
-    -- local hp_table = cu.get_missing_hps()
-    -- for name,p in pairs(hp_table) do
-        -- if p.hpp < 90 then
-            -- local tier = cu.get_cure_tier_for_hp(p.missing, settings.healing.mode)
-            -- if tier >= settings.healing.min[settings.healing.mode] then
-                -- local spell = cu.get_usable_cure(tier, settings.healing.mode)
-                -- if spell ~= nil then
-                    -- cq:enqueue('cure', spell, name, p.hpp, (' (%s)'):format(p.missing))
-                -- end
-            -- end
-        -- end
-    -- end
-    -- if (not settings.disable.curaga) and (settings.healing.max[settings.healing.modega] > 0) then
-        -- local spell, p = cu.pick_best_curaga_possibility()
-        -- if spell ~= nil then
-            -- cq:enqueue('cure', spell, p.name, p.hpp, (' (%s)'):format(p.missing))
-        -- end
-    -- end
-    -- return cq:getQueue()
--- end
-
 -- Modified to exclude curaga members from getting single cures because redundant and stupid.
 function cu.get_cure_queue()
     local cq = ActionQueue.new()
@@ -288,25 +264,9 @@ function cu.get_multiplier(cure_type)
     return mult
 end
 
-
 --[[
-    Determines the tier of cure_type to use for the given amount of missing HP.
-    Whether or not to accept this tier, based on settings.healing.min[cure_type], is handled elsewhere.
+    Determines the tier of cure_type to use for the given amount of missing HP. Using actualy potencies and min thresholds.
 --]]
--- function cu.get_cure_tier_for_hp(hp_missing, cure_type)
-    -- local tier = settings.healing.max[cure_type]
-    -- while tier > 1 do
-        -- local potency = cu[cure_type][tier].hp
-        -- local pdelta = potency - cu[cure_type][tier-1].hp
-		-- local threshold = potency - (pdelta * 0.8)
-        -- if hp_missing >= threshold then
-            -- break
-        -- end
-        -- tier = tier - 1
-    -- end
-    -- return tier
--- end
-
 function cu.get_cure_tier_for_hp(hp_missing, cure_type)
     local max_tier = settings.healing.max[cure_type]
     local min_tier = settings.healing.min[cure_type]
@@ -321,7 +281,7 @@ function cu.get_cure_tier_for_hp(hp_missing, cure_type)
 
         if tier == min_tier then
             if main_job == 'WHM' or main_job == 'PLD' or main_job == 'DNC' then
-                -- WHM and PLD use the adjusted (average * 0.85) threshold
+                -- Main healder jobs use the adjusted (average * 0.85) threshold
                 local min_threshold = ((thresholds[tier] + (thresholds[tier-1] or thresholds[tier])) / 2) * 0.85
                 if hp_missing >= min_threshold then
                     return tier
@@ -338,12 +298,10 @@ function cu.get_cure_tier_for_hp(hp_missing, cure_type)
                 return tier
             end
         end
-        tier = tier - 1  -- Move to the next lower tier
+        tier = tier - 1
     end
-    return min_tier  -- Ensure we never go below min_tier
+    return min_tier
 end
-
-
 
 --[[
     Returns resource info for the chosen cure/waltz tier
