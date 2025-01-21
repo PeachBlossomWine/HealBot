@@ -297,13 +297,13 @@ function processAction(ai, monitored_ids)
             for _,tact in pairs(targ.actions) do
                 if not messages_blacklist:contains(tact.message_id) then
                     if (tact.message_id == 0) and (ai.actor_id == healer.id) then
-                        if indi_spell_ids:contains(ai.param) then
-                            healer.indi.latest = {spell = res.spells[ai.param], landed = os.time(), is_indi = true}
-                            buffs.register_buff(target, healer.indi.latest, true)
-                        elseif geo_spell_ids:contains(ai.param) then
-                            healer.geo.latest = {spell = res.spells[ai.param], landed = os.time(), is_geo = true}
-                            buffs.register_buff(target, healer.geo.latest, true)
-                        end
+                        -- if indi_spell_ids:contains(ai.param) then
+                            -- healer.indi.latest = {spell = res.spells[ai.param], landed = os.time(), is_indi = true}
+                            -- buffs.register_buff(target, healer.indi.latest, true)
+                        -- elseif geo_spell_ids:contains(ai.param) then
+                            -- healer.geo.latest = {spell = res.spells[ai.param], landed = os.time(), is_geo = true}
+                            -- buffs.register_buff(target, healer.geo.latest, true)
+                        -- end
                     end
 					-- if (tact.message_id == 0) and (actor.name == healer.name) then
                         -- local spell = res.spells[ai.param]
