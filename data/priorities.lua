@@ -13,7 +13,7 @@ return {
         ['bio'] = 3,
         ['silence'] = 2,
 		['evasion down'] = 3,
-		['magic evasion down'] = 0,
+		['magic evasion down'] = 0, -- frazzle
         ['addle'] = 4,
         ['gravity'] = 0,
         ['paralysis'] = 2,
@@ -39,11 +39,14 @@ return {
         ['drown'] = 7,
         ['sleep'] = 0,
         ['repose'] = 0,
-		['bane'] = 1, --abs TP
+		['bane'] = 1, --abs TP, can remove soon.
 		['elegy'] = 2,
 		['threnody'] = 0,
 		['requiem'] = 3,
-		['aspir'] = 2,
+		['aspir'] = 2.2,
+		['aspir ii'] = 2.1,
+		['aspir iii'] = 2,
+		['absorb-tp'] = 1,
     },
     ['default'] = 5,
     ['dispel'] = {
