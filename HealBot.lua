@@ -129,11 +129,17 @@ hb._events['cmd'] = windower.register_event('addon command', processCommand)
     Executes before each frame is rendered for display.
     Acts as the run() method of a threaded application.
 --]]
-local last_render = 0
+local last_prerender = 0
+local prerender_interval = 0.15
 hb._events['render'] = windower.register_event('prerender', function()
-    if not hb.configs_loaded then return end
+	local now = os.clock()
+    if now - last_prerender < prerender_interval then
+        return
+    end
+	last_prerender = now 
 
-    local now = os.clock()
+    if not hb.configs_loaded then return end
+    
     local moving = hb.isMoving()
     local acting = hb.isPerformingAction(moving)
     local player = windower.ffxi.get_player()
@@ -196,7 +202,6 @@ hb._events['render'] = windower.register_event('prerender', function()
 		end
 		
         if hb.active and not (moving or acting) then
-            --hb.active = false    --Quick stop when debugging
             if healer:action_delay_passed() then
                 if actions.take_action(player, partner, targ) then
                     healer.last_action = now                    --Refresh stored action check time
@@ -208,14 +213,13 @@ hb._events['render'] = windower.register_event('prerender', function()
             windower.send_ipc_message(ipc_req)
             healer.last_ipc_sent = now
         end
-		if (os.clock()-last_render) > 0.3 then
-			if hb.showdebuff and not indoor_zones:contains(zone_info.zone) then
-				utils.debuffs_disp()
-			end
-			utils.toggle_disp()
-			utils.check_debuffs_timer()
-			last_render = os.clock()
+
+		if hb.showdebuff and not indoor_zones:contains(zone_info.zone) then
+			utils.debuffs_disp()
 		end
+		utils.toggle_disp()
+		utils.check_debuffs_timer()
+
 		if hb.active and hb.gaze and player.in_combat and utils.isMonsterByTarget() and utils.NotDead() then
 			windower.ffxi.turn((getAngle()+180):radian()) --gets angle to the target
 		end
