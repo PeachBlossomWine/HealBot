@@ -22,6 +22,7 @@ return {
 			['blue'] = 3,
 			['bluega'] = 3,
 		},
+		['backup'] = false,
     },
     ['ignoreTrusts'] = false,
     ['spam'] = {

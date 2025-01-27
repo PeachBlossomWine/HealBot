@@ -7,13 +7,13 @@ return {
         ['waltzga'] = {80},
 		['bluega'] = {190},
         ['blue'] = {115,200},
-		['min_thresholds'] = {
-            ['cure'] = {87,199,438,817},
-            ['curaga'] = {172,363,675},
-			['waltz'] = {155,321,556},
-            ['waltzga'] = {155},
-            ['blue'] = {221,600},
-            ['bluega'] = {250},
+		['min_thresholds'] = {	-- Extra value for backup healer thresholds
+            ['cure'] = {87,199,438,817,1200},
+            ['curaga'] = {172,363,675,1000},
+			['waltz'] = {155,321,556,850},
+            ['waltzga'] = {155,410},
+            ['blue'] = {221,600,800},
+            ['bluega'] = {250,700},
         },
     },
 	['BLU'] = {

@@ -345,7 +345,6 @@ function processCommand(command,...)
 			offense.job_ability_active = false
 			atc('Auto JA Mode is now off.')
 		end
-		
 	elseif S{'stymie'}:contains(command) then
 		utils.handle_ja_command(command, 'stymie', 'RDM', function(args) utils.register_ja(args, 'stymie') end, args)
 
@@ -435,6 +434,16 @@ function processCommand(command,...)
             end
             utils.register_offensive_debuff(args, false, true, true)
         end
+	elseif command == 'backup' then
+        local cmd = args[1] and args[1]:lower() or (settings.healing.backup and 'off' or 'on')
+		if S{'on','true'}:contains(cmd) then
+			settings.healing.backup = true
+			atc('Backup Healer Mode is now on.')
+		elseif S{'off','false'}:contains(cmd) then
+			settings.healing.backup = false
+			atc('Backup Healer Mode is now off.')
+		end
+		
     elseif command == 'mincure' then
         if not validate(args, 1, 'Error: No argument specified for minCure') then return end
         local val = tonumber(args[1])
