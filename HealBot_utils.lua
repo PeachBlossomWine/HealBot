@@ -1530,7 +1530,7 @@ local custom_buffs = {
     [797] = {id = 797, en = "CustomBuff797", jp = "カスタムバフ797"},
     [798] = {id = 798, en = "CustomBuff798", jp = "カスタムバフ798"},
     [799] = {id = 799, en = "CustomBuff799", jp = "カスタムバフ799"},
-    [800] = {id = 800, en = "CustomBuff800", jp = "カスタムバフ800"},
+    [800] = {id = 800, en = "Widened Compass", jp = "カスタムバフ800"},
 	[801] = {id = 801, en = "Random Deal", jp = "カスタムバフ801"},
 	[802] = {id = 802, en = "Wild Card", jp = "カスタムバフ802"},
 	[803] = {id = 803, en = "Mantra", jp = "カスタムバフ803"},
