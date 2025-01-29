@@ -15,7 +15,7 @@ return {
 		['evasion down'] = 3,
 		['magic evasion down'] = 0, -- frazzle
         ['addle'] = 4,
-        ['gravity'] = 0,
+        ['weight'] = 0,
         ['paralysis'] = 2,
         ['slow'] = 2,
         ['blind'] = 6,
