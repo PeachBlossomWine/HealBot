@@ -131,6 +131,9 @@ hb._events['cmd'] = windower.register_event('addon command', processCommand)
 --]]
 local last_prerender = 0
 local prerender_interval = 0.15
+local last_recovery_check = 0 
+local recovery_interval = 1.8 
+
 hb._events['render'] = windower.register_event('prerender', function()
 	local now = os.clock()
     if now - last_prerender < prerender_interval then
@@ -212,6 +215,11 @@ hb._events['render'] = windower.register_event('prerender', function()
         if hb.active and ((now - healer.last_ipc_sent) > healer.ipc_delay) then
             windower.send_ipc_message(ipc_req)
             healer.last_ipc_sent = now
+        end
+		
+		if hb.active and not moving and (now - last_recovery_check >= recovery_interval) then
+            utils.check_recovery_item()
+            last_recovery_check = now  -- Update timestamp
         end
 
 		if hb.showdebuff and not indoor_zones:contains(zone_info.zone) then

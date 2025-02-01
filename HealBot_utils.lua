@@ -1261,7 +1261,7 @@ end
 function utils.check_recovery_item()
 	if (not hb.autoRecoverMPMode) and (not hb.autoRecoverHPMode) then return false end
 
-	if hb.autoRecoverHPMode and not moving and windower.ffxi.get_player().vitals.hpp < 30 then
+	if hb.autoRecoverHPMode and not moving and windower.ffxi.get_player().vitals.hpp < 40 then
 		if utils.haveItem(4175) then
 			atc(123,'HP LOW: Vile Elixir +1')
 			windower.chat.input('/item "Vile Elixir +1" <me>')
@@ -1273,7 +1273,7 @@ function utils.check_recovery_item()
 		end
 	end
 	
-	if hb.autoRecoverMPMode and not moving and windower.ffxi.get_player().vitals.mpp < 25 then
+	if hb.autoRecoverMPMode and not moving and windower.ffxi.get_player().vitals.mpp < 50 then
 		if utils.haveItem(5987) then
 			atc(123,'MP LOW: Coalition Ether')
 			windower.chat.input('/item "Coalition Ether" <me>')
