@@ -222,6 +222,16 @@ function actions.take_action(player, partner, targ)
 								healer:send_cmd('input /attack off')
 							end
 						end
+						if not actions.check_moblist_mob(player.target_index) then
+							healer:take_action(actions.get_offensive_action(player, partner), '<t>')
+						end
+						if offense.moblist.active and offense.moblist.mobs then 
+							actions.build_mob_debuff_list(player, offense.moblist.mobs)
+						end
+						if offense.dispel.active and offense.dispel.mobs then
+							actions.build_dispel_list(player, offense.dispel.mobs)
+						end
+						return true
 					--Debuff actions with lock on target
 					else
 						if not actions.check_moblist_mob(player.target_index) then
