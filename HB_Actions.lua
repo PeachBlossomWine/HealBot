@@ -232,7 +232,7 @@ function actions.take_action(player, partner, targ)
 							actions.build_dispel_list(player, offense.dispel.mobs)
 						end
 						return true
-					--Debuff actions with lock on target
+					--Debuff actions with lock on target, not engaged
 					else
 						if not actions.check_moblist_mob(player.target_index) then
 							healer:take_action(actions.get_offensive_action(player, partner), '<t>')
