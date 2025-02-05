@@ -28,6 +28,12 @@ return {
         {name = 'Enlight II'},
         {name = 'Protect V'},
     },
+	['run'] = {
+        {name = 'Phalanx'},
+        {name = 'Crusade'},
+        {name = 'Refresh'},
+        {name = 'Aquaveil'},
+    },
     ['whm'] = {
         {name = 'Haste'},
         {name = 'Protectra V'},
