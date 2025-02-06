@@ -290,7 +290,7 @@ function cu.get_cure_tier_for_hp(hp_missing, cure_type)
                 -- Other jobs use the raw threshold value without averaging or scaling
 				-- Backup healer
 				if settings.healing.backup then
-					if hp_missing >= thresholds[tier+1] then
+					if thresholds[tier+1] and hp_missing >= thresholds[tier+1] then
 						return tier
 					end
 				-- Regular
@@ -302,13 +302,19 @@ function cu.get_cure_tier_for_hp(hp_missing, cure_type)
             end
         else
             -- Standard potency check for higher tiers
-            if hp_missing >= potency then
-                return tier
-            end
+			if settings.healing.backup then
+				if thresholds[tier+1] and hp_missing >= thresholds[tier+1] then
+					return tier
+				end
+			else
+				if hp_missing >= potency then
+					return tier
+				end
+			end
         end
         tier = tier - 1
     end
-    return min_tier
+    return min_tier-1
 end
 
 --[[
