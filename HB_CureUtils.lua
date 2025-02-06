@@ -282,7 +282,7 @@ function cu.get_cure_tier_for_hp(hp_missing, cure_type)
         if tier == min_tier then
             if main_job == 'WHM' or main_job == 'PLD' or main_job == 'DNC' then
                 -- Main healder jobs use the adjusted (average * 0.85) threshold
-                local min_threshold = ((thresholds[tier] + (thresholds[tier-1] or thresholds[tier])) / 2) * 0.85
+                local min_threshold = ((thresholds[tier] + (thresholds[tier-1] or thresholds[tier])) / 2)-- * 0.85
                 if hp_missing >= min_threshold then
                     return tier
                 end
