@@ -707,17 +707,17 @@ end
 function buffs.register_buff(target, buff, gain, action)
     if not target then return end
     if not isstr(buff) then
-        -- if buff.is_indi or buff.is_geo then
-            -- buffs.buffList[target.name] = buffs.buffList[target.name] or {}
-            -- buffs.buffList[target.name][buff.spell.en] = buffs.buffList[target.name][buff.spell.en] or {}
-            -- buffs.buffList[target.name][buff.spell.en] = buffs.buffList[target.name][buff.spell.en] or {}
-            -- if gain then
-                -- buffs.buffList[target.name][buff.spell.en].landed = os.time()
-            -- else
-                -- buffs.buffList[target.name][buff.spell.en].landed = nil
-            -- end
-            -- return
-        -- end
+        if buff.is_indi or buff.is_geo then
+            buffs.buffList[target.name] = buffs.buffList[target.name] or {}
+            buffs.buffList[target.name][buff.spell.en] = buffs.buffList[target.name][buff.spell.en] or {}
+            buffs.buffList[target.name][buff.spell.en] = buffs.buffList[target.name][buff.spell.en] or {}
+            if gain then
+                buffs.buffList[target.name][buff.spell.en].landed = os.time()
+            else
+                buffs.buffList[target.name][buff.spell.en].landed = nil
+            end
+            return
+        end
     end
     
     local nbuff = utils.normalize_action(buff, 'buffs')
