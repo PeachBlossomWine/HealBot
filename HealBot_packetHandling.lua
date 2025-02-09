@@ -309,7 +309,7 @@ function processAction(ai, monitored_ids)
                         local spell = res.spells[ai.param]
                         if spell ~= nil then
                             if spell.type == 'Geomancy' then
-                                register_action(spell.type, ai.param)
+                               -- register_action(spell.type, ai.param)
                             end
                         end
                     end
