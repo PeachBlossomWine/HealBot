@@ -2,6 +2,9 @@ return {
     ["Achamoth"] = S{
         2
     },
+    ["Agon Champion"] = S{
+        28
+    },
     ["Agon Halo"] = S{
         2,
         3,
