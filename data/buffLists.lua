@@ -17,8 +17,8 @@ return {
     },
     ['pld/sch'] = {
         {name = 'Phalanx'},
+		{name = 'Reprisal', status = 'inCombat'},
         {name = 'Crusade'},
-        {name = 'Stoneskin'},
 		{name = 'Protect V'},
     },
     ['pld'] = {
