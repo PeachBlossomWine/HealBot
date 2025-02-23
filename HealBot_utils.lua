@@ -347,13 +347,10 @@ function processCommand(command,...)
 		end
 	elseif S{'stymie'}:contains(command) then
 		utils.handle_ja_command(command, 'stymie', 'RDM', function(args) utils.register_ja(args, 'stymie') end, args)
-
-	elseif S{'sabo'}:contains(command) then
-		utils.handle_ja_command(command, 'sabo', 'RDM', function(args) utils.register_ja(args, 'sabo') end, args)
-
+	elseif S{'es'}:contains(command) then
+		utils.handle_ja_command(command, 'elementalseal', 'BLM', function(args) utils.register_ja(args, 'elementalseal') end, args)
 	elseif S{'marcato'}:contains(command) then
 		utils.handle_ja_command(command, 'marcato', 'BRD', function(args) utils.register_ja(args, 'marcato') end, args)
-
     elseif S{'debuff', 'db'}:contains(command) then
         local cmd = args[1] and args[1]:lower() or (offense.debuffing_active and 'off' or 'on')
         if S{'on','true'}:contains(cmd) then
@@ -653,6 +650,9 @@ function processCommand(command,...)
         local cmd = args[1]     --Take the first element as the command
         table.remove(args, 1)   --Remove the first from the list of args
         _libs.lor.exec.process_input(cmd, args)
+	elseif command == 'test' then
+	local elementalseal = lor_res.action_for("Elemental Seal")
+	table.vprint(elementalseal)
     else
         atc('Error: Unknown command')
     end
@@ -742,7 +742,7 @@ end
 
 function utils.handle_ja_command(command, ja_name, job_required, register_function, args)
 	local player = windower.ffxi.get_player()
-    if player.main_job == job_required then
+    if player.main_job == job_required or player.sub_job == job_required then
         local cmd = args[1] and args[1]:lower() or (offense.ja_prespell[ja_name].active and 'off' or 'on')
         
         if S{'on', 'true'}:contains(cmd) then
@@ -1522,7 +1522,7 @@ local custom_buffs = {
     [789] = {id = 789, en = "CustomBuff789", jp = "カスタムバフ789"},
     [790] = {id = 790, en = "Quickstep", jp = "カスタムバフ790"},
     [791] = {id = 791, en = "Boxstep", jp = "カスタムバフ791"},
-    [792] = {id = 792, en = "CustomBuff792", jp = "カスタムバフ792"},
+    [792] = {id = 792, en = "Abosolute Terror", jp = "カスタムバフ792"},
     [793] = {id = 793, en = "CustomBuff793", jp = "カスタムバフ793"},
     [794] = {id = 794, en = "CustomBuff794", jp = "カスタムバフ794"},
     [795] = {id = 795, en = "CustomBuff795", jp = "カスタムバフ795"},

@@ -336,6 +336,7 @@ end
 
 local stymie = lor_res.action_for("Stymie")
 local marcato = lor_res.action_for("Marcato")
+local elementalseal = lor_res.action_for("Elemental Seal")
 
 function actions.get_offensive_action(player, partner, battle_target)
 	player = player or windower.ffxi.get_player()
@@ -371,13 +372,24 @@ function actions.get_offensive_action(player, partner, battle_target)
 				break
 			end
 		elseif player.main_job == "RDM" and offense.ja_prespell.stymie.active and healer:can_use(stymie) and healer:in_casting_range(target)
-		and (healer:ready_to_use(stymie) or haveBuff(stymie.name)) and healer:ready_to_use(dbact.action)
-		then
+		and (healer:ready_to_use(stymie) or haveBuff(stymie.name)) and healer:ready_to_use(dbact.action) then
 			if dbact.action.en == offense.ja_prespell.stymie.spell then
 				if not haveBuff(stymie.name) then
 					healer:take_action({action = stymie}, healer.name)
 				end
 				if haveBuff(stymie.name) then
+					action.db = dbact
+					break
+				end
+				break
+			end
+		elseif player.sub_job == "BLM" and offense.ja_prespell.elementalseal.active and healer:can_use(elementalseal) and healer:in_casting_range(target)
+		and (healer:ready_to_use(elementalseal) or haveBuff(elementalseal.name)) and healer:ready_to_use(dbact.action) then
+			if dbact.action.en == offense.ja_prespell.elementalseal.spell then
+				if not haveBuff(elementalseal.name) then
+					healer:take_action({action = elementalseal}, healer.name)
+				end
+				if haveBuff(elementalseal.name) then
 					action.db = dbact
 					break
 				end
@@ -477,6 +489,18 @@ function actions.get_offensive_action_list(player, mob_index)
 					healer:take_action({action = stymie}, healer.name)
 				end
 				if haveBuff(stymie.name) then
+					action.db = dbact
+					break
+				end
+				break
+			end
+		elseif player.sub_job == "BLM" and offense.ja_prespell.elementalseal.active and healer:can_use(elementalseal) and healer:in_casting_range(target)
+		and (healer:ready_to_use(elementalseal) or haveBuff(elementalseal.name)) and healer:ready_to_use(dbact.action) then
+			if dbact.action.en == offense.ja_prespell.elementalseal.spell then
+				if not haveBuff(elementalseal.name) then
+					healer:take_action({action = elementalseal}, healer.name)
+				end
+				if haveBuff(elementalseal.name) then
 					action.db = dbact
 					break
 				end

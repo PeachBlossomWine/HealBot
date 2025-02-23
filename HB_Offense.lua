@@ -14,12 +14,13 @@ local offense = {
     debuffing_active = true,
 	debuffing_battle_target = false,
 	stymie={active = false, spell = ''},
+	elementalseal={active = false, spell = ''},
 	sabo={active = false, spell = ''},
 	marcato={active = false, spell = ''},
 	ja_prespell = {
         stymie = {active = false, spell = ''},
-        sabo = {active = false, spell = ''},
         marcato = {active = false, spell = ''},
+		elementalseal = {active = false, spell = ''},
         -- Add more job abilities here as needed
     },
 	
