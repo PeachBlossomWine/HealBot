@@ -5,6 +5,9 @@ return {
     ["Agon Champion"] = S{
         28
     },
+    ["Agon Evoker"] = S{
+        28
+    },
     ["Agon Halo"] = S{
         2,
         3,
