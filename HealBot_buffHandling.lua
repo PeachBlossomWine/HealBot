@@ -208,13 +208,14 @@ function buffs.handle_removalSpellName(healer, id, targ)
 		end
 	end
 
+	local removalSpell = res.spells:with('en', removalActionName)
 	local debuff_table = buffs.debuffList[targ]
 	if removalActionName == 'Charmed' and not (debuff_table[2] or debuff_table[19] or debuff_table[193]) then
 		return (healer:can_use(sleep_spell) and sleep_spell) or nil
 	elseif removalActionName == 'Asleep' and not (debuff_table[14] or debuff_table[17]) then
 		return (healer:can_use(aoe_action) and aoe_action) or (healer:can_use(single_action) and single_action) or nil
 	else
-		return (ja_action and removalActionName and res.job_abilities:with('en', removalActionName)) or (ma_action and removalActionName and res.spells:with('en', removalActionName)) or nil
+		return (ja_action and removalActionName and res.job_abilities:with('en', removalActionName)) or (ma_action and removalActionName and healer:can_use(removalSpell) and res.spells:with('en', removalActionName)) or nil
 	end
 end
 
