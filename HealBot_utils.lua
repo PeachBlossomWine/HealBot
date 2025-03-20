@@ -1523,7 +1523,7 @@ local custom_buffs = {
     [790] = {id = 790, en = "Quickstep", jp = "カスタムバフ790"},
     [791] = {id = 791, en = "Boxstep", jp = "カスタムバフ791"},
     [792] = {id = 792, en = "Abosolute Terror", jp = "カスタムバフ792"},
-    [793] = {id = 793, en = "CustomBuff793", jp = "カスタムバフ793"},
+    [793] = {id = 793, en = "Radial Arcana", jp = "カスタムバフ793"},
     [794] = {id = 794, en = "CustomBuff794", jp = "カスタムバフ794"},
     [795] = {id = 795, en = "CustomBuff795", jp = "カスタムバフ795"},
     [796] = {id = 796, en = "CustomBuff796", jp = "カスタムバフ796"},
