@@ -13,7 +13,6 @@ return {
         {name = 'Crusade'},
         {name = 'Enlight II'},
         {name = 'Protect V'},
-        {name = 'Cocoon'},
     },
     ['pld/sch'] = {
         {name = 'Phalanx'},
