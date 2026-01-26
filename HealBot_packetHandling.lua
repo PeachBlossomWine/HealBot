@@ -153,7 +153,10 @@ function handle_incoming_chunk(id, data)
             processMessage(ai, monitored_ids)
         end
     elseif (id == 0x037) then
-        healer.indi.info = parse_char_update(data)
+        -- Safely parse Indi info (GEO aura)
+        local info = parse_char_update(data)
+        healer.indi.info = info or {}          -- prevent nil table
+        healer.indi.info.indi = healer.indi.info.indi or {}   -- prevent nil subtable
     elseif (id == 0x0DD or id == 0x0DF or id == 0x0C8) then	--Party member update
         local parsed = packets.parse('incoming', data)
 		if parsed then

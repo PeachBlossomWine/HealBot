@@ -39,6 +39,9 @@ return {
     ["Archaic Chariot"] = S{
         2
     },
+    ["Archaic Gear"] = S{
+        2
+    },
     ["August"] = S{
         2
     },
@@ -392,6 +395,7 @@ return {
         28
     },
     ["Fire Circle"] = S{
+        2,
         3,
         4,
         6,
@@ -451,6 +455,9 @@ return {
     },
     ["Gorgimera"] = S{
         2
+    },
+    ["Graupel Formation"] = S{
+        12
     },
     ["Gredogreq"] = S{
         2
@@ -592,6 +599,17 @@ return {
     },
     ["Lustilok"] = S{
         2
+    },
+    ["Macro Test"] = S{
+        2,
+        3,
+        4,
+        5,
+        6,
+        11,
+        12,
+        13,
+        194
     },
     ["Marmorkrebs"] = S{
         7

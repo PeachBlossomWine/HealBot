@@ -1,4 +1,4 @@
-_addon.name = 'HB'
+_addon.name = 'healbot'
 _addon.author = 'Lorand - Enhanced by PBW'
 _addon.command = 'hb'
 _addon.lastUpdate = '2023.03.08.1'
