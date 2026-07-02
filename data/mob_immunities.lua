@@ -13,6 +13,9 @@ return {
         3,
         194
     },
+    ["Agon Magus"] = S{
+        28
+    },
     ["Air Circle"] = S{
         4,
         6,
